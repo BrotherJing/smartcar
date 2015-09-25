@@ -23,16 +23,24 @@ public class ClientThread extends HandlerThread {
     Socket mSocket;
     DataInputStream dis;
     DataOutputStream dos;
-    ServerThread serverThread;
+    //ServerThread serverThread;
+    TCPServer server;
 
     boolean isConnected;
     String name;
 
-    public ClientThread(String name,Socket socket,ServerThread serverThread) {
+    /*public ClientThread(String name,Socket socket,ServerThread serverThread) {
         super(name);
         this.name = name;
         this.mSocket = socket;
         this.serverThread = serverThread;
+    }*/
+
+    public ClientThread(String name,Socket socket,TCPServer server){
+        super(name);
+        this.name = name;
+        this.mSocket = socket;
+        this.server = server;
     }
 
     public void send(String str){
@@ -51,16 +59,31 @@ public class ClientThread extends HandlerThread {
             dos = new DataOutputStream(mSocket.getOutputStream());
             isConnected = true;
             Logger.i("client connected");
-            while(isConnected){
+            while(!isInterrupted()){
                 String input = dis.readUTF();
                 DateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
                 String date = format.format(new Date());
                 Logger.i(input + "[" + date + "]");
-                serverThread.sendToAll(input + "[" + date + "]");
+                if(server!=null)
+                    server.sendToAll(input + "[" + date + "]");
             }
         }catch (IOException ex){
             ex.printStackTrace();
             Logger.i("client not connected");
+            quitSelf();
         }
+    }
+
+    public void quitSelf(){
+        isConnected = false;
+        try {
+            dis.close();
+            dos.close();
+            mSocket.close();
+        }catch (IOException ex){
+            ex.printStackTrace();
+        }
+        server = null;
+        interrupt();
     }
 }

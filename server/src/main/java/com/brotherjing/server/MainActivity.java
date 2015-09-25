@@ -1,10 +1,20 @@
 package com.brotherjing.server;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.ServiceConnection;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Message;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
@@ -29,25 +39,15 @@ import com.brotherjing.utils.Logger;
 
 public class MainActivity extends ActionBarActivity {
 
-    /**
-     * The {@link android.support.v4.view.PagerAdapter} that will provide
-     * fragments for each of the sections. We use a
-     * {@link FragmentPagerAdapter} derivative, which will keep every
-     * loaded fragment in memory. If this becomes too memory intensive, it
-     * may be best to switch to a
-     * {@link android.support.v4.app.FragmentStatePagerAdapter}.
-     */
     SectionsPagerAdapter mSectionsPagerAdapter;
     List<Fragment> fragments;
     int currentIndex;
 
-    /**
-     * The {@link ViewPager} that will host the section contents.
-     */
     ViewPager mViewPager;
 
     MainThreadHandler handler;
-    ServerThread serverThread;
+    MainThreadReceiver receiver;
+    TCPServer.MyBinder binder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +55,10 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-        Logger.i(Thread.currentThread().getName()+" in main thread");
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(CONSTANT.ACTION_SERVER_UP);
+        receiver = new MainThreadReceiver();
+        registerReceiver(receiver,intentFilter);
 
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
@@ -91,28 +94,23 @@ public class MainActivity extends ActionBarActivity {
     }
 
     private void initData(){
-        handler = new MainThreadHandler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                initServerThread();
-            }
-        },500);
+        handler = new MainThreadHandler(this);
     }
 
-    private void initServerThread(){
-        serverThread = new ServerThread("server",this);
-        serverThread.setMainThreadHandler(handler);
-        serverThread.initAndStart();
-    }
+    public final static class MainThreadHandler extends Handler{
+        private WeakReference<MainActivity> reference;
+        public MainThreadHandler(MainActivity activity) {
+            super();
+            reference = new WeakReference<MainActivity>(activity);
+        }
 
-    public class MainThreadHandler extends Handler{
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
+            MainActivity activity = reference.get();
             switch (msg.getData().getInt(CONSTANT.KEY_MSG_TYPE)){
                 case CONSTANT.MSG_IP_ADDR:
-                    Fragment currentFragment = fragments.get(currentIndex);
+                    Fragment currentFragment = activity.fragments.get(activity.currentIndex);
                     if(currentFragment instanceof ServerFragment){
                             ((ServerFragment) currentFragment).refreshIpAddr(msg.getData().getString(CONSTANT.KEY_IP_ADDR));
                     }
@@ -123,54 +121,28 @@ public class MainActivity extends ActionBarActivity {
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        bindService(new Intent(this, TCPServer.class), conn, BIND_AUTO_CREATE);
+    }
+
+    @Override
     protected void onStop() {
         super.onStop();
         Logger.i("stop");
-        if(serverThread!=null) {
-            serverThread.quitAll();
-            serverThread.quit();
-        }
-        serverThread = null;
+        unbindService(conn);
+        handler = null;
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         Logger.i("destroy");
-        if(serverThread!=null) {
-            serverThread.quitAll();
-            serverThread.quit();
-        }
-        serverThread = null;
+        handler = null;
+        stopService(new Intent(this,TCPServer.class));
+        unregisterReceiver(receiver);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-
-    /**
-     * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
-     * one of the sections/tabs/pages.
-     */
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
         private List<Fragment> fragmentList;
@@ -241,4 +213,38 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
+    private class MainThreadReceiver extends BroadcastReceiver{
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if(intent.getAction().equals(CONSTANT.ACTION_SERVER_UP)){
+                Message msg = new Message();
+                Bundle bundle = new Bundle();
+                bundle.putInt(CONSTANT.KEY_MSG_TYPE,CONSTANT.MSG_IP_ADDR);
+                bundle.putString(CONSTANT.KEY_IP_ADDR, intent.getStringExtra(CONSTANT.KEY_IP_ADDR));
+                msg.setData(bundle);
+                handler.sendMessage(msg);
+            }
+        }
+    }
+
+    private ServiceConnection conn = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+            binder = (TCPServer.MyBinder)iBinder;
+            String ip;
+            if((ip=binder.getIP())!=null){
+                Message msg = new Message();
+                Bundle bundle = new Bundle();
+                bundle.putInt(CONSTANT.KEY_MSG_TYPE,CONSTANT.MSG_IP_ADDR);
+                bundle.putString(CONSTANT.KEY_IP_ADDR, ip);
+                msg.setData(bundle);
+                handler.sendMessage(msg);
+            }
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName componentName) {
+
+        }
+    };
 }

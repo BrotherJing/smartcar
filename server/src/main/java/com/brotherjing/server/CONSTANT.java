@@ -12,6 +12,7 @@ public interface CONSTANT {
     //ui thread handler
     String KEY_IP_ADDR = "ip_addr";
     int MSG_IP_ADDR = 1;
+    String ACTION_SERVER_UP = "server_up";
 
     //server thread handler
     int MSG_TEST = 1;

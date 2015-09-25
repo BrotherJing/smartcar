@@ -23,18 +23,16 @@ import java.util.List;
  */
 public class ServerThread extends HandlerThread{
 
-    private Context context;
     private ServerSocket serverSocket;
-    private ServerHandler handler;
     private MainActivity.MainThreadHandler mainThreadHandler;
 
     private List<ClientThread> clients;
 
     private String IP;
 
-    public ServerThread(String name,Context context) {
+    public ServerThread(String name,String ip) {
         super(name, Process.THREAD_PRIORITY_BACKGROUND);
-        this.context = context;
+        IP = ip;
         clients = new ArrayList<>();
     }
 
@@ -44,7 +42,6 @@ public class ServerThread extends HandlerThread{
 
     @Override
     public void run() {
-        IP = getLocalIP();
         if(IP==null){
             return;
         }
@@ -52,12 +49,13 @@ public class ServerThread extends HandlerThread{
         try{
             serverSocket = new ServerSocket(CONSTANT.PORT);
             if(mainThreadHandler!=null){
-                Message msg = new Message();
+                /*Message msg = new Message();
                 Bundle bundle = new Bundle();
                 bundle.putInt(CONSTANT.KEY_MSG_TYPE,CONSTANT.MSG_IP_ADDR);
                 bundle.putString(CONSTANT.KEY_IP_ADDR, IP);
                 msg.setData(bundle);
-                mainThreadHandler.sendMessage(msg);
+                mainThreadHandler.sendMessage(msg);*/
+
                 Logger.i(IP+" in msg");
             }
             Logger.i(Thread.currentThread().getName()+" in server thread");
@@ -65,17 +63,13 @@ public class ServerThread extends HandlerThread{
                 Socket socket = serverSocket.accept();
                 String name = System.currentTimeMillis()+"";
                 Logger.i("new client! "+name);
-                ClientThread clientThread = new ClientThread(name,socket,this);
+                /*ClientThread clientThread = new ClientThread(name,socket,this);
                 clientThread.start();
-                clients.add(clientThread);
+                clients.add(clientThread);*/
             }
         }catch (IOException ex){
             ex.printStackTrace();
         }
-    }
-
-    public ServerHandler getHandler(){
-        return handler;
     }
 
     public void setMainThreadHandler(MainActivity.MainThreadHandler handler){
@@ -98,14 +92,6 @@ public class ServerThread extends HandlerThread{
         }
     }
 
-    private String getLocalIP(){
-        WifiManager wifiManager = (WifiManager)context.getSystemService(Context.WIFI_SERVICE);
-        WifiInfo wifiInfo = wifiManager.getConnectionInfo();
-        int ipAddress = wifiInfo.getIpAddress();
-        if(ipAddress==0)return null;
-        return ((ipAddress & 0xff)+"."+(ipAddress>>8 & 0xff)+"."
-                +(ipAddress>>16 & 0xff)+"."+(ipAddress>>24 & 0xff));
-    }
 
     public void sendToAll(String str){
         for(ClientThread thread : clients){
