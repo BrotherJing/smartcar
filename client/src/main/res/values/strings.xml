@@ -11,4 +11,10 @@
     <string name="action_example">Example action</string>
 
     <string name="action_settings">Settings</string>
+    <string name="title_activity_socketmsg">SocketmsgActivity</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="bit_connect">Connect</string>
+    <string name="edt_input">在这里输入</string>
+    <string name="btn_submit">提交</string>
 </resources>
