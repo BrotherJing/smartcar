@@ -33,13 +33,6 @@ public class ClientThread extends HandlerThread {
         this.name = name;
         this.mSocket = socket;
         this.serverThread = serverThread;
-        try{
-            dis = new DataInputStream(mSocket.getInputStream());
-            dos = new DataOutputStream(mSocket.getOutputStream());
-            isConnected = true;
-        }catch (IOException ex){
-            ex.printStackTrace();
-        }
     }
 
     public void send(String str){
@@ -53,8 +46,11 @@ public class ClientThread extends HandlerThread {
 
     @Override
     public void run() {
-        super.run();
         try{
+            dis = new DataInputStream(mSocket.getInputStream());
+            dos = new DataOutputStream(mSocket.getOutputStream());
+            isConnected = true;
+            Logger.i("client connected");
             while(isConnected){
                 String input = dis.readUTF();
                 DateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
@@ -64,6 +60,7 @@ public class ClientThread extends HandlerThread {
             }
         }catch (IOException ex){
             ex.printStackTrace();
+            Logger.i("client not connected");
         }
     }
 }

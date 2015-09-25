@@ -66,6 +66,7 @@ public class ServerThread extends HandlerThread{
                 String name = System.currentTimeMillis()+"";
                 Logger.i("new client! "+name);
                 ClientThread clientThread = new ClientThread(name,socket,this);
+                clientThread.start();
                 clients.add(clientThread);
             }
         }catch (IOException ex){

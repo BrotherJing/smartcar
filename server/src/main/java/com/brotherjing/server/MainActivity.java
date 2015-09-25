@@ -21,6 +21,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.brotherjing.utils.Logger;
@@ -52,6 +53,7 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         Logger.i(Thread.currentThread().getName()+" in main thread");
 
@@ -62,7 +64,6 @@ public class MainActivity extends ActionBarActivity {
         fragments.add(PlaceholderFragment.newInstance(1));
         fragments.add(PlaceholderFragment.newInstance(2));
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(),fragments);
-        //currentFragment = mSectionsPagerAdapter.getItem(0);
         currentIndex = 0;
 
         // Set up the ViewPager with the sections adapter.
@@ -76,7 +77,6 @@ public class MainActivity extends ActionBarActivity {
 
             @Override
             public void onPageSelected(int position) {
-                //currentFragment = mSectionsPagerAdapter.getItem(position);
                 currentIndex = position;
             }
 
@@ -126,7 +126,6 @@ public class MainActivity extends ActionBarActivity {
     protected void onStop() {
         super.onStop();
         Logger.i("stop");
-        handler = null;
         if(serverThread!=null) {
             serverThread.quitAll();
             serverThread.quit();
@@ -138,7 +137,6 @@ public class MainActivity extends ActionBarActivity {
     protected void onDestroy() {
         super.onDestroy();
         Logger.i("destroy");
-        handler = null;
         if(serverThread!=null) {
             serverThread.quitAll();
             serverThread.quit();

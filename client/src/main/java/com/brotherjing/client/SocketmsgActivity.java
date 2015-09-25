@@ -80,45 +80,13 @@ public class SocketmsgActivity extends Activity {
                         connect();
                     }
                 }).start();
-                Logger.i(ip +" "+ port);
-                connect();
+                //Logger.i(ip +" "+ port);
+                //connect();
 
             }
         });
 
-        if (isConnect){
-            btn_submit.setClickable(true);
-            btn_submit.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    str = edt_input.getText().toString();
-                    try {
-                        Logger.i(str);
-                        dos.writeUTF(str);
-                    } catch (UnknownHostException e) {
-                        Logger.i("connect failure");
-                        Toast.makeText(SocketmsgActivity.this, "connect failure", Toast.LENGTH_LONG).show();
-                        disConnect();
-                        connect();
-//            Intent intent = new Intent(SocketmsgActivity.this, InitActivity.class);
-//            startActivity(intent);
-//            SocketmsgActivity.this.finish();
-                        e.printStackTrace();
-                    } catch (SocketTimeoutException e) {
-                        Logger.i("connect timeout");
-                        Toast.makeText(SocketmsgActivity.this, "connect timeout", Toast.LENGTH_LONG).show();
-                        disConnect();
-                        connect();
-//            Intent intent = new Intent(SocketmsgActivity.this, InitActivity.class);
-//            startActivity(intent);
-//            SocketmsgActivity.this.finish();
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
-        }
+
 
     }
 
@@ -182,6 +150,8 @@ public class SocketmsgActivity extends Activity {
 
     private void connect() {
         try {
+            ip = edt_ip.getText().toString();
+            port = edt_port.getText().toString();
             Logger.i("connect is here1");
             if (socket == null){
                 Logger.i("connect is here2");
@@ -192,7 +162,7 @@ public class SocketmsgActivity extends Activity {
             Logger.i("connect is here3");
 
             if (socket.isConnected()) {
-                Toast.makeText(SocketmsgActivity.this, "Connected", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(SocketmsgActivity.this, "Connected", Toast.LENGTH_SHORT).show();
                 dos = new DataOutputStream(socket.getOutputStream());
                 dis = new DataInputStream(socket.getInputStream());
                 dos.writeUTF("online");
@@ -215,7 +185,7 @@ public class SocketmsgActivity extends Activity {
             }
         } catch (UnknownHostException e) {
             Logger.i("connect failure");
-            Toast.makeText(SocketmsgActivity.this, "connect failure", Toast.LENGTH_LONG).show();
+            //Toast.makeText(SocketmsgActivity.this, "connect failure", Toast.LENGTH_LONG).show();
 //            disConnect();
 //            connect();
 //            Intent intent = new Intent(SocketmsgActivity.this, InitActivity.class);
@@ -224,7 +194,7 @@ public class SocketmsgActivity extends Activity {
             e.printStackTrace();
         } catch (SocketTimeoutException e) {
             Logger.i("connect timeout");
-            Toast.makeText(SocketmsgActivity.this, "connect timeout", Toast.LENGTH_LONG).show();
+            //Toast.makeText(SocketmsgActivity.this, "connect timeout", Toast.LENGTH_LONG).show();
 //            disConnect();
 //            connect();
 //            Intent intent = new Intent(SocketmsgActivity.this, InitActivity.class);
@@ -241,6 +211,39 @@ public class SocketmsgActivity extends Activity {
         public void handleMessage(Message msg) {
             switch (msg.what){
                 case 1:
+                    if (isConnect){
+                        btn_submit.setClickable(true);
+                        btn_submit.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                str = edt_input.getText().toString();
+                                try {
+                                    Logger.i(str);
+                                    dos.writeUTF(str);
+                                } catch (UnknownHostException e) {
+                                    Logger.i("connect failure");
+                                    Toast.makeText(SocketmsgActivity.this, "connect failure", Toast.LENGTH_LONG).show();
+                                    disConnect();
+                                    connect();
+//            Intent intent = new Intent(SocketmsgActivity.this, InitActivity.class);
+//            startActivity(intent);
+//            SocketmsgActivity.this.finish();
+                                    e.printStackTrace();
+                                } catch (SocketTimeoutException e) {
+                                    Logger.i("connect timeout");
+                                    Toast.makeText(SocketmsgActivity.this, "connect timeout", Toast.LENGTH_LONG).show();
+                                    disConnect();
+                                    connect();
+//            Intent intent = new Intent(SocketmsgActivity.this, InitActivity.class);
+//            startActivity(intent);
+//            SocketmsgActivity.this.finish();
+                                    e.printStackTrace();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+                    }
                     break;
             }
         }
