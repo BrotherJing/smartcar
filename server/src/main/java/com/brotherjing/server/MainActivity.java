@@ -47,13 +47,13 @@ public class MainActivity extends ActionBarActivity {
 
     MainThreadHandler handler;
     ServerThread serverThread;
-    ServerThread.ServerHandler serverHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Logger.i(Thread.currentThread().getName()+" in main thread");
 
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
@@ -122,6 +122,29 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Logger.i("stop");
+        handler = null;
+        if(serverThread!=null) {
+            serverThread.quitAll();
+            serverThread.quit();
+        }
+        serverThread = null;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Logger.i("destroy");
+        handler = null;
+        if(serverThread!=null) {
+            serverThread.quitAll();
+            serverThread.quit();
+        }
+        serverThread = null;
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

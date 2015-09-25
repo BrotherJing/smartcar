@@ -23,16 +23,16 @@ public class ClientThread extends HandlerThread {
     Socket mSocket;
     DataInputStream dis;
     DataOutputStream dos;
-    //ServerThread.ServerHandler handler;
+    ServerThread serverThread;
 
     boolean isConnected;
     String name;
 
-    public ClientThread(String name,Socket socket) {
+    public ClientThread(String name,Socket socket,ServerThread serverThread) {
         super(name);
         this.name = name;
         this.mSocket = socket;
-        //this.handler = handler;
+        this.serverThread = serverThread;
         try{
             dis = new DataInputStream(mSocket.getInputStream());
             dos = new DataOutputStream(mSocket.getOutputStream());
@@ -60,6 +60,7 @@ public class ClientThread extends HandlerThread {
                 DateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
                 String date = format.format(new Date());
                 Logger.i(input + "[" + date + "]");
+                serverThread.sendToAll(input + "[" + date + "]");
             }
         }catch (IOException ex){
             ex.printStackTrace();

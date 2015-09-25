@@ -8,9 +8,12 @@ public interface CONSTANT {
     int PORT = 12345;
 
     String KEY_MSG_TYPE = "type";
-    String KEY_IP_ADDR = "ip_addr";
 
-    //main thread handler
+    //ui thread handler
+    String KEY_IP_ADDR = "ip_addr";
     int MSG_IP_ADDR = 1;
+
+    //server thread handler
+    int MSG_TEST = 1;
 
 }
