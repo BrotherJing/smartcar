@@ -34,6 +34,10 @@
         <activity
             android:name=".ClientActivity"
             android:label="@string/title_activity_client" >
+        </activity>
+        <activity
+            android:name=".SensorActivity"
+            android:label="@string/title_activity_sensor" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

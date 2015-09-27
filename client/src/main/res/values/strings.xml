@@ -18,4 +18,5 @@
     <string name="edt_input">在这里输入</string>
     <string name="btn_submit">提交</string>
     <string name="title_activity_client">ClientActivity</string>
+    <string name="title_activity_sensor">SensorActivity</string>
 </resources>
