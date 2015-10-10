@@ -1,11 +1,12 @@
-package com.brotherjing.server;
+package com.brotherjing.server.service;
 
-import android.os.Handler;
 import android.os.HandlerThread;
-import android.os.Looper;
-import android.util.Log;
 
+import com.brotherjing.server.service.TCPServer;
+import com.brotherjing.utils.DateUtil;
 import com.brotherjing.utils.Logger;
+import com.brotherjing.utils.bean.TCPMessage;
+import com.google.gson.Gson;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -23,18 +24,12 @@ public class ClientThread extends HandlerThread {
     Socket mSocket;
     DataInputStream dis;
     DataOutputStream dos;
-    //ServerThread serverThread;
+
+    //the service context
     TCPServer server;
 
     boolean isConnected;
     String name;
-
-    /*public ClientThread(String name,Socket socket,ServerThread serverThread) {
-        super(name);
-        this.name = name;
-        this.mSocket = socket;
-        this.serverThread = serverThread;
-    }*/
 
     public ClientThread(String name,Socket socket,TCPServer server){
         super(name);
@@ -43,9 +38,9 @@ public class ClientThread extends HandlerThread {
         this.server = server;
     }
 
-    public void send(String str){
+    public void send(TCPMessage msg){
         try{
-            dos.writeUTF(str);
+            dos.writeUTF(new Gson().toJson(msg));
             dos.flush();
         }catch (IOException ex){
             ex.printStackTrace();
@@ -61,11 +56,12 @@ public class ClientThread extends HandlerThread {
             Logger.i("client connected");
             while(!isInterrupted()){
                 String input = dis.readUTF();
-                DateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-                String date = format.format(new Date());
-                Logger.i(input + "[" + date + "]");
-                if(server!=null)
-                    server.sendToAll(input + "[" + date + "]");
+                TCPMessage msg = new Gson().fromJson(input,TCPMessage.class);
+                //String timestamp = System.currentTimeMillis()+"";
+                //Logger.i(input + "[" + timestamp + "]");
+                if(server!=null) {
+                    server.sendToAll(msg);
+                }
             }
         }catch (IOException ex){
             ex.printStackTrace();

@@ -11,6 +11,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.brotherjing.utils.bean.TCPMessage;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -141,7 +143,8 @@ public class ClientActivity extends ActionBarActivity {
     public void send(){
         if(isConnect){
             try {
-                dos.writeUTF(edt_input.getText().toString());
+                //TCPMessage message = new TCPMessage(edt_input.getText().toString())
+                //dos.writeUTF();
                 dos.flush();
             }catch (IOException ex){
                 ex.printStackTrace();

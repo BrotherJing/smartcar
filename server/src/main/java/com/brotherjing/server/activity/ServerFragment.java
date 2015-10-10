@@ -1,15 +1,20 @@
-package com.brotherjing.server;
+package com.brotherjing.server.activity;
 
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 import android.widget.TextView;
 
+import com.brotherjing.server.R;
+import com.brotherjing.utils.DateUtil;
 import com.brotherjing.utils.Logger;
+import com.brotherjing.utils.bean.TCPMessage;
+
+import java.util.Date;
 
 
 /**
@@ -19,7 +24,8 @@ public class ServerFragment extends Fragment {
 
     private final static String KEY_IP_ADDR = "ip_addr";
 
-    private TextView tv_ip_addr;
+    private TextView tv_ip_addr,tv_msg_list;
+    //private ListView lv_messages;
 
     public static ServerFragment newInstance(){
         ServerFragment fragment = new ServerFragment();
@@ -44,6 +50,8 @@ public class ServerFragment extends Fragment {
         // Inflate the layout for this fragment
         View mainView = inflater.inflate(R.layout.fragment_server, container, false);
         tv_ip_addr = (TextView)mainView.findViewById(R.id.tv_ip_addr);
+        tv_msg_list = (TextView)mainView.findViewById(R.id.tv_msg_list);
+        //lv_messages = (ListView)mainView.findViewById(R.id.lv_messages);
 
         if(savedInstanceState!=null){
             String ip = savedInstanceState.getString(KEY_IP_ADDR);
@@ -63,6 +71,12 @@ public class ServerFragment extends Fragment {
     public void refreshIpAddr(String ip){
         Logger.i(ip);
         tv_ip_addr.setText(ip);
+    }
+
+    public void newMessage(TCPMessage msg){
+        tv_msg_list.setText(msg.getFrom()+":"+msg.getText()+"["+
+                DateUtil.getDateTime(new Date(Long.parseLong(msg.getTimestamp())))+
+                "]\n"+tv_msg_list.getText().toString());
     }
 
 }

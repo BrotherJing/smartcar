@@ -1,4 +1,4 @@
-package com.brotherjing.server;
+package com.brotherjing.server.activity;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -11,30 +11,27 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
-import android.net.wifi.WifiInfo;
-import android.net.wifi.WifiManager;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
-import android.util.SizeF;
-import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.TextView;
 
+import com.brotherjing.server.CONSTANT;
+import com.brotherjing.server.GlobalEnv;
+import com.brotherjing.server.R;
+import com.brotherjing.server.service.TCPServer;
 import com.brotherjing.utils.Logger;
+import com.brotherjing.utils.bean.TCPMessage;
+import com.google.gson.Gson;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -55,6 +52,7 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
+        //register broadcast listening to server event
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(CONSTANT.ACTION_SERVER_UP);
         receiver = new MainThreadReceiver();
@@ -62,11 +60,20 @@ public class MainActivity extends ActionBarActivity {
 
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
+        initFragments();
+
+        initData();
+    }
+
+    private void initFragments(){
+
         fragments = new ArrayList<>();
         fragments.add(ServerFragment.newInstance());
         fragments.add(PlaceholderFragment.newInstance(1));
         fragments.add(PlaceholderFragment.newInstance(2));
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(),fragments);
+
+        //default page is first page
         currentIndex = 0;
 
         // Set up the ViewPager with the sections adapter.
@@ -81,6 +88,11 @@ public class MainActivity extends ActionBarActivity {
             @Override
             public void onPageSelected(int position) {
                 currentIndex = position;
+                if(position==0){
+                    String ip = GlobalEnv.get(CONSTANT.GLOBAL_IP_ADDRESS);
+                    if(ip!=null)
+                        ((ServerFragment) fragments.get(currentIndex)).refreshIpAddr(ip);
+                }
             }
 
             @Override
@@ -88,9 +100,6 @@ public class MainActivity extends ActionBarActivity {
 
             }
         });
-
-        initData();
-
     }
 
     private void initData(){
@@ -108,11 +117,20 @@ public class MainActivity extends ActionBarActivity {
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             MainActivity activity = reference.get();
-            switch (msg.getData().getInt(CONSTANT.KEY_MSG_TYPE)){
+            switch (msg.what){
                 case CONSTANT.MSG_IP_ADDR:
+                    String ip = msg.getData().getString(CONSTANT.KEY_IP_ADDR);
+                    GlobalEnv.put(CONSTANT.GLOBAL_IP_ADDRESS,ip);
                     Fragment currentFragment = activity.fragments.get(activity.currentIndex);
                     if(currentFragment instanceof ServerFragment){
-                            ((ServerFragment) currentFragment).refreshIpAddr(msg.getData().getString(CONSTANT.KEY_IP_ADDR));
+                        ((ServerFragment) currentFragment).refreshIpAddr(ip);
+                    }
+                    break;
+                case CONSTANT.MSG_NEW_MSG:
+                    TCPMessage tcpMessage = new Gson().fromJson(msg.getData().getString(CONSTANT.KEY_MSG_DATA),TCPMessage.class);
+                    Fragment cf = activity.fragments.get(activity.currentIndex);
+                    if(cf instanceof ServerFragment){
+                        ((ServerFragment)cf).newMessage(tcpMessage);
                     }
                     break;
                 default:break;
@@ -213,23 +231,33 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
+    //broadcast receiver listening to server events
     private class MainThreadReceiver extends BroadcastReceiver{
         @Override
         public void onReceive(Context context, Intent intent) {
+            //if server is up and run, it will send ip address back
+            Message msg = handler.obtainMessage();
+            Bundle bundle = new Bundle();
             if(intent.getAction().equals(CONSTANT.ACTION_SERVER_UP)){
-                Message msg = new Message();
-                Bundle bundle = new Bundle();
-                bundle.putInt(CONSTANT.KEY_MSG_TYPE,CONSTANT.MSG_IP_ADDR);
+                msg.what = CONSTANT.MSG_IP_ADDR;
                 bundle.putString(CONSTANT.KEY_IP_ADDR, intent.getStringExtra(CONSTANT.KEY_IP_ADDR));
-                msg.setData(bundle);
-                handler.sendMessage(msg);
             }
+            else if(intent.getAction().equals(CONSTANT.ACTION_NEW_MSG)){
+                msg.what=CONSTANT.MSG_NEW_MSG;
+                bundle.putString(CONSTANT.KEY_MSG_DATA, intent.getStringExtra(CONSTANT.KEY_MSG_DATA));
+            }else{
+                return;
+            }
+            msg.setData(bundle);
+            msg.sendToTarget();
         }
     }
 
     private ServiceConnection conn = new ServiceConnection() {
+
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+            //when server is bonded, request the ip address
             binder = (TCPServer.MyBinder)iBinder;
             String ip;
             if((ip=binder.getIP())!=null){

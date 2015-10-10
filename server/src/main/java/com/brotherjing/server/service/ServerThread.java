@@ -1,21 +1,16 @@
-package com.brotherjing.server;
+package com.brotherjing.server.service;
 
-import android.content.Context;
-import android.net.wifi.WifiInfo;
-import android.net.wifi.WifiManager;
 import android.os.*;
 import android.os.Process;
-import android.util.Log;
 
+import com.brotherjing.server.CONSTANT;
+import com.brotherjing.server.activity.MainActivity;
 import com.brotherjing.utils.Logger;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 
 /**

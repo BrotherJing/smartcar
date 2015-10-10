@@ -1,4 +1,4 @@
-package com.brotherjing.server;
+package com.brotherjing.server.service;
 
 import android.app.Service;
 import android.content.Context;
@@ -8,7 +8,10 @@ import android.net.wifi.WifiManager;
 import android.os.Binder;
 import android.os.IBinder;
 
+import com.brotherjing.server.CONSTANT;
 import com.brotherjing.utils.Logger;
+import com.brotherjing.utils.bean.TCPMessage;
+import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -42,24 +45,29 @@ public class TCPServer extends Service {
             return;
         }
         Logger.i(IP);
+
+        //start TCP server
         serverThread = new Thread(runnable);
         serverThread.start();
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-
         return super.onStartCommand(intent, flags, startId);
     }
 
-    public void sendToAll(String str){
+    //send message to all clients
+    public void sendToAll(TCPMessage msg){
+        Intent intent1 = new Intent(CONSTANT.ACTION_NEW_MSG);
+        intent1.putExtra(CONSTANT.KEY_MSG_DATA, new Gson().toJson(msg));
+        sendBroadcast(intent1);
         for(ClientThread thread : clients){
-            thread.send(str);
+            thread.send(msg);
         }
     }
 
     public void quitAll(){
-        Logger.i(Thread.currentThread().getName() + " in server thread");
+        //Logger.i(Thread.currentThread().getName() + " in server thread");
         for(ClientThread thread : clients){
             thread.quitSelf();
         }
@@ -87,6 +95,7 @@ public class TCPServer extends Service {
                 +(ipAddress>>16 & 0xff)+"."+(ipAddress>>24 & 0xff));
     }
 
+    //runnable for server thread
     Runnable runnable = new Runnable() {
         @Override
         public void run() {
