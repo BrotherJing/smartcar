@@ -38,9 +38,9 @@ public class ClientThread extends HandlerThread {
         this.server = server;
     }
 
-    public void send(TCPMessage msg){
+    public void send(String msg){
         try{
-            dos.writeUTF(new Gson().toJson(msg));
+            dos.writeUTF(msg);
             dos.flush();
         }catch (IOException ex){
             ex.printStackTrace();
@@ -56,11 +56,11 @@ public class ClientThread extends HandlerThread {
             Logger.i("client connected");
             while(!isInterrupted()){
                 String input = dis.readUTF();
-                TCPMessage msg = new Gson().fromJson(input,TCPMessage.class);
+                //TCPMessage msg = new Gson().fromJson(input,TCPMessage.class);
                 //String timestamp = System.currentTimeMillis()+"";
-                //Logger.i(input + "[" + timestamp + "]");
+                Logger.i(input);
                 if(server!=null) {
-                    server.sendToAll(msg);
+                    server.sendToAll(input);
                 }
             }
         }catch (IOException ex){

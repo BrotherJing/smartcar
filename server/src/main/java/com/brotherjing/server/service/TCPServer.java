@@ -57,9 +57,9 @@ public class TCPServer extends Service {
     }
 
     //send message to all clients
-    public void sendToAll(TCPMessage msg){
+    public void sendToAll(String msg){
         Intent intent1 = new Intent(CONSTANT.ACTION_NEW_MSG);
-        intent1.putExtra(CONSTANT.KEY_MSG_DATA, new Gson().toJson(msg));
+        intent1.putExtra(CONSTANT.KEY_MSG_DATA, msg);
         sendBroadcast(intent1);
         for(ClientThread thread : clients){
             thread.send(msg);

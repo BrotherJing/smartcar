@@ -1,7 +1,11 @@
 package com.brotherjing.client;
 
+import android.content.ComponentName;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.os.IBinder;
 import android.os.Message;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -11,6 +15,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.brotherjing.client.service.TCPClient;
 import com.brotherjing.utils.bean.TCPMessage;
 
 import java.io.DataInputStream;
@@ -25,22 +30,15 @@ import java.net.UnknownHostException;
 
 public class ClientActivity extends ActionBarActivity {
 
-    Thread thread = null;
-    Socket socket = null;
-
-    private InetSocketAddress isa = null;
-
-    DataInputStream dis = null;
-    DataOutputStream dos = null;
     private String reMsg = null;
     private boolean isConnect = false;
 
-    private String name = null;
+    private String name = "FUCKER";
     private String ip = null;
     private String port = null;
 
-    private HandlerThread networkThread;
-    private Handler networkHandler;
+    private TCPClient.MyBinder binder;
+    private TCPClientConnection conn;
 
     //test parameter//
     private EditText edt_ip, edt_port;
@@ -60,139 +58,53 @@ public class ClientActivity extends ActionBarActivity {
         edt_input = (EditText) findViewById(R.id.edt_input);
         btn_submit = (Button) findViewById(R.id.btn_submit);
 
-        networkThread = new HandlerThread("network");
-        networkThread.start();
-        networkHandler = new Handler(networkThread.getLooper()){
-            @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                switch (msg.what){
-                    case 1:
-                        connect();
-                        break;
-                    case 2:
-                        send();
-                        break;
-                }
-            }
-        };
-
         btn_connect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 ip = edt_ip.getText().toString();
                 port = edt_port.getText().toString();
-                networkHandler.sendEmptyMessage(1);//connect
+                //networkHandler.sendEmptyMessage(1);//connect
+                binder.connectServer(ip, port, name);
             }
         });
         btn_submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                networkHandler.sendEmptyMessage(2);//send
+                //networkHandler.sendEmptyMessage(2);//send
+                binder.send(edt_input.getText().toString());
             }
         });
     }
 
-    private void ReceiveMsg() {
-        if (isConnect) {
-            try {
-                while ((reMsg = dis.readUTF()) != null) {
-                    System.out.println(reMsg);
-                    if (reMsg != null) {
-
-                        try {
-                            Message msgMessage = new Message();
-                            msgMessage.what = 0x1981;
-                            handler.sendMessage(msgMessage);
-                            Thread.sleep(100);
-                        } catch (InterruptedException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                        }
-
-                    }
-                }
-            } catch (SocketException e) {
-                // TODO: handle exception
-                System.out.println("exit!");
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-
-        }
+    @Override
+    protected void onStart() {
+        super.onStart();
+        bindService(new Intent(ClientActivity.this, TCPClient.class),conn=new TCPClientConnection(),BIND_AUTO_CREATE);
     }
 
-    public void disConnect() {
-        if(dos!=null){
-            try {
-                dos.writeUTF("offline:"+name);
-
-            } catch (IOException e1) {
-                // TODO Auto-generated catch block
-                e1.printStackTrace();
-            }
-            try {
-                socket.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+    @Override
+    protected void onStop() {
+        super.onStop();
+        unbindService(conn);
     }
 
-    public void send(){
-        if(isConnect){
-            try {
-                //TCPMessage message = new TCPMessage(edt_input.getText().toString())
-                //dos.writeUTF();
-                dos.flush();
-            }catch (IOException ex){
-                ex.printStackTrace();
-            }
-        }
-    }
-
-    public void connect() {
-        try {
-            socket = new Socket();
-            isa = new InetSocketAddress(ip,Integer.parseInt(port));
-            socket.connect(isa,5000);
-
-            if(socket.isConnected()){
-                dos = new DataOutputStream (socket.getOutputStream());
-                dis = new DataInputStream (socket.getInputStream());
-                dos.writeUTF("online:" + name);
-                dos.flush();
-                /*thread = new Thread(null, doThread, "Message");
-                thread.start();*/
-                System.out.println("connect");
-                isConnect=true;
-            }
-        }catch (UnknownHostException e) {
-            System.out.println("連接失敗");
-            e.printStackTrace();
-        }catch (SocketTimeoutException e) {
-            System.out.println("連接超時，服務器未開啟或IP錯誤");
-            e.printStackTrace();
-        }catch (IOException e) {
-            System.out.println("連接失敗");
-            e.printStackTrace();
-        }
-    }
-
-    Handler handler = new Handler() {
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case 0x1981:
-                    break;
-            }
-        }
-    };
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        disConnect();
+        stopService(new Intent(ClientActivity.this,TCPClient.class));
+    }
+
+    private class TCPClientConnection implements ServiceConnection{
+        @Override
+        public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+            binder = (TCPClient.MyBinder)iBinder;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName componentName) {
+
+        }
     }
 
 }

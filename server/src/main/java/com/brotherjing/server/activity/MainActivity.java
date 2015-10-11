@@ -55,6 +55,7 @@ public class MainActivity extends ActionBarActivity {
         //register broadcast listening to server event
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(CONSTANT.ACTION_SERVER_UP);
+        intentFilter.addAction(CONSTANT.ACTION_NEW_MSG);
         receiver = new MainThreadReceiver();
         registerReceiver(receiver,intentFilter);
 
@@ -128,9 +129,11 @@ public class MainActivity extends ActionBarActivity {
                     break;
                 case CONSTANT.MSG_NEW_MSG:
                     TCPMessage tcpMessage = new Gson().fromJson(msg.getData().getString(CONSTANT.KEY_MSG_DATA),TCPMessage.class);
+                    Logger.i(msg.getData().getString(CONSTANT.KEY_MSG_DATA));
                     Fragment cf = activity.fragments.get(activity.currentIndex);
                     if(cf instanceof ServerFragment){
-                        ((ServerFragment)cf).newMessage(tcpMessage);
+                        Logger.i("is server fragment");
+                        ((ServerFragment) cf).newMessage(tcpMessage);
                     }
                     break;
                 default:break;

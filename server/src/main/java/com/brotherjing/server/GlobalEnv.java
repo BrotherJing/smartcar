@@ -13,11 +13,11 @@ public class GlobalEnv {
         stringValues = new HashMap<>();
     }
 
-    public static String get(String key){
+    public static synchronized String get(String key){
         return stringValues.get(key);
     }
 
-    public static void put(String key,String value){
+    public static synchronized void put(String key,String value){
         stringValues.put(key,value);
     }
 
