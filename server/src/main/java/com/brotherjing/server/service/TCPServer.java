@@ -17,6 +17,8 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 public class TCPServer extends Service {
@@ -54,6 +56,15 @@ public class TCPServer extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         return super.onStartCommand(intent, flags, startId);
+    }
+
+    public void receiveJSON(ClientThread client,String msg){
+        TCPMessage message = new Gson().fromJson(msg,TCPMessage.class);
+        if(message.getText().equals("[req]")){
+            client.sendImage();
+        }else{
+            sendToAll(msg);
+        }
     }
 
     //send message to all clients
@@ -109,9 +120,9 @@ public class TCPServer extends Service {
                 isConnected = true;
                 while (isConnected){
                     Socket socket = serverSocket.accept();
-                    String name = System.currentTimeMillis()+"";
-                    Logger.i("new client! "+name);
-                    ClientThread clientThread = new ClientThread(name,socket,TCPServer.this);
+                    String id = System.currentTimeMillis()+"";
+                    Logger.i("new client! "+id);
+                    ClientThread clientThread = new ClientThread(id,socket,TCPServer.this);
                     clientThread.start();
                     clients.add(clientThread);
                 }

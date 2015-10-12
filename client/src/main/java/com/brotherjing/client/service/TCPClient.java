@@ -13,6 +13,7 @@ import android.os.IBinder;
 import android.os.Message;
 
 import com.brotherjing.client.CONSTANT;
+import com.brotherjing.utils.Protocol;
 import com.brotherjing.utils.bean.TCPMessage;
 import com.google.gson.Gson;
 
@@ -43,6 +44,7 @@ public class TCPClient extends Service {
     DataInputStream dis = null;
     DataOutputStream dos = null;
     private String reMsg = null;
+    private int msgType;
     private boolean isConnect;
 
     HandlerThread networkThread;
@@ -103,16 +105,20 @@ public class TCPClient extends Service {
     };
 
     private void ReceiveMsg() {
-        if(isConnect) {
+        while (isConnect) {
             try {
-                while ((reMsg = dis.readUTF()) != null) {
-                    System.out.println(reMsg);
+                msgType = dis.readInt();
+                switch (msgType){
+                    case Protocol.TYPE_JSON:
+                        reMsg = dis.readUTF();
+                        System.out.println(reMsg);
+                        break;
+                    case Protocol.TYPE_IMAGE:
+                        break;
                 }
             } catch (SocketException e) {
-                // TODO: handle exception
                 System.out.println("exit!");
             } catch (IOException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         }
@@ -127,20 +133,18 @@ public class TCPClient extends Service {
             if(socket.isConnected()){
                 dos = new DataOutputStream(socket.getOutputStream());
                 dis = new DataInputStream(socket.getInputStream());
-                TCPMessage message = new TCPMessage(name,System.currentTimeMillis()+"","connect");
-                dos.writeUTF(new Gson().toJson(message));
-                dos.flush();
+                send("connect");
                 System.out.println("connect");
                 isConnect=true;
             }
         }catch (UnknownHostException e) {
-            System.out.println("連接失敗");
+            System.out.println("unknown host");
             e.printStackTrace();
         }catch (SocketTimeoutException e) {
-            System.out.println("連接超時，服務器未開啟或IP錯誤");
+            System.out.println("timeout");
             e.printStackTrace();
         }catch (IOException e) {
-            System.out.println("連接失敗");
+            System.out.println("io error");
             e.printStackTrace();
         }
     }
@@ -149,6 +153,7 @@ public class TCPClient extends Service {
         if(isConnect){
             try {
                 TCPMessage message = new TCPMessage(name,System.currentTimeMillis()+"",text);
+                dos.writeInt(Protocol.TYPE_JSON);
                 dos.writeUTF(new Gson().toJson(message));
                 dos.flush();
             }catch (IOException ex){
