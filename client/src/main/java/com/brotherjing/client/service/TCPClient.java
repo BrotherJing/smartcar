@@ -3,6 +3,8 @@ package com.brotherjing.client.service;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Binder;
@@ -11,12 +13,15 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.Message;
+import android.widget.ImageView;
 
 import com.brotherjing.client.CONSTANT;
+import com.brotherjing.utils.ImageCache;
 import com.brotherjing.utils.Protocol;
 import com.brotherjing.utils.bean.TCPMessage;
 import com.google.gson.Gson;
 
+import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -64,8 +69,18 @@ public class TCPClient extends Service {
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
                 switch (msg.what){
-                    case CONSTANT.MSG_NEW_MSG:
+                    case CONSTANT.MSG_SEND_MSG:
                         send(msg.getData().getString(CONSTANT.KEY_MSG_DATA));
+                        break;
+                    case CONSTANT.MSG_NEW_MSG:
+                        Intent intent = new Intent(CONSTANT.ACTION_NEW_MSG);
+                        intent.putExtra(CONSTANT.KEY_MSG_DATA, msg.getData().getString(CONSTANT.KEY_MSG_DATA));
+                        sendBroadcast(intent);
+                        break;
+                    case CONSTANT.MSG_NEW_IMG:
+                        Intent intent2 = new Intent(CONSTANT.ACTION_NEW_IMG);
+                        intent2.putExtra(CONSTANT.KEY_MSG_DATA, msg.getData().getString(CONSTANT.KEY_MSG_DATA));
+                        sendBroadcast(intent2);
                         break;
                 }
             }
@@ -108,12 +123,34 @@ public class TCPClient extends Service {
         while (isConnect) {
             try {
                 msgType = dis.readInt();
+                Message msg = networkHandler.obtainMessage();
+                Bundle bundle = new Bundle();
                 switch (msgType){
                     case Protocol.TYPE_JSON:
                         reMsg = dis.readUTF();
-                        System.out.println(reMsg);
+                        //System.out.println(reMsg);
+                        msg.what = CONSTANT.MSG_NEW_MSG;
+                        bundle.putString(CONSTANT.KEY_MSG_DATA,reMsg);
+                        msg.setData(bundle);
+                        msg.sendToTarget();
                         break;
                     case Protocol.TYPE_IMAGE:
+                        int size = dis.readInt();
+                        byte[] data = new byte[size];
+                        int len = 0;
+                        while (len < size) {
+                            len += dis.read(data, len, size - len);
+                        }
+                        ByteArrayOutputStream outPut = new ByteArrayOutputStream();
+                        Bitmap bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
+                        bmp.compress(Bitmap.CompressFormat.PNG, 100, outPut);
+                        String name = System.currentTimeMillis()+"";
+                        ImageCache.addBitmap(name,bmp);
+
+                        msg.what = CONSTANT.MSG_NEW_IMG;
+                        bundle.putString(CONSTANT.KEY_MSG_DATA,name);
+                        msg.setData(bundle);
+                        msg.sendToTarget();
                         break;
                 }
             } catch (SocketException e) {
@@ -199,7 +236,7 @@ public class TCPClient extends Service {
         }
 
         public void send(String text){
-            Message msg = networkHandler.obtainMessage(CONSTANT.MSG_NEW_MSG);
+            Message msg = networkHandler.obtainMessage(CONSTANT.MSG_SEND_MSG);
             Bundle bundle = new Bundle();
             bundle.putString(CONSTANT.KEY_MSG_DATA,text);
             msg.setData(bundle);

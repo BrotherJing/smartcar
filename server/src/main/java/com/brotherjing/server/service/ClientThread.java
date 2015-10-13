@@ -65,7 +65,6 @@ public class ClientThread extends HandlerThread {
 
             dos.flush();
             is.close();
-            assetManager.close();
         }catch (IOException ex){
             ex.printStackTrace();
         }

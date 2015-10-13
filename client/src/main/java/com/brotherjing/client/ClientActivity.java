@@ -1,7 +1,10 @@
 package com.brotherjing.client;
 
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -14,8 +17,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.brotherjing.client.service.TCPClient;
+import com.brotherjing.utils.ImageCache;
 import com.brotherjing.utils.bean.TCPMessage;
 
 import java.io.DataInputStream;
@@ -39,24 +46,33 @@ public class ClientActivity extends ActionBarActivity {
 
     private TCPClient.MyBinder binder;
     private TCPClientConnection conn;
+    private MainThreadReceiver receiver;
 
     //test parameter//
     private EditText edt_ip, edt_port;
     private Button btn_connect;
     private EditText edt_input;
     private Button btn_submit;
-    private String str;
+    private LinearLayout ll_chat;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_socketmsg);
 
+        //register broadcast listening to server event
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(CONSTANT.ACTION_NEW_MSG);
+        intentFilter.addAction(CONSTANT.ACTION_NEW_IMG);
+        receiver = new MainThreadReceiver();
+        registerReceiver(receiver, intentFilter);
+
         edt_ip = (EditText) findViewById(R.id.edt_ip);
         edt_port = (EditText) findViewById(R.id.edt_port);
         btn_connect = (Button) findViewById(R.id.btn_connect);
         edt_input = (EditText) findViewById(R.id.edt_input);
         btn_submit = (Button) findViewById(R.id.btn_submit);
+        ll_chat = (LinearLayout) findViewById(R.id.ll_chat);
 
         btn_connect.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -107,4 +123,21 @@ public class ClientActivity extends ActionBarActivity {
         }
     }
 
+    //broadcast receiver listening to server events
+    private class MainThreadReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            //if server is up and run, it will send ip address back
+            if(intent.getAction().equals(CONSTANT.ACTION_NEW_IMG)){
+                ImageView iv = new ImageView(ClientActivity.this);
+                iv.setImageBitmap(ImageCache.getBitmapFromMemoryCache(intent.getStringExtra(CONSTANT.KEY_MSG_DATA)));
+                ll_chat.addView(iv);
+            }
+            else if(intent.getAction().equals(CONSTANT.ACTION_NEW_MSG)){
+                TextView tv = new TextView(ClientActivity.this);
+                tv.setText(intent.getStringExtra(CONSTANT.KEY_MSG_DATA));
+                ll_chat.addView(tv);
+            }
+        }
+    }
 }

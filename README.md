@@ -1,5 +1,11 @@
 # 工科创3C进度报告
 
+## 2015.10.11
+
+重构了server端和client端的代码：
+
+- 通信部分放在service中，通过binder和broadcast与activity交互
+
 ## 2015.9.27
 
 基本实现传感器部分的代码，用于双机相对方位确定

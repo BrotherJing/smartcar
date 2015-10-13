@@ -60,6 +60,7 @@ public class TCPServer extends Service {
 
     public void receiveJSON(ClientThread client,String msg){
         TCPMessage message = new Gson().fromJson(msg,TCPMessage.class);
+        notifyUI(msg);
         if(message.getText().equals("[req]")){
             client.sendImage();
         }else{
@@ -67,11 +68,15 @@ public class TCPServer extends Service {
         }
     }
 
-    //send message to all clients
-    public void sendToAll(String msg){
+    //send a broadcast to activities
+    private void notifyUI(String msg){
         Intent intent1 = new Intent(CONSTANT.ACTION_NEW_MSG);
         intent1.putExtra(CONSTANT.KEY_MSG_DATA, msg);
         sendBroadcast(intent1);
+    }
+
+    //send message to all clients
+    public void sendToAll(String msg){
         for(ClientThread thread : clients){
             thread.send(msg);
         }
