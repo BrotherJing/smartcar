@@ -97,15 +97,6 @@ public class TCPClient extends Service {
         return new MyBinder();
     }
 
-    private String getLocalIP(){
-        WifiManager wifiManager = (WifiManager)getSystemService(Context.WIFI_SERVICE);
-        WifiInfo wifiInfo = wifiManager.getConnectionInfo();
-        int ipAddress = wifiInfo.getIpAddress();
-        if(ipAddress==0)return null;
-        return ((ipAddress & 0xff)+"."+(ipAddress>>8 & 0xff)+"."
-                +(ipAddress>>16 & 0xff)+"."+(ipAddress>>24 & 0xff));
-    }
-
     //runnable for server thread
     Runnable runnable = new Runnable() {
         @Override
@@ -209,6 +200,8 @@ public class TCPClient extends Service {
                 e1.printStackTrace();
             }
             try {
+                dis.close();
+                dos.close();
                 socket.close();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -219,6 +212,7 @@ public class TCPClient extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        disConnect();
     }
 
     public class MyBinder extends Binder{
