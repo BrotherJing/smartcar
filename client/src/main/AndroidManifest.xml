@@ -16,6 +16,11 @@
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
+    <!-- vuforia-->
+    <uses-feature android:glEsVersion="0x00020000" />
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-permission android:name="android.permission.CAMERA" />
+
     <application
         android:name=".App"
         android:allowBackup="true"
@@ -53,6 +58,7 @@
             android:name=".SocketmsgActivity"
             android:label="@string/title_activity_socketmsg" >
         </activity>
+        <activity android:name=".ImageTargets.ImageTargets"/>
         <activity
             android:name=".ClientActivity"
             android:label="@string/title_activity_client" >
