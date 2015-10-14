@@ -24,6 +24,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.TextView;
 
 import com.brotherjing.server.CONSTANT;
 import com.brotherjing.server.GlobalEnv;
@@ -36,11 +37,12 @@ import com.google.gson.Gson;
 
 public class MainActivity extends ActionBarActivity {
 
-    SectionsPagerAdapter mSectionsPagerAdapter;
-    List<Fragment> fragments;
+    //SectionsPagerAdapter mSectionsPagerAdapter;
+    //List<Fragment> fragments;
     int currentIndex;
 
-    ViewPager mViewPager;
+    //ViewPager mViewPager;
+    TextView tv_addr,tv_content;
 
     MainThreadHandler handler;
     MainThreadReceiver receiver;
@@ -61,12 +63,14 @@ public class MainActivity extends ActionBarActivity {
 
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
-        initFragments();
+        //initFragments();
+        tv_addr = (TextView)findViewById(R.id.tv_ipaddr);
+        tv_content = (TextView)findViewById(R.id.tv_content);
 
         initData();
     }
 
-    private void initFragments(){
+    /*private void initFragments(){
 
         fragments = new ArrayList<>();
         fragments.add(ServerFragment.newInstance());
@@ -101,7 +105,7 @@ public class MainActivity extends ActionBarActivity {
 
             }
         });
-    }
+    }*/
 
     private void initData(){
         handler = new MainThreadHandler(this);
@@ -122,19 +126,21 @@ public class MainActivity extends ActionBarActivity {
                 case CONSTANT.MSG_IP_ADDR:
                     String ip = msg.getData().getString(CONSTANT.KEY_IP_ADDR);
                     GlobalEnv.put(CONSTANT.GLOBAL_IP_ADDRESS,ip);
-                    Fragment currentFragment = activity.fragments.get(activity.currentIndex);
+                    /*Fragment currentFragment = activity.fragments.get(activity.currentIndex);
                     if(currentFragment instanceof ServerFragment){
                         ((ServerFragment) currentFragment).refreshIpAddr(ip);
-                    }
+                    }*/
+                    activity.tv_addr.setText(ip);
                     break;
                 case CONSTANT.MSG_NEW_MSG:
                     TCPMessage tcpMessage = new Gson().fromJson(msg.getData().getString(CONSTANT.KEY_MSG_DATA),TCPMessage.class);
                     Logger.i(msg.getData().getString(CONSTANT.KEY_MSG_DATA));
-                    Fragment cf = activity.fragments.get(activity.currentIndex);
+                    /*Fragment cf = activity.fragments.get(activity.currentIndex);
                     if(cf instanceof ServerFragment){
                         Logger.i("is server fragment");
                         ((ServerFragment) cf).newMessage(tcpMessage);
-                    }
+                    }*/
+                    activity.tv_content.setText(tcpMessage.getText()+"\n"+activity.tv_content.getText().toString());
                     break;
                 default:break;
             }
