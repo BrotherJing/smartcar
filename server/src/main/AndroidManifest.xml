@@ -11,6 +11,12 @@
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
+
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <uses-feature android:name="android.hardware.Camera2"/>
+
+
     <application
         android:name=".App"
         android:allowBackup="true"
@@ -32,6 +38,18 @@
             android:enabled="true"
             android:exported="true" >
         </service>
+
+        <activity
+            android:name=".activity.CameraActivity"
+            android:label="@string/title_activity_camera" >
+        </activity>
+
+        <activity
+            android:name=".activity.VideoActivity"
+            android:label="@string/title_activity_video"
+            android:screenOrientation="landscape"
+            >
+        </activity>
     </application>
 
 </manifest>

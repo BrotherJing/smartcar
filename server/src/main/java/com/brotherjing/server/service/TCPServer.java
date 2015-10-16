@@ -32,6 +32,8 @@ public class TCPServer extends Service {
 
     private Thread serverThread;
 
+    private List<Socket> clientSockets;
+
     public TCPServer() {
     }
 
@@ -40,7 +42,9 @@ public class TCPServer extends Service {
         super.onCreate();
         IP = null;
         isConnected = false;
+
         clients = new ArrayList<>();
+        clientSockets = new ArrayList<>();
 
         IP = getLocalIP();
         if(IP==null){
@@ -88,6 +92,7 @@ public class TCPServer extends Service {
             thread.quitSelf();
         }
         clients.clear();
+        clientSockets.clear();
         try {
             serverSocket.close();
             isConnected = false;
@@ -125,6 +130,7 @@ public class TCPServer extends Service {
                 isConnected = true;
                 while (isConnected){
                     Socket socket = serverSocket.accept();
+                    clientSockets.add(socket);
                     String id = System.currentTimeMillis()+"";
                     Logger.i("new client! "+id);
                     ClientThread clientThread = new ClientThread(id,socket,TCPServer.this);
@@ -148,6 +154,8 @@ public class TCPServer extends Service {
         public String getIP(){
             return IP;
         }
+
+        public List<Socket> getClientSockets(){return clientSockets;}
     }
 
 }

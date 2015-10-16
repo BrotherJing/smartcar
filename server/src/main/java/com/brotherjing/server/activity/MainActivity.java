@@ -1,5 +1,6 @@
 package com.brotherjing.server.activity;
 
+import java.io.Serializable;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +15,7 @@ import android.content.ServiceConnection;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.os.Parcelable;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -24,7 +26,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.brotherjing.server.CONSTANT;
 import com.brotherjing.server.GlobalEnv;
@@ -33,6 +37,8 @@ import com.brotherjing.server.service.TCPServer;
 import com.brotherjing.utils.Logger;
 import com.brotherjing.utils.bean.TCPMessage;
 import com.google.gson.Gson;
+
+import javax.crypto.Mac;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -43,6 +49,7 @@ public class MainActivity extends ActionBarActivity {
 
     //ViewPager mViewPager;
     TextView tv_addr,tv_content;
+    Button mButton;
 
     MainThreadHandler handler;
     MainThreadReceiver receiver;
@@ -66,6 +73,7 @@ public class MainActivity extends ActionBarActivity {
         //initFragments();
         tv_addr = (TextView)findViewById(R.id.tv_ipaddr);
         tv_content = (TextView)findViewById(R.id.tv_content);
+        mButton = (Button) findViewById(R.id.button_capture_image);
 
         initData();
     }
@@ -109,6 +117,20 @@ public class MainActivity extends ActionBarActivity {
 
     private void initData(){
         handler = new MainThreadHandler(this);
+
+        mButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent intent = new Intent(MainActivity.this, VideoActivity.class);
+                startActivity(intent);
+//                if (!binder.getClientSockets().isEmpty()){
+//                    Toast.makeText(MainActivity.this, "has" ,Toast.LENGTH_SHORT).show();
+//                } else {
+//                    Toast.makeText(MainActivity.this, "none" ,Toast.LENGTH_SHORT).show();
+//                }
+            }
+        });
     }
 
     public final static class MainThreadHandler extends Handler{

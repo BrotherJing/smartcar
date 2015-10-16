@@ -7,5 +7,6 @@ public interface Protocol {
 
     int TYPE_JSON = 1;
     int TYPE_IMAGE = 2;
+    int TYPE_VIDEO = 3;
 
 }

@@ -12,11 +12,19 @@
 
     <TextView
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_height="wrap_content"
         android:id="@+id/tv_content"/>
+
+    <Button
+        android:id="@+id/button_capture_image"
+        android:text="Test"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
 
 <android.support.v4.view.ViewPager android:id="@+id/pager"
     android:visibility="gone"
     android:layout_width="fill_parent" android:layout_height="fill_parent" />
+
 
 </LinearLayout>
