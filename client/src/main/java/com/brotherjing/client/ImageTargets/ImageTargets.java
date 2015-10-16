@@ -75,7 +75,7 @@ public class ImageTargets extends Activity implements SampleApplicationControl
     private boolean mSwitchDatasetAsap = false;
     private boolean mFlash = false;
     private boolean mContAutofocus = false;
-    private boolean mExtendedTracking = false;
+    private boolean mExtendedTracking = true;
     
     private View mFlashOptionView;
     
@@ -167,8 +167,9 @@ public class ImageTargets extends Activity implements SampleApplicationControl
             getAssets()));
         mTextures.add(Texture.loadTextureFromApk("TextureTeapotRed.png",
             getAssets()));
-        mTextures.add(Texture.loadTextureFromApk("ImageTargets/Buildings.jpeg",
-            getAssets()));
+        /*mTextures.add(Texture.loadTextureFromApk("ImageTargets/Buildings.jpeg",
+            getAssets()));*/
+        mTextures.add(Texture.loadTextureFromApk("ImageTargets/Buildings.jpeg",getAssets()));
     }
     
     

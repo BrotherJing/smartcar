@@ -62,8 +62,9 @@ public class ImageTargetRenderer implements GLSurfaceView.Renderer
 
     private MyObject myObject;
     
-    private float kBuildingScale = 12.0f;
+    private float kBuildingScale = 120.0f;
     private SampleApplication3DModel mBuildingsModel;
+    private SampleApplication3DModel mBananaModel;
     
     private Renderer mRenderer;
     
@@ -158,9 +159,12 @@ public class ImageTargetRenderer implements GLSurfaceView.Renderer
         
         try
         {
-            mBuildingsModel = new SampleApplication3DModel();
+            /*mBuildingsModel = new SampleApplication3DModel();
             mBuildingsModel.loadModel(mActivity.getResources().getAssets(),
-                "ImageTargets/Buildings.txt");
+                "ImageTargets/Buildings.txt");*/
+            mBananaModel = new SampleApplication3DModel();
+            mBananaModel.loadModel(mActivity.getResources().getAssets(),
+                    "ImageTargets/girl.txt");
         } catch (IOException e)
         {
             Log.e(LOGTAG, "Unable to load buildings");
@@ -265,11 +269,11 @@ public class ImageTargetRenderer implements GLSurfaceView.Renderer
             {
                 GLES20.glDisable(GLES20.GL_CULL_FACE);
                 GLES20.glVertexAttribPointer(vertexHandle, 3, GLES20.GL_FLOAT,
-                        false, 0, mBuildingsModel.getVertices());
+                        false, 0, mBananaModel.getVertices());
                 GLES20.glVertexAttribPointer(normalHandle, 3, GLES20.GL_FLOAT,
-                        false, 0, mBuildingsModel.getNormals());
+                        false, 0, mBananaModel.getNormals());
                 GLES20.glVertexAttribPointer(textureCoordHandle, 2,
-                        GLES20.GL_FLOAT, false, 0, mBuildingsModel.getTexCoords());
+                        GLES20.GL_FLOAT, false, 0, mBananaModel.getTexCoords());
                 
                 GLES20.glEnableVertexAttribArray(vertexHandle);
                 GLES20.glEnableVertexAttribArray(normalHandle);
@@ -282,7 +286,7 @@ public class ImageTargetRenderer implements GLSurfaceView.Renderer
                         modelViewProjection, 0);
                 GLES20.glUniform1i(texSampler2DHandle, 0);
                 GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0,
-                        mBuildingsModel.getNumObjectVertex());
+                        mBananaModel.getNumObjectVertex());
                 
                 SampleUtils.checkGLError("Renderer DrawBuildings");
             }
