@@ -53,6 +53,16 @@ public class ClientThread extends HandlerThread {
         }
     }
 
+    public void send(byte[] bytes){
+        try{
+            dos.writeInt(bytes.length);
+            dos.write(bytes);
+            dos.flush();
+        }catch (IOException ex){
+            ex.printStackTrace();
+        }
+    }
+
     public void send(String msg){
         try{
             dos.writeInt(Protocol.TYPE_JSON);

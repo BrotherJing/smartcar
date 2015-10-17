@@ -3,95 +3,69 @@ package com.brotherjing.server.activity;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.graphics.Rect;
+import android.graphics.YuvImage;
 import android.hardware.Camera;
-import android.media.CamcorderProfile;
 import android.media.MediaRecorder;
 import android.os.Build;
 import android.os.IBinder;
-import android.os.ParcelFileDescriptor;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.brotherjing.server.R;
 import com.brotherjing.server.service.ClientThread;
 import com.brotherjing.server.service.TCPServer;
-import com.brotherjing.utils.Logger;
-import com.brotherjing.utils.Protocol;
 
-import java.io.DataOutputStream;
-import java.io.File;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.Serializable;
-import java.net.Socket;
 import java.util.List;
 
-public class VideoActivity extends ActionBarActivity {
+public class SimpleVideoActivity extends ActionBarActivity {
 
-
-    private static final String TAG = VideoActivity.class.getSimpleName();
-    @SuppressWarnings("deprecation")
+    final private int VIDEO_QUALITY =60;
 
     private Camera mCamera;
     private SurfaceView mSurfaceView;
     private MediaRecorder mMediaRecorder;
     private Camera.Size bestSize;
+    private int videoFormatIndex;
 
     private Button takeVideoButton;
 
     private boolean isRecording = false;
-    //private List<Socket> clientSockets;
     private List<ClientThread> clientList;
     private TCPServer.MyBinder binder;
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        bindService(new Intent(this, TCPServer.class), mServiceConnection, BIND_AUTO_CREATE);
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        unbindService(mServiceConnection);
-    }
-
-    @SuppressWarnings("deprecation")
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_video);
-
         takeVideoButton = (Button) findViewById(R.id.btn_video);
         takeVideoButton.setText("Video");
         takeVideoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (isRecording) {
-                    mMediaRecorder.stop();
+                    /*mMediaRecorder.stop();
                     releaseMediaRecorder();
-                    mCamera.lock();
+                    mCamera.lock();*/
                     takeVideoButton.setText("Video");
+                    isRecording = false;
                 } else {
-                    if (prepareVideoRecorder()) {
+                    takeVideoButton.setText("Stop");
+                    isRecording = true;
+                    /*if (prepareVideoRecorder()) {
                         mMediaRecorder.start();
                         takeVideoButton.setText("Stop");
                         isRecording = true;
                     } else {
                         releaseMediaRecorder();
-                        Log.d(TAG, "not prepared");
-                    }
+                        Logger.i("not prepared");
+                    }*/
                 }
             }
         });
@@ -106,8 +80,9 @@ public class VideoActivity extends ActionBarActivity {
                 //Tell the camera to use this surface as its preview area
                 try {
                     if (mCamera != null) {
-                        //ËØ•ÊñπÊ≥ïÁî®Êù•ËøûÊé•cameraÂíåsurface
+                        //∏√∑Ω∑®”√¿¥¡¨Ω”camera∫Õsurface
                         mCamera.setPreviewDisplay(holder);
+                        mCamera.setPreviewCallback(callback);
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -127,16 +102,17 @@ public class VideoActivity extends ActionBarActivity {
                 }
 
                 Camera.Parameters parameters = mCamera.getParameters();
-                //Áõ∏Êú∫ÁöÑpreview Â§ßÂ∞è‰∏çËÉΩÈöèÊÑèËÆæÁΩÆ Â¶ÇÊûúËÆæÁΩÆ‰∫Ü‰∏çÂèØÊé•ÂèóÁöÑÂÄº Â∫îÁî®Â∞Ü‰ºöÊäõÂá∫ÂºÇÂ∏∏
+                //œ‡ª˙µƒpreview ¥Û–°≤ªƒ‹ÀÊ“‚…Ë÷√ »Áπ˚…Ë÷√¡À≤ªø…Ω” ‹µƒ÷µ ”¶”√Ω´ª·≈◊≥ˆ“Ï≥£
                 Camera.Size size = getBestSupportedSized(parameters.getSupportedPreviewSizes(), i1, i2); //to be reset in the next section
                 parameters.setPreviewSize(size.width, size.height);
                 mCamera.setParameters(parameters);
                 bestSize = size;
+                videoFormatIndex = mCamera.getParameters().getPreviewFormat();
                 try {
                     // Call startPreview() to start updating the preview surface
                     // Preview must be started before you can take a picture.
 
-                    // surface‰∏äÁªòÂà∂Â∏ß
+                    // surface…œªÊ÷∆÷°
                     mCamera.startPreview();
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -147,13 +123,29 @@ public class VideoActivity extends ActionBarActivity {
 
             @Override
             public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
-                if (mCamera != null) {
+                /*if (mCamera != null) {
                     mCamera.stopPreview();
+                }*/
+                if (null != mCamera) {
+                    mCamera.setPreviewCallback(null); // £°£°’‚∏ˆ±ÿ–Î‘⁄«∞£¨≤ª»ªÕÀ≥ˆ≥ˆ¥Ì
+                    mCamera.stopPreview();
+                    mCamera = null;
                 }
             }
         });
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        bindService(new Intent(this, TCPServer.class), mServiceConnection, BIND_AUTO_CREATE);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        unbindService(mServiceConnection);
+    }
 
     @Override
     public void onResume() {
@@ -168,10 +160,9 @@ public class VideoActivity extends ActionBarActivity {
     @Override
     public void onPause() {
         super.onPause();
-        releaseMediaRecorder();
+        //releaseMediaRecorder();
         releaseCamera();
     }
-
 
     @Override
     protected void onDestroy() {
@@ -189,65 +180,22 @@ public class VideoActivity extends ActionBarActivity {
     }
 
     private void releaseCamera() {
-        if (mCamera != null) {
+        try{
+            if (mCamera != null) {
+                mCamera.setPreviewCallback(null); // £°£°’‚∏ˆ±ÿ–Î‘⁄«∞£¨≤ª»ªÕÀ≥ˆ≥ˆ¥Ì
+                mCamera.stopPreview();
+                mCamera.release();
+                mCamera = null;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        super.onPause();
+        /*if (mCamera != null) {
             mCamera.release();
             mCamera = null;
-        }
-    }
-
-    @SuppressWarnings("deprecation")
-    private boolean prepareVideoRecorder() {
-        /*if (clientSockets.isEmpty()) {
-            return false;
         }*/
-        //if(clientList.isEmpty())return false;
-
-        mMediaRecorder = new MediaRecorder();
-
-        mCamera.unlock();
-        mMediaRecorder.setCamera(mCamera);
-
-        //mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.CAMCORDER);
-        mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
-
-        //mMediaRecorder.setProfile(CamcorderProfile.get(CamcorderProfile.QUALITY_LOW));
-        mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-        mMediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H263);
-        //Logger.i("size is " + bestSize.width + " " + bestSize.height);
-        mMediaRecorder.setVideoSize(320, 240);
-
-        //final ParcelFileDescriptor pfd = ParcelFileDescriptor.fromSocket(clientSockets.get(0));
-
-        mMediaRecorder.setPreviewDisplay(mSurfaceView.getHolder().getSurface());
-
-        clientList.get(0).prepareForVideo();
-        final ParcelFileDescriptor pfd = ParcelFileDescriptor.fromSocket(clientList.get(0).getMySocket());
-        mMediaRecorder.setOutputFile(pfd.getFileDescriptor());
-
-        /*try {
-            String path = "/sdcard/stream.3gp";
-            File file = new File(path);
-            if(!file.exists())file.createNewFile();
-            mMediaRecorder.setOutputFile(file.getPath());
-        }catch (Exception ex){
-            ex.printStackTrace();
-        }*/
-
-        mMediaRecorder.setMaxDuration(0);
-        mMediaRecorder.setMaxFileSize(0);
-        try {
-            mMediaRecorder.prepare();
-        } catch (IllegalStateException e) {
-            Log.d(TAG, "IllegalStateException " + e.getMessage());
-            releaseMediaRecorder();
-
-            return false;
-        } catch (IOException e) {
-            Log.d(TAG, "IOException " + e.getMessage());
-            releaseMediaRecorder();
-            return false;
-        }
-        return true;
     }
 
     private Camera.Size getBestSupportedSized(List<Camera.Size> sizes, int width, int height) {
@@ -261,6 +209,30 @@ public class VideoActivity extends ActionBarActivity {
             }
         }
         return bestSize;
+    }
+
+    private Camera.PreviewCallback callback = new Camera.PreviewCallback() {
+        @Override
+        public void onPreviewFrame(byte[] bytes, Camera camera) {
+            if(!isRecording)return;
+            try{
+                if(bytes!=null){
+                    YuvImage img = new YuvImage(bytes,videoFormatIndex,
+                            bestSize.width,bestSize.height,null);
+                    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                    img.compressToJpeg(new Rect(0,0,bestSize.width/4,bestSize.height/4),
+                            VIDEO_QUALITY,outputStream);
+                    sendImage(outputStream.toByteArray());
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+    };
+
+    private void sendImage(byte[] data){
+        clientList.get(0).prepareForVideo();
+        clientList.get(0).send(data);
     }
 
     private ServiceConnection mServiceConnection = new ServiceConnection() {

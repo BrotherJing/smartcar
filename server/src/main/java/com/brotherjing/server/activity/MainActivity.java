@@ -122,7 +122,8 @@ public class MainActivity extends ActionBarActivity {
             @Override
             public void onClick(View view) {
 
-                Intent intent = new Intent(MainActivity.this, VideoActivity.class);
+                //Intent intent = new Intent(MainActivity.this, VideoActivity.class);
+                Intent intent = new Intent(MainActivity.this,SimpleVideoActivity.class);
                 startActivity(intent);
 //                if (!binder.getClientSockets().isEmpty()){
 //                    Toast.makeText(MainActivity.this, "has" ,Toast.LENGTH_SHORT).show();

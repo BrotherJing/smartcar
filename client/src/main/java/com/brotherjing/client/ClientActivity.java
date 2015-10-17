@@ -60,6 +60,7 @@ public class ClientActivity extends ActionBarActivity {
     private Button btn_connect;
     private EditText edt_input;
     private Button btn_submit,btn_asr,btn_ar;
+    private ImageView iv_video;
     private LinearLayout ll_chat;
 
     @Override
@@ -81,6 +82,7 @@ public class ClientActivity extends ActionBarActivity {
         btn_submit = (Button) findViewById(R.id.btn_submit);
         btn_asr = (Button) findViewById(R.id.btn_asr);
         btn_ar = (Button) findViewById(R.id.btn_ar);
+        iv_video = (ImageView)findViewById(R.id.iv_video);
 
         ll_chat = (LinearLayout) findViewById(R.id.ll_chat);
 
@@ -165,9 +167,10 @@ public class ClientActivity extends ActionBarActivity {
         public void onReceive(Context context, Intent intent) {
             //if server is up and run, it will send ip address back
             if(intent.getAction().equals(CONSTANT.ACTION_NEW_IMG)){
-                ImageView iv = new ImageView(ClientActivity.this);
+                /*ImageView iv = new ImageView(ClientActivity.this);
                 iv.setImageBitmap(ImageCache.getBitmapFromMemoryCache(intent.getStringExtra(CONSTANT.KEY_MSG_DATA)));
-                ll_chat.addView(iv);
+                ll_chat.addView(iv);*/
+                iv_video.setImageBitmap(ImageCache.getBitmapFromMemoryCache(intent.getStringExtra(CONSTANT.KEY_MSG_DATA)));
             }
             else if(intent.getAction().equals(CONSTANT.ACTION_NEW_MSG)){
                 TextView tv = new TextView(ClientActivity.this);

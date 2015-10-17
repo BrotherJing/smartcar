@@ -58,6 +58,8 @@ public class TCPClient extends Service {
     HandlerThread networkThread;
     Handler networkHandler;
 
+    byte[] buffer = new byte[1024 * 64];
+
     public TCPClient() {
     }
 
@@ -149,92 +151,37 @@ public class TCPClient extends Service {
                     case Protocol.TYPE_VIDEO:
                         int frame_size = 1024;
                         int number = 0,num;
-                        byte[] buffer = new byte[1024 * 64];
-                        while (true) {
-                            try {
-                                num = dis.read(buffer, number, frame_size);
-                                number += num;
-                                if (num < frame_size) {
-                                    break;
-                                }
-                            } catch (IOException e) {
-                                break;
-                            }
-                        }
 
-                        number = 0;
-                        // 重新启动捕获，以获取视频流
-
-                        //读取最前面的32个自己的空头
-                        try {
-                            dis.read(buffer,0,32);
-                        } catch (IOException e1) {
-                            // TODO Auto-generated catch block
-                            e1.printStackTrace();
-                        }
-
-                        RandomAccessFile raf = null;
-                        try {
-                            File file = new File("/sdcard/stream.h264");
-                            if (file.exists())
-                                file.delete();
-                            raf = new RandomAccessFile(file, "rw");
-                        } catch (Exception ex) {
-                            Logger.i(ex.toString());
-                        }
-
-                        //这些参数要对应我现在的视频设置，如果想变化的话需要去重新确定，
-                        //当然不知道是不是不同的机器是不是一样，我这里只有一个HTC G7做测试。
-                        byte[] h264sps={0x67,0x42,0x00,0x0C,(byte) 0x96,0x54,0x0B,0x04,(byte) 0xA2};
-                        byte[] h264pps={0x68,(byte) 0xCE,0x38,(byte) 0x80};
-                        byte[] h264head={0,0,0,1};
-                        try {
-                            raf.write(h264head);
-                            raf.write(h264sps);
-                            raf.write(h264head);
-                            raf.write(h264pps);
-                        } catch (IOException e1) {
-                            // TODO Auto-generated catch block
-                            e1.printStackTrace();
-                        }
-                        while (true)
-                        {
-                            try {
-                                //读取每场的长度
-                                int h264length=dis.readInt();
-                                number =0;
-                                raf.write(h264head);
-                                while(number<h264length)
-                                {
-                                    int lost=h264length-number;
-                                    num = dis.read(buffer,0,frame_size<lost?frame_size:lost);
-                                    Logger.i(String.format("H264 %d,%d,%d", h264length,number,num));
-                                    number+=num;
-                                    raf.write(buffer, 0, num);
-                                }
-                            } catch (IOException e) {
-                                break;
-                            }
-                        }
-
-                        raf.close();
                         /*while (true) {
-                            try {
-                                int h264length = dis.readInt();
-                                int number = 0,num;
-                                //raf.write(h264head);
-                                while (number < h264length) {
-                                    int lost = h264length - number;
-                                    num = dis.read(buffer, 0, frame_size < lost ? frame_size : lost);
-                                    Logger.i(String.format("H264 %d,%d,%d", h264length, number, num));
-                                    number += num;
-                                    //raf.write(buffer, 0, num);
-                                }
-                            }catch (Exception ex){
-                                ex.printStackTrace();
-                                break;
-                            }
+
                         }*/
+                        Logger.i("video ready");
+                        try {
+                            int h264length = dis.readInt();
+                            number = 0;
+                            while (number < h264length) {
+                                int left = h264length - number;
+                                //num = dis.read(buffer, 0, frame_size < left ? frame_size : left);
+                                num = dis.read(buffer, number, frame_size < left ? frame_size : left);
+                                Logger.i(String.format("H264 %d,%d,%d", h264length, number, num));
+                                number += num;
+                                //raf.write(buffer, 0, num);
+                            }
+                            ByteArrayOutputStream outPut1 = new ByteArrayOutputStream();
+                            Bitmap bmp1 = BitmapFactory.decodeByteArray(buffer, 0, buffer.length);
+                            bmp1.compress(Bitmap.CompressFormat.JPEG, 60, outPut1);
+                            String name1 = System.currentTimeMillis() + "";
+                            ImageCache.addBitmap(name1, bmp1);
+
+                            msg.what = CONSTANT.MSG_NEW_IMG;
+                            bundle.putString(CONSTANT.KEY_MSG_DATA, name1);
+                            msg.setData(bundle);
+                            msg.sendToTarget();
+                        } catch (Exception ex) {
+                            Logger.i("EXCEPTION!!!");
+                            ex.printStackTrace();
+                            //break;
+                        }
                 }
             } catch (SocketException e) {
                 System.out.println("exit!");
