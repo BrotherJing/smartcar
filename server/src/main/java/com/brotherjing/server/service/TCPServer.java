@@ -156,6 +156,8 @@ public class TCPServer extends Service {
         }
 
         public List<Socket> getClientSockets(){return clientSockets;}
+
+        public List<ClientThread> getClients(){return clients;}
     }
 
 }

@@ -180,7 +180,7 @@ public class MainActivity extends ActionBarActivity {
         super.onStop();
         Logger.i("stop");
         unbindService(conn);
-        handler = null;
+        //handler = null;
     }
 
     @Override

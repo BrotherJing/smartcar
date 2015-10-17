@@ -41,6 +41,18 @@ public class ClientThread extends HandlerThread {
         this.server = server;
     }
 
+    public Socket getMySocket(){
+        return mSocket;
+    }
+
+    public void prepareForVideo(){
+        try{
+            dos.writeInt(Protocol.TYPE_VIDEO);
+        }catch (IOException ex){
+            ex.printStackTrace();
+        }
+    }
+
     public void send(String msg){
         try{
             dos.writeInt(Protocol.TYPE_JSON);

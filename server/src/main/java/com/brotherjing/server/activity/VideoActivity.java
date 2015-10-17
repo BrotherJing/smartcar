@@ -25,8 +25,11 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.brotherjing.server.R;
+import com.brotherjing.server.service.ClientThread;
 import com.brotherjing.server.service.TCPServer;
+import com.brotherjing.utils.Protocol;
 
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.Socket;
@@ -45,14 +48,20 @@ public class VideoActivity extends ActionBarActivity {
     private Button takeVideoButton;
 
     private boolean isRecording = false;
-    private List<Socket> clientSockets;
+    //private List<Socket> clientSockets;
+    private List<ClientThread> clientList;
     private TCPServer.MyBinder binder;
-
 
     @Override
     protected void onStart() {
         super.onStart();
         bindService(new Intent(this, TCPServer.class), mServiceConnection, BIND_AUTO_CREATE);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        unbindService(mServiceConnection);
     }
 
     @SuppressWarnings("deprecation")
@@ -184,9 +193,10 @@ public class VideoActivity extends ActionBarActivity {
 
     @SuppressWarnings("deprecation")
     private boolean prepareVideoRecorder() {
-        if (clientSockets.isEmpty()) {
+        /*if (clientSockets.isEmpty()) {
             return false;
-        }
+        }*/
+        if(clientList.isEmpty())return false;
 
         mMediaRecorder = new MediaRecorder();
 
@@ -198,7 +208,9 @@ public class VideoActivity extends ActionBarActivity {
 
         mMediaRecorder.setProfile(CamcorderProfile.get(CamcorderProfile.QUALITY_HIGH));
 
-        final ParcelFileDescriptor pfd = ParcelFileDescriptor.fromSocket(clientSockets.get(0));
+        //final ParcelFileDescriptor pfd = ParcelFileDescriptor.fromSocket(clientSockets.get(0));
+        clientList.get(0).prepareForVideo();
+        final ParcelFileDescriptor pfd = ParcelFileDescriptor.fromSocket(clientList.get(0).getMySocket());
         mMediaRecorder.setOutputFile(pfd.getFileDescriptor());
         mMediaRecorder.setPreviewDisplay(mSurfaceView.getHolder().getSurface());
 
@@ -234,7 +246,8 @@ public class VideoActivity extends ActionBarActivity {
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
             binder = (TCPServer.MyBinder) iBinder;
-            clientSockets = binder.getClientSockets();
+            //clientSockets = binder.getClientSockets();
+            clientList = binder.getClients();
         }
 
         @Override
