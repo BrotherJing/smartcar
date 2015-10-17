@@ -11,14 +11,15 @@
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
-    <!-- baidu ASR-->
+    <!-- baidu ASR -->
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
-    <!-- vuforia-->
+    <!-- vuforia -->
     <uses-feature android:glEsVersion="0x00020000" />
     <uses-feature android:name="android.hardware.camera" />
+
     <uses-permission android:name="android.permission.CAMERA" />
 
     <application
@@ -28,15 +29,22 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
 
-        <!-- begin: baidu speech sdk-->
+        <!-- begin: baidu speech sdk -->
         <!-- 请填写应用实际的APP_ID -->
-        <meta-data android:name="com.baidu.speech.APP_ID" android:value="7031386"/>
+        <meta-data
+            android:name="com.baidu.speech.APP_ID"
+            android:value="7031386" />
         <!-- 请填写应用实际的API_KEY -->
-        <meta-data android:name="com.baidu.speech.API_KEY" android:value="gxF67xov7DA1QE2Hb9CC5UFu"/>
+        <meta-data
+            android:name="com.baidu.speech.API_KEY"
+            android:value="gxF67xov7DA1QE2Hb9CC5UFu" />
         <!-- 请填写应用实际的SECRET_KEY -->
-        <meta-data android:name="com.baidu.speech.SECRET_KEY" android:value="9f3577b4430c60e1bbaa98bdeb504f90"/>
+        <meta-data
+            android:name="com.baidu.speech.SECRET_KEY"
+            android:value="9f3577b4430c60e1bbaa98bdeb504f90" />
 
-        <!--<service android:name="com.baidu.speech.VoiceRecognitionService" android:exported="false" />
+        <!--
+        <service android:name="com.baidu.speech.VoiceRecognitionService" android:exported="false" />
         <activity
             android:name="com.baidu.voicerecognition.android.ui.BaiduASRDigitalDialog"
             android:configChanges="orientation|keyboardHidden|screenLayout"
@@ -47,8 +55,9 @@
                 <action android:name="com.baidu.action.RECOGNIZE_SPEECH" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
-        </activity>-->
-        <!-- end : baidu speech sdk-->
+        </activity>
+        -->
+        <!-- end : baidu speech sdk -->
 
         <activity
             android:name=".MainActivity"
@@ -58,7 +67,7 @@
             android:name=".SocketmsgActivity"
             android:label="@string/title_activity_socketmsg" >
         </activity>
-        <activity android:name=".ImageTargets.ImageTargets"/>
+        <activity android:name=".ImageTargets.ImageTargets" />
         <activity
             android:name=".ClientActivity"
             android:label="@string/title_activity_client" >
@@ -76,6 +85,19 @@
         <service
             android:name=".service.TCPClient"
             android:exported="false" >
+        </service>
+
+        <activity
+            android:name=".activity.ViewCameraActivity"
+            android:label="@string/title_activity_view_camera"
+            android:screenOrientation="landscape"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
+        </activity>
+
+        <service
+            android:name=".service.UDPClient"
+            android:enabled="true"
+            android:exported="true" >
         </service>
     </application>
 

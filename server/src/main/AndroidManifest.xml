@@ -53,6 +53,12 @@
             android:label="@string/title_activity_simple_video"
             android:screenOrientation="landscape" >
         </activity>
+
+        <service
+            android:name=".service.UDPServer"
+            android:enabled="true"
+            android:exported="true" >
+        </service>
     </application>
 
 </manifest>

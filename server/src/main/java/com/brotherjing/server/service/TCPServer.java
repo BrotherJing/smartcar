@@ -9,7 +9,9 @@ import android.os.Binder;
 import android.os.IBinder;
 
 import com.brotherjing.server.CONSTANT;
+import com.brotherjing.server.GlobalEnv;
 import com.brotherjing.utils.Logger;
+import com.brotherjing.utils.NetworkUtil;
 import com.brotherjing.utils.bean.TCPMessage;
 import com.google.gson.Gson;
 
@@ -46,7 +48,7 @@ public class TCPServer extends Service {
         clients = new ArrayList<>();
         clientSockets = new ArrayList<>();
 
-        IP = getLocalIP();
+        IP = NetworkUtil.getLocalIP(this);
         if(IP==null){
             return;
         }
@@ -66,7 +68,8 @@ public class TCPServer extends Service {
         TCPMessage message = new Gson().fromJson(msg,TCPMessage.class);
         notifyUI(msg);
         if(message.getText().equals("[req]")){
-            client.sendImage();
+            //client.sendImage();
+            GlobalEnv.put(CONSTANT.GLOBAL_AUDIENCE_ADDR,client.getIp());//only one audience for real time video
         }else{
             sendToAll(msg);
         }
@@ -105,15 +108,6 @@ public class TCPServer extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         return new MyBinder();
-    }
-
-    private String getLocalIP(){
-        WifiManager wifiManager = (WifiManager)getSystemService(Context.WIFI_SERVICE);
-        WifiInfo wifiInfo = wifiManager.getConnectionInfo();
-        int ipAddress = wifiInfo.getIpAddress();
-        if(ipAddress==0)return null;
-        return ((ipAddress & 0xff)+"."+(ipAddress>>8 & 0xff)+"."
-                +(ipAddress>>16 & 0xff)+"."+(ipAddress>>24 & 0xff));
     }
 
     //runnable for server thread

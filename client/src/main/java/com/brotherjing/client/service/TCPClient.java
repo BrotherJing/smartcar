@@ -155,21 +155,19 @@ public class TCPClient extends Service {
                         /*while (true) {
 
                         }*/
-                        Logger.i("video ready");
+                        //Logger.i("video ready");
                         try {
                             int h264length = dis.readInt();
                             number = 0;
                             while (number < h264length) {
                                 int left = h264length - number;
-                                //num = dis.read(buffer, 0, frame_size < left ? frame_size : left);
                                 num = dis.read(buffer, number, frame_size < left ? frame_size : left);
-                                Logger.i(String.format("H264 %d,%d,%d", h264length, number, num));
+                                //Logger.i(String.format("H264 %d,%d,%d", h264length, number, num));
                                 number += num;
-                                //raf.write(buffer, 0, num);
                             }
                             ByteArrayOutputStream outPut1 = new ByteArrayOutputStream();
-                            Bitmap bmp1 = BitmapFactory.decodeByteArray(buffer, 0, buffer.length);
-                            bmp1.compress(Bitmap.CompressFormat.JPEG, 60, outPut1);
+                            Bitmap bmp1 = BitmapFactory.decodeByteArray(buffer, 0, h264length);
+                            bmp1.compress(Bitmap.CompressFormat.JPEG, 40, outPut1);
                             String name1 = System.currentTimeMillis() + "";
                             ImageCache.addBitmap(name1, bmp1);
 
@@ -256,6 +254,7 @@ public class TCPClient extends Service {
     }
 
     public class MyBinder extends Binder{
+
         public String getIP(){
             return IP;
         }

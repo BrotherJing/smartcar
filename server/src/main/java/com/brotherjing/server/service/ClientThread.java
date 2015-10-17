@@ -53,6 +53,10 @@ public class ClientThread extends HandlerThread {
         }
     }
 
+    public String getIp(){
+        return mSocket.getInetAddress().getHostAddress();
+    }
+
     public void send(byte[] bytes){
         try{
             dos.writeInt(bytes.length);

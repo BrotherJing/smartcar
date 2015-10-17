@@ -15,7 +15,7 @@ public class ImageCache {
     public static void init(Context context){
         if(mMemoryCache!=null)return;
         int memClass = ((ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE)).getMemoryClass();
-        int cacheSize = 1024 * 1024 * memClass / 8;
+        int cacheSize = 1024 * 1024 * memClass / 4;
         mMemoryCache = new LruCache<String,Bitmap>(cacheSize){
             @Override
             protected int sizeOf(String key, Bitmap value) {

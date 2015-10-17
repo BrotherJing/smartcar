@@ -27,6 +27,7 @@ import android.widget.Toast;
 
 import com.baidu.voicerecognition.android.ui.BaiduASRDigitalDialog;
 import com.brotherjing.client.ImageTargets.ImageTargets;
+import com.brotherjing.client.activity.ViewCameraActivity;
 import com.brotherjing.client.service.TCPClient;
 import com.brotherjing.utils.ImageCache;
 import com.brotherjing.utils.bean.TCPMessage;
@@ -59,7 +60,7 @@ public class ClientActivity extends ActionBarActivity {
     private EditText edt_ip, edt_port;
     private Button btn_connect;
     private EditText edt_input;
-    private Button btn_submit,btn_asr,btn_ar;
+    private Button btn_submit,btn_asr,btn_ar,btn_video;
     private ImageView iv_video;
     private LinearLayout ll_chat;
 
@@ -71,7 +72,7 @@ public class ClientActivity extends ActionBarActivity {
         //register broadcast listening to server event
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(CONSTANT.ACTION_NEW_MSG);
-        intentFilter.addAction(CONSTANT.ACTION_NEW_IMG);
+        //intentFilter.addAction(CONSTANT.ACTION_NEW_IMG);
         receiver = new MainThreadReceiver();
         registerReceiver(receiver, intentFilter);
 
@@ -82,6 +83,7 @@ public class ClientActivity extends ActionBarActivity {
         btn_submit = (Button) findViewById(R.id.btn_submit);
         btn_asr = (Button) findViewById(R.id.btn_asr);
         btn_ar = (Button) findViewById(R.id.btn_ar);
+        btn_video = (Button) findViewById(R.id.btn_video);
         iv_video = (ImageView)findViewById(R.id.iv_video);
 
         ll_chat = (LinearLayout) findViewById(R.id.ll_chat);
@@ -114,6 +116,13 @@ public class ClientActivity extends ActionBarActivity {
                 startActivity(new Intent(ClientActivity.this, ImageTargets.class));
             }
         });
+        btn_video.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                binder.send("[req]");
+                startActivity(new Intent(ClientActivity.this, ViewCameraActivity.class));
+            }
+        });
     }
 
     @Override
@@ -133,7 +142,7 @@ public class ClientActivity extends ActionBarActivity {
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(receiver);
-        stopService(new Intent(ClientActivity.this,TCPClient.class));
+        //stopService(new Intent(ClientActivity.this,TCPClient.class));
     }
 
     private class TCPClientConnection implements ServiceConnection{

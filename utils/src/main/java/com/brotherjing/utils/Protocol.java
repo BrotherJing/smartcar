@@ -9,4 +9,7 @@ public interface Protocol {
     int TYPE_IMAGE = 2;
     int TYPE_VIDEO = 3;
 
+    int UDP_CLIENT_PORT = 12315;
+    int UDP_SERVER_PORT = 15324;
+
 }

@@ -24,5 +24,6 @@ public interface CONSTANT {
 
     //Global environment
     String GLOBAL_IP_ADDRESS = "ip_addr";
+    String GLOBAL_AUDIENCE_ADDR = "audience_addr";
 
 }

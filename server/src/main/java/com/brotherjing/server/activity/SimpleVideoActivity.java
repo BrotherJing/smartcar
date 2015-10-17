@@ -19,6 +19,8 @@ import android.widget.Button;
 import com.brotherjing.server.R;
 import com.brotherjing.server.service.ClientThread;
 import com.brotherjing.server.service.TCPServer;
+import com.brotherjing.server.service.UDPServer;
+import com.brotherjing.utils.Logger;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -26,11 +28,11 @@ import java.util.List;
 
 public class SimpleVideoActivity extends ActionBarActivity {
 
-    final private int VIDEO_QUALITY =60;
+    final private int VIDEO_QUALITY = 30;
+    final private int SKIP_FRAME = 4;
 
     private Camera mCamera;
     private SurfaceView mSurfaceView;
-    private MediaRecorder mMediaRecorder;
     private Camera.Size bestSize;
     private int videoFormatIndex;
 
@@ -39,6 +41,10 @@ public class SimpleVideoActivity extends ActionBarActivity {
     private boolean isRecording = false;
     private List<ClientThread> clientList;
     private TCPServer.MyBinder binder;
+
+    private UDPServer.MyBinder udpBinder;
+
+    private int frame_skipped = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,22 +56,11 @@ public class SimpleVideoActivity extends ActionBarActivity {
             @Override
             public void onClick(View view) {
                 if (isRecording) {
-                    /*mMediaRecorder.stop();
-                    releaseMediaRecorder();
-                    mCamera.lock();*/
                     takeVideoButton.setText("Video");
                     isRecording = false;
                 } else {
                     takeVideoButton.setText("Stop");
                     isRecording = true;
-                    /*if (prepareVideoRecorder()) {
-                        mMediaRecorder.start();
-                        takeVideoButton.setText("Stop");
-                        isRecording = true;
-                    } else {
-                        releaseMediaRecorder();
-                        Logger.i("not prepared");
-                    }*/
                 }
             }
         });
@@ -104,9 +99,11 @@ public class SimpleVideoActivity extends ActionBarActivity {
                 Camera.Parameters parameters = mCamera.getParameters();
                 //相机的preview 大小不能随意设置 如果设置了不可接受的值 应用将会抛出异常
                 Camera.Size size = getBestSupportedSized(parameters.getSupportedPreviewSizes(), i1, i2); //to be reset in the next section
+
                 parameters.setPreviewSize(size.width, size.height);
                 mCamera.setParameters(parameters);
                 bestSize = size;
+                Logger.i("size of camera is " + bestSize.height + " " + bestSize.width);
                 videoFormatIndex = mCamera.getParameters().getPreviewFormat();
                 try {
                     // Call startPreview() to start updating the preview surface
@@ -138,7 +135,8 @@ public class SimpleVideoActivity extends ActionBarActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        bindService(new Intent(this, TCPServer.class), mServiceConnection, BIND_AUTO_CREATE);
+        //bindService(new Intent(this, TCPServer.class), mServiceConnection, BIND_AUTO_CREATE);
+        bindService(new Intent(this,UDPServer.class),mServiceConnection,BIND_AUTO_CREATE);
     }
 
     @Override
@@ -160,7 +158,6 @@ public class SimpleVideoActivity extends ActionBarActivity {
     @Override
     public void onPause() {
         super.onPause();
-        //releaseMediaRecorder();
         releaseCamera();
     }
 
@@ -168,15 +165,6 @@ public class SimpleVideoActivity extends ActionBarActivity {
     protected void onDestroy() {
         stopService(new Intent(this, TCPServer.class));
         super.onDestroy();
-    }
-
-    private void releaseMediaRecorder() {
-        if (mMediaRecorder != null) {
-            mMediaRecorder.reset();
-            mMediaRecorder.release();
-            mMediaRecorder = null;
-            mCamera.lock();
-        }
     }
 
     private void releaseCamera() {
@@ -192,20 +180,16 @@ public class SimpleVideoActivity extends ActionBarActivity {
         }
 
         super.onPause();
-        /*if (mCamera != null) {
-            mCamera.release();
-            mCamera = null;
-        }*/
     }
 
     private Camera.Size getBestSupportedSized(List<Camera.Size> sizes, int width, int height) {
         Camera.Size bestSize = sizes.get(0);
-        int largestArea = bestSize.width * bestSize.height;
+        int bestArea = bestSize.width * bestSize.height,originArea = width*height;
+        float rate = Math.abs(bestArea-originArea)/originArea;
         for (Camera.Size size : sizes) {
             int temp = size.width * size.height;
-            if (largestArea < temp) {
+            if (Math.abs(temp-originArea)/originArea<rate) {
                 bestSize = size;
-                largestArea = temp;
             }
         }
         return bestSize;
@@ -215,12 +199,17 @@ public class SimpleVideoActivity extends ActionBarActivity {
         @Override
         public void onPreviewFrame(byte[] bytes, Camera camera) {
             if(!isRecording)return;
+
+            ++frame_skipped;
+            if(frame_skipped==SKIP_FRAME)frame_skipped=0;
+            else return;
+
             try{
                 if(bytes!=null){
                     YuvImage img = new YuvImage(bytes,videoFormatIndex,
                             bestSize.width,bestSize.height,null);
                     ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                    img.compressToJpeg(new Rect(0,0,bestSize.width/4,bestSize.height/4),
+                    img.compressToJpeg(new Rect(0,0,bestSize.width,bestSize.height),
                             VIDEO_QUALITY,outputStream);
                     sendImage(outputStream.toByteArray());
                 }
@@ -231,16 +220,18 @@ public class SimpleVideoActivity extends ActionBarActivity {
     };
 
     private void sendImage(byte[] data){
-        clientList.get(0).prepareForVideo();
-        clientList.get(0).send(data);
+        /*clientList.get(0).prepareForVideo();
+        clientList.get(0).send(data);*/
+        udpBinder.send(data);
     }
 
     private ServiceConnection mServiceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
-            binder = (TCPServer.MyBinder) iBinder;
+            /*binder = (TCPServer.MyBinder) iBinder;
             //clientSockets = binder.getClientSockets();
-            clientList = binder.getClients();
+            clientList = binder.getClients();*/
+            udpBinder = (UDPServer.MyBinder)iBinder;
         }
 
         @Override

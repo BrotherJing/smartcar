@@ -18,8 +18,10 @@
     <string name="edt_input">在这里输入</string>
     <string name="btn_submit">提交</string>
     <string name="btn_asr">语音识别</string>
-    <string name="btn_ar">虚拟现实</string>
+    <string name="btn_ar">增强现实</string>
+    <string name="btn_video">视频回传</string>
     <string name="title_activity_client">ClientActivity</string>
     <string name="title_activity_sensor">SensorActivity</string>
     <string name="btn_capture">capture</string>
+    <string name="title_activity_view_camera">ViewCameraActivity</string>
 </resources>
