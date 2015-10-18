@@ -22,6 +22,9 @@
 
     <uses-permission android:name="android.permission.CAMERA" />
 
+    <!-- vibration -->
+    <uses-permission android:name="android.permission.VIBRATE" />
+
     <application
         android:name=".App"
         android:allowBackup="true"
@@ -93,6 +96,11 @@
             android:screenOrientation="landscape"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
         </activity>
+
+        <activity android:name=".QRcode.QRcodeActivity"
+                  android:label="@string/title_activity_qrcode"/>
+        <activity android:name=".QRcode.MipcaActivityCapture"
+                  android:label="@string/title_activity_mipca"/>
 
         <service
             android:name=".service.UDPClient"

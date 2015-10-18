@@ -49,7 +49,7 @@ public class MainActivity extends ActionBarActivity {
 
     //ViewPager mViewPager;
     TextView tv_addr,tv_content;
-    Button mButton;
+    Button mButton, qrCodeButton;
 
     MainThreadHandler handler;
     MainThreadReceiver receiver;
@@ -74,6 +74,7 @@ public class MainActivity extends ActionBarActivity {
         tv_addr = (TextView)findViewById(R.id.tv_ipaddr);
         tv_content = (TextView)findViewById(R.id.tv_content);
         mButton = (Button) findViewById(R.id.button_capture_image);
+        qrCodeButton = (Button) findViewById(R.id.btn_generate_qrcode);
 
         initData();
     }
@@ -130,6 +131,14 @@ public class MainActivity extends ActionBarActivity {
 //                } else {
 //                    Toast.makeText(MainActivity.this, "none" ,Toast.LENGTH_SHORT).show();
 //                }
+            }
+        });
+
+        qrCodeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, QrcodeActivity.class);
+                startActivity(intent);
             }
         });
     }
