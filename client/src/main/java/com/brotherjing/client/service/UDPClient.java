@@ -39,6 +39,7 @@ public class UDPClient extends Service {
     public void onDestroy() {
         super.onDestroy();
         isOpen = false;
+        socket.close();
         thread.interrupt();
     }
 
@@ -85,8 +86,6 @@ public class UDPClient extends Service {
 
             }catch (IOException ex){
                 ex.printStackTrace();
-            }finally {
-                socket.close();
             }
         }
     };

@@ -103,7 +103,7 @@ public class SimpleVideoActivity extends ActionBarActivity {
                 parameters.setPreviewSize(size.width, size.height);
                 mCamera.setParameters(parameters);
                 bestSize = size;
-                Logger.i("size of camera is " + bestSize.height + " " + bestSize.width);
+                Logger.i("best size of camera is " + bestSize.height + " " + bestSize.width);
                 videoFormatIndex = mCamera.getParameters().getPreviewFormat();
                 try {
                     // Call startPreview() to start updating the preview surface
@@ -185,11 +185,16 @@ public class SimpleVideoActivity extends ActionBarActivity {
     private Camera.Size getBestSupportedSized(List<Camera.Size> sizes, int width, int height) {
         Camera.Size bestSize = sizes.get(0);
         int bestArea = bestSize.width * bestSize.height,originArea = width*height;
-        float rate = Math.abs(bestArea-originArea)/originArea;
+        //float rate = Math.abs(bestArea-originArea)/originArea;
+        int diff = Math.abs(bestArea-originArea);
         for (Camera.Size size : sizes) {
             int temp = size.width * size.height;
-            if (Math.abs(temp-originArea)/originArea<rate) {
+            //Logger.i("size is "+size.width+" "+size.height);
+            //float newRate = Math.abs(temp-originArea)/originArea;
+            int newDiff = Math.abs(temp-originArea);
+            if (newDiff<diff) {
                 bestSize = size;
+                diff = newDiff;
             }
         }
         return bestSize;

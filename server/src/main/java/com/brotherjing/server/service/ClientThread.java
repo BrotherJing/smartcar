@@ -108,8 +108,6 @@ public class ClientThread extends HandlerThread {
                 switch (msg_type){
                     case Protocol.TYPE_JSON:
                         String input = dis.readUTF();
-                        //TCPMessage msg = new Gson().fromJson(input,TCPMessage.class);
-                        //String timestamp = System.currentTimeMillis()+"";
                         Logger.i(input);
                         if(server!=null) {
                             server.receiveJSON(this, input);

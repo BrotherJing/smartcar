@@ -1,5 +1,6 @@
 package com.brotherjing.client.service;
 
+import android.annotation.SuppressLint;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -70,6 +71,7 @@ public class TCPClient extends Service {
         networkThread = new HandlerThread("network");
         networkThread.start();
         networkHandler = new Handler(networkThread.getLooper()){
+            @SuppressLint("HandlerLeak")
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
