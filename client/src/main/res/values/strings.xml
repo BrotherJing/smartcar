@@ -24,4 +24,9 @@
     <string name="title_activity_sensor">SensorActivity</string>
     <string name="btn_capture">capture</string>
     <string name="title_activity_view_camera">ViewCameraActivity</string>
+    <string name="btn_qrcode">二维码扫描</string>
+    <string name="menu_settings">Setting</string>
+    <string name="scan_text">扫描</string>
+    <string name="title_activity_qrcode">QRcodeActivity</string>
+    <string name="title_activity_mipca">MipcaActivity</string>
 </resources>

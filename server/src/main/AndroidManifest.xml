@@ -59,6 +59,11 @@
             android:enabled="true"
             android:exported="true" >
         </service>
+
+        <activity
+            android:name=".activity.QrcodeActivity"
+            android:label="@string/title_activity_qrcode" >
+        </activity>
     </application>
 
 </manifest>

@@ -21,6 +21,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
+    <Button
+        android:id="@+id/btn_generate_qrcode"
+        android:text="@string/btn_generate_qrcode"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
 <android.support.v4.view.ViewPager android:id="@+id/pager"
     android:visibility="gone"

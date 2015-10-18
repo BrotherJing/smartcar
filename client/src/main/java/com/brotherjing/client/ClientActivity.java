@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.graphics.Bitmap;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -27,6 +28,8 @@ import android.widget.Toast;
 
 import com.baidu.voicerecognition.android.ui.BaiduASRDigitalDialog;
 import com.brotherjing.client.ImageTargets.ImageTargets;
+import com.brotherjing.client.QRcode.MipcaActivityCapture;
+import com.brotherjing.client.QRcode.QRcodeActivity;
 import com.brotherjing.client.activity.ViewCameraActivity;
 import com.brotherjing.client.service.TCPClient;
 import com.brotherjing.utils.ImageCache;
@@ -47,6 +50,8 @@ import java.util.ArrayList;
 public class ClientActivity extends ActionBarActivity {
 
     private final int REQUEST_UI = 1;
+    private final static int SCANNIN_GREQUEST_CODE = 1;
+
 
     private String name = "FUCKER";
     private String ip = null;
@@ -60,7 +65,7 @@ public class ClientActivity extends ActionBarActivity {
     private EditText edt_ip, edt_port;
     private Button btn_connect;
     private EditText edt_input;
-    private Button btn_submit,btn_asr,btn_ar,btn_video;
+    private Button btn_submit,btn_asr,btn_ar,btn_video,btn_qrcode;
     private ImageView iv_video;
     private LinearLayout ll_chat;
 
@@ -84,6 +89,7 @@ public class ClientActivity extends ActionBarActivity {
         btn_asr = (Button) findViewById(R.id.btn_asr);
         btn_ar = (Button) findViewById(R.id.btn_ar);
         btn_video = (Button) findViewById(R.id.btn_video);
+        btn_qrcode = (Button) findViewById(R.id.btn_qrcode);
         iv_video = (ImageView)findViewById(R.id.iv_video);
 
         ll_chat = (LinearLayout) findViewById(R.id.ll_chat);
@@ -123,12 +129,19 @@ public class ClientActivity extends ActionBarActivity {
                 startActivity(new Intent(ClientActivity.this, ViewCameraActivity.class));
             }
         });
+        btn_qrcode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(ClientActivity.this, MipcaActivityCapture.class);
+                startActivityForResult(intent, SCANNIN_GREQUEST_CODE);
+            }
+        });
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        bindService(new Intent(ClientActivity.this, TCPClient.class),conn=new TCPClientConnection(),BIND_AUTO_CREATE);
+        bindService(new Intent(ClientActivity.this, TCPClient.class), conn = new TCPClientConnection(), BIND_AUTO_CREATE);
     }
 
     @Override
@@ -160,15 +173,38 @@ public class ClientActivity extends ActionBarActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-            ArrayList<String> results = data.getStringArrayListExtra(SpeechRecognizer.RESULTS_RECOGNITION);
-            String res = "";
-            for(String i : results){
-                res+=i+"\n";
-            }
-            Toast.makeText(ClientActivity.this,res,Toast.LENGTH_SHORT).show();
+
+        switch (requestCode) {
+            case SCANNIN_GREQUEST_CODE:
+                if (resultCode == RESULT_OK){
+                    Bundle bundle = data.getExtras();
+                    edt_ip.setText(bundle.getString("result"));
+//                    mImageView.setImageBitmap((Bitmap) data.getParcelableExtra("bitmap"));
+                }
+                break;
+            default:
+                if (resultCode == RESULT_OK) {
+                    ArrayList<String> results = data.getStringArrayListExtra(SpeechRecognizer.RESULTS_RECOGNITION);
+                    String res = "";
+                    for(String i : results){
+                        res+=i+"\n";
+                    }
+                    Toast.makeText(ClientActivity.this,res,Toast.LENGTH_SHORT).show();
+                }
+                break;
+
         }
+
+//        if (resultCode == RESULT_OK) {
+//            ArrayList<String> results = data.getStringArrayListExtra(SpeechRecognizer.RESULTS_RECOGNITION);
+//            String res = "";
+//            for(String i : results){
+//                res+=i+"\n";
+//            }
+//            Toast.makeText(ClientActivity.this,res,Toast.LENGTH_SHORT).show();
+//        }
     }
+
 
     //broadcast receiver listening to server events
     private class MainThreadReceiver extends BroadcastReceiver {
