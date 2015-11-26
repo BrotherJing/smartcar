@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "com.brotherjing.client"
-        minSdkVersion 15
+        minSdkVersion 16
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
@@ -20,6 +20,16 @@ android {
 
 
 }
+
+repositories {
+    maven { url "https://jitpack.io" }
+}
+
+dependencies {
+    compile 'com.github.vajro:MaterialDesignLibrary:1.6'
+}
+
+
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
