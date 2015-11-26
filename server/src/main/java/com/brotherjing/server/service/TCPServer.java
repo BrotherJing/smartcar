@@ -1,10 +1,7 @@
 package com.brotherjing.server.service;
 
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
-import android.net.wifi.WifiInfo;
-import android.net.wifi.WifiManager;
 import android.os.Binder;
 import android.os.IBinder;
 
@@ -12,15 +9,13 @@ import com.brotherjing.server.CONSTANT;
 import com.brotherjing.server.GlobalEnv;
 import com.brotherjing.utils.Logger;
 import com.brotherjing.utils.NetworkUtil;
-import com.brotherjing.utils.bean.TCPMessage;
+import com.brotherjing.utils.bean.TextMessage;
 import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 
 public class TCPServer extends Service {
@@ -65,7 +60,7 @@ public class TCPServer extends Service {
     }
 
     public void receiveJSON(ClientThread client,String msg){
-        TCPMessage message = new Gson().fromJson(msg,TCPMessage.class);
+        TextMessage message = new Gson().fromJson(msg,TextMessage.class);
         notifyUI(msg);
         if(message.getText().equals("[req]")){
             //client.sendImage();

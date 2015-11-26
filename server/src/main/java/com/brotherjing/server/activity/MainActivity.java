@@ -1,8 +1,6 @@
 package com.brotherjing.server.activity;
 
-import java.io.Serializable;
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -15,30 +13,25 @@ import android.content.ServiceConnection;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
-import android.os.Parcelable;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.os.Bundle;
-import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.brotherjing.server.CONSTANT;
 import com.brotherjing.server.GlobalEnv;
 import com.brotherjing.server.R;
 import com.brotherjing.server.service.TCPServer;
 import com.brotherjing.utils.Logger;
-import com.brotherjing.utils.bean.TCPMessage;
+import com.brotherjing.utils.bean.TextMessage;
 import com.google.gson.Gson;
-
-import javax.crypto.Mac;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -165,14 +158,14 @@ public class MainActivity extends ActionBarActivity {
                     activity.tv_addr.setText(ip);
                     break;
                 case CONSTANT.MSG_NEW_MSG:
-                    TCPMessage tcpMessage = new Gson().fromJson(msg.getData().getString(CONSTANT.KEY_MSG_DATA),TCPMessage.class);
+                    TextMessage textMessage = new Gson().fromJson(msg.getData().getString(CONSTANT.KEY_MSG_DATA),TextMessage.class);
                     Logger.i(msg.getData().getString(CONSTANT.KEY_MSG_DATA));
                     /*Fragment cf = activity.fragments.get(activity.currentIndex);
                     if(cf instanceof ServerFragment){
                         Logger.i("is server fragment");
-                        ((ServerFragment) cf).newMessage(tcpMessage);
+                        ((ServerFragment) cf).newMessage(textMessage);
                     }*/
-                    activity.tv_content.setText(tcpMessage.getText()+"\n"+activity.tv_content.getText().toString());
+                    activity.tv_content.setText(textMessage.getText()+"\n"+activity.tv_content.getText().toString());
                     break;
                 default:break;
             }

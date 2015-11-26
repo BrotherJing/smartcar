@@ -5,21 +5,21 @@ Vuforia is a trademark of QUALCOMM Incorporated, registered in the United States
 and other countries. Trademarks of QUALCOMM Incorporated are used with permission.
 ===============================================================================*/
 
-package com.brotherjing.client.ImageTargets;
+package com.brotherjing.client.vuforia.ImageTargets;
 
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 import android.util.Log;
 
-import com.brotherjing.client.SampleApplication.SampleApplicationSession;
-import com.brotherjing.client.SampleApplication.utils.CubeShaders;
-import com.brotherjing.client.SampleApplication.utils.LoadingDialogHandler;
-import com.brotherjing.client.SampleApplication.utils.MyObject;
-import com.brotherjing.client.SampleApplication.utils.SampleApplication3DModel;
-import com.brotherjing.client.SampleApplication.utils.SampleUtils;
-import com.brotherjing.client.SampleApplication.utils.Teapot;
-import com.brotherjing.client.SampleApplication.utils.Texture;
+import com.brotherjing.client.vuforia.SampleApplication.SampleApplicationSession;
+import com.brotherjing.client.vuforia.SampleApplication.utils.CubeShaders;
+import com.brotherjing.client.vuforia.SampleApplication.utils.LoadingDialogHandler;
+import com.brotherjing.client.vuforia.SampleApplication.utils.MyObject;
+import com.brotherjing.client.vuforia.SampleApplication.utils.SampleApplication3DModel;
+import com.brotherjing.client.vuforia.SampleApplication.utils.SampleUtils;
+import com.brotherjing.client.vuforia.SampleApplication.utils.Teapot;
+import com.brotherjing.client.vuforia.SampleApplication.utils.Texture;
 import com.qualcomm.vuforia.Matrix44F;
 import com.qualcomm.vuforia.Renderer;
 import com.qualcomm.vuforia.State;

@@ -5,7 +5,7 @@ Vuforia is a trademark of QUALCOMM Incorporated, registered in the United States
 and other countries. Trademarks of QUALCOMM Incorporated are used with permission.
 ===============================================================================*/
 
-package com.brotherjing.client.SampleApplication.utils;
+package com.brotherjing.client.vuforia.SampleApplication.utils;
 
 import android.opengl.GLES20;
 import android.util.Log;

@@ -6,13 +6,12 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.brotherjing.server.R;
 import com.brotherjing.utils.DateUtil;
 import com.brotherjing.utils.Logger;
-import com.brotherjing.utils.bean.TCPMessage;
+import com.brotherjing.utils.bean.TextMessage;
 
 import java.util.Date;
 
@@ -73,7 +72,7 @@ public class ServerFragment extends Fragment {
         tv_ip_addr.setText(ip);
     }
 
-    public void newMessage(TCPMessage msg){
+    public void newMessage(TextMessage msg){
         tv_msg_list.setText(msg.getFrom()+":"+msg.getText()+"["+
                 DateUtil.getDateTime(new Date(Long.parseLong(msg.getTimestamp())))+
                 "]\n"+tv_msg_list.getText().toString());

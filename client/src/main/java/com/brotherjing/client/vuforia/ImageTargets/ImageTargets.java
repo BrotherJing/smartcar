@@ -5,7 +5,7 @@ Vuforia is a trademark of QUALCOMM Incorporated, registered in the United States
 and other countries. Trademarks of QUALCOMM Incorporated are used with permission.
 ===============================================================================*/
 
-package com.brotherjing.client.ImageTargets;
+package com.brotherjing.client.vuforia.ImageTargets;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -13,8 +13,6 @@ import android.content.DialogInterface;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Color;
-import android.hardware.Camera;
-import android.hardware.Camera.CameraInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -29,12 +27,12 @@ import android.widget.Switch;
 import android.widget.Toast;
 
 import com.brotherjing.client.R;
-import com.brotherjing.client.SampleApplication.SampleApplicationControl;
-import com.brotherjing.client.SampleApplication.SampleApplicationException;
-import com.brotherjing.client.SampleApplication.SampleApplicationSession;
-import com.brotherjing.client.SampleApplication.utils.LoadingDialogHandler;
-import com.brotherjing.client.SampleApplication.utils.SampleApplicationGLView;
-import com.brotherjing.client.SampleApplication.utils.Texture;
+import com.brotherjing.client.vuforia.SampleApplication.SampleApplicationControl;
+import com.brotherjing.client.vuforia.SampleApplication.SampleApplicationException;
+import com.brotherjing.client.vuforia.SampleApplication.SampleApplicationSession;
+import com.brotherjing.client.vuforia.SampleApplication.utils.LoadingDialogHandler;
+import com.brotherjing.client.vuforia.SampleApplication.utils.SampleApplicationGLView;
+import com.brotherjing.client.vuforia.SampleApplication.utils.Texture;
 import com.qualcomm.vuforia.CameraDevice;
 import com.qualcomm.vuforia.DataSet;
 import com.qualcomm.vuforia.ObjectTracker;
