@@ -6,18 +6,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
-import android.graphics.Bitmap;
-import android.os.Environment;
-import android.os.Handler;
-import android.os.HandlerThread;
 import android.os.IBinder;
-import android.os.Message;
 import android.speech.SpeechRecognizer;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -26,24 +18,14 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.baidu.voicerecognition.android.ui.BaiduASRDigitalDialog;
-import com.brotherjing.client.ImageTargets.ImageTargets;
+import com.brotherjing.client.vuforia.ImageTargets.ImageTargets;
 import com.brotherjing.client.QRcode.MipcaActivityCapture;
-import com.brotherjing.client.QRcode.QRcodeActivity;
 import com.brotherjing.client.activity.ViewCameraActivity;
 import com.brotherjing.client.service.TCPClient;
 import com.brotherjing.utils.ImageCache;
-import com.brotherjing.utils.bean.TCPMessage;
+import com.brotherjing.utils.bean.TextMessage;
 import com.dxjia.library.BaiduVoiceHelper;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.net.Socket;
-import java.net.SocketException;
-import java.net.SocketTimeoutException;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 
 
@@ -107,7 +89,7 @@ public class ClientActivity extends ActionBarActivity {
             @Override
             public void onClick(View view) {
                 //networkHandler.sendEmptyMessage(2);//send
-                binder.send(edt_input.getText().toString());
+                binder.send(new TextMessage(edt_input.getText().toString()));
             }
         });
         btn_asr.setOnClickListener(new View.OnClickListener() {
@@ -125,7 +107,7 @@ public class ClientActivity extends ActionBarActivity {
         btn_video.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                binder.send("[req]");
+                binder.send(new TextMessage("[req]"));
                 startActivity(new Intent(ClientActivity.this, ViewCameraActivity.class));
             }
         });

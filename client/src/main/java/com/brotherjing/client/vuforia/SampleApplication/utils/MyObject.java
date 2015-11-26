@@ -1,4 +1,4 @@
-package com.brotherjing.client.SampleApplication.utils;
+package com.brotherjing.client.vuforia.SampleApplication.utils;
 
 import java.nio.Buffer;
 

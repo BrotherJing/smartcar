@@ -1,42 +1,32 @@
 package com.brotherjing.client.service;
 
-import android.annotation.SuppressLint;
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.wifi.WifiInfo;
-import android.net.wifi.WifiManager;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.Message;
-import android.widget.ImageView;
 
 import com.brotherjing.client.CONSTANT;
 import com.brotherjing.utils.ImageCache;
 import com.brotherjing.utils.Logger;
 import com.brotherjing.utils.Protocol;
-import com.brotherjing.utils.bean.TCPMessage;
+import com.brotherjing.utils.bean.TextMessage;
 import com.google.gson.Gson;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.io.File;
 import java.io.IOException;
-import java.io.RandomAccessFile;
 import java.net.InetSocketAddress;
-import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class TCPClient extends Service {
 
@@ -71,23 +61,23 @@ public class TCPClient extends Service {
         networkThread = new HandlerThread("network");
         networkThread.start();
         networkHandler = new Handler(networkThread.getLooper()){
-            @SuppressLint("HandlerLeak")
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
+                Intent intent;
                 switch (msg.what){
                     case CONSTANT.MSG_SEND_MSG:
-                        send(msg.getData().getString(CONSTANT.KEY_MSG_DATA));
+                        send((com.brotherjing.utils.bean.Message)msg.getData().getSerializable(CONSTANT.KEY_MSG_DATA));
                         break;
                     case CONSTANT.MSG_NEW_MSG:
-                        Intent intent = new Intent(CONSTANT.ACTION_NEW_MSG);
+                        intent = new Intent(CONSTANT.ACTION_NEW_MSG);
                         intent.putExtra(CONSTANT.KEY_MSG_DATA, msg.getData().getString(CONSTANT.KEY_MSG_DATA));
                         sendBroadcast(intent);
                         break;
                     case CONSTANT.MSG_NEW_IMG:
-                        Intent intent2 = new Intent(CONSTANT.ACTION_NEW_IMG);
-                        intent2.putExtra(CONSTANT.KEY_MSG_DATA, msg.getData().getString(CONSTANT.KEY_MSG_DATA));
-                        sendBroadcast(intent2);
+                        intent = new Intent(CONSTANT.ACTION_NEW_IMG);
+                        intent.putExtra(CONSTANT.KEY_MSG_DATA, msg.getData().getString(CONSTANT.KEY_MSG_DATA));
+                        sendBroadcast(intent);
                         break;
                 }
             }
@@ -201,7 +191,7 @@ public class TCPClient extends Service {
             if(socket.isConnected()){
                 dos = new DataOutputStream(socket.getOutputStream());
                 dis = new DataInputStream(socket.getInputStream());
-                send("connect");
+                send(new TextMessage(name,System.currentTimeMillis()+"","connect"));
                 System.out.println("connect");
                 isConnect=true;
             }
@@ -217,10 +207,9 @@ public class TCPClient extends Service {
         }
     }
 
-    public void send(String text){
+    public void send(com.brotherjing.utils.bean.Message message){
         if(isConnect){
             try {
-                TCPMessage message = new TCPMessage(name,System.currentTimeMillis()+"",text);
                 dos.writeInt(Protocol.TYPE_JSON);
                 dos.writeUTF(new Gson().toJson(message));
                 dos.flush();
@@ -252,6 +241,7 @@ public class TCPClient extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        Logger.i("tcp client service destroyed");
         disConnect();
     }
 
@@ -270,10 +260,14 @@ public class TCPClient extends Service {
             clientThread.start();
         }
 
-        public void send(String text){
+        public void send(com.brotherjing.utils.bean.Message message){
+            //fill in the necessary content!
+            message.setFrom(name);
+            message.setTimestamp(System.currentTimeMillis()+"");
+
             Message msg = networkHandler.obtainMessage(CONSTANT.MSG_SEND_MSG);
             Bundle bundle = new Bundle();
-            bundle.putString(CONSTANT.KEY_MSG_DATA,text);
+            bundle.putSerializable(CONSTANT.KEY_MSG_DATA, message);
             msg.setData(bundle);
             msg.sendToTarget();
         }

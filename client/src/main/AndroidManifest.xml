@@ -70,7 +70,7 @@
             android:name=".SocketmsgActivity"
             android:label="@string/title_activity_socketmsg" >
         </activity>
-        <activity android:name=".ImageTargets.ImageTargets" />
+        <activity android:name=".vuforia.ImageTargets.ImageTargets" />
         <activity
             android:name=".ClientActivity"
             android:label="@string/title_activity_client" >
