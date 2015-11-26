@@ -1,54 +1,15 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              android:orientation="vertical"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:materialdesign="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+    >
+    <!-- ... XML CODE -->
+    <com.gc.materialdesign.views.ButtonRectangle
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#1E88E5"
+        android:text="Button" />
 
-              tools:context="com.brotherjing.client.UI.DemoActivity">
 
-    <com.ogaclejapan.arclayout.ArcLayout
-        android:id="@id/arc_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:arc_origin="bottom"
-        app:arc_color="#4D000000"
-        app:arc_radius="168dp"
-        app:arc_axisRadius="120dp"
-        app:arc_freeAngle="false"
-        app:arc_reverseAngle="false"
-        >
-
-        <Button
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:gravity="center"
-            android:text="A"
-            android:textColor="#FFFFFF"
-            android:background="#03A9F4"
-            app:arc_origin="center"
-            />
-
-        <Button
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:gravity="center"
-            android:text="B"
-            android:textColor="#FFFFFF"
-            android:background="#00BCD4"
-            app:arc_origin="center"
-            />
-
-        <Button
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:gravity="center"
-            android:text="C"
-            android:textColor="#FFFFFF"
-            android:background="#009688"
-            app:arc_origin="center"
-            />
-
-    </com.ogaclejapan.arclayout.ArcLayout>
-
-</LinearLayout>
+</RelativeLayout>

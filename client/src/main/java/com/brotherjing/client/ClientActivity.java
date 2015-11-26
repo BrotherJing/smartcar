@@ -6,18 +6,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
-import android.graphics.Bitmap;
-import android.os.Environment;
-import android.os.Handler;
-import android.os.HandlerThread;
 import android.os.IBinder;
-import android.os.Message;
 import android.speech.SpeechRecognizer;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -26,25 +18,17 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.baidu.voicerecognition.android.ui.BaiduASRDigitalDialog;
-import com.brotherjing.client.ImageTargets.ImageTargets;
-import com.brotherjing.client.QRcode.MipcaActivityCapture;
-import com.brotherjing.client.QRcode.QRcodeActivity;
 import com.brotherjing.client.UI.DemoActivity;
+import com.brotherjing.client.vuforia.ImageTargets.ImageTargets;
+import com.brotherjing.client.QRcode.MipcaActivityCapture;
 import com.brotherjing.client.activity.ViewCameraActivity;
 import com.brotherjing.client.service.TCPClient;
 import com.brotherjing.utils.ImageCache;
-import com.brotherjing.utils.bean.TCPMessage;
+//import com.brotherjing.utils.bean.TCPMessage;
+import com.brotherjing.utils.bean.TextMessage;
 import com.dxjia.library.BaiduVoiceHelper;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.net.Socket;
-import java.net.SocketException;
-import java.net.SocketTimeoutException;
-import java.net.UnknownHostException;
+import com.gc.materialdesign.views.*;
 import java.util.ArrayList;
 
 
@@ -64,9 +48,11 @@ public class ClientActivity extends ActionBarActivity {
 
     //test parameter//
     private EditText edt_ip, edt_port;
-    private Button btn_connect;
+    private ButtonRectangle btn_connect;
     private EditText edt_input;
-    private Button btn_submit,btn_asr,btn_ar,btn_video,btn_qrcode;
+//    private Button btn_submit,btn_asr,btn_ar,btn_video,btn_qrcode;
+    private ButtonRectangle btn_submit,btn_asr,btn_ar,btn_video,btn_qrcode;
+
     private Button btn_demo;
     private ImageView iv_video;
     private LinearLayout ll_chat;
@@ -85,13 +71,18 @@ public class ClientActivity extends ActionBarActivity {
 
         edt_ip = (EditText) findViewById(R.id.edt_ip);
         edt_port = (EditText) findViewById(R.id.edt_port);
-        btn_connect = (Button) findViewById(R.id.btn_connect);
+        btn_connect = (ButtonRectangle) findViewById(R.id.btn_connect);
         edt_input = (EditText) findViewById(R.id.edt_input);
-        btn_submit = (Button) findViewById(R.id.btn_submit);
-        btn_asr = (Button) findViewById(R.id.btn_asr);
-        btn_ar = (Button) findViewById(R.id.btn_ar);
-        btn_video = (Button) findViewById(R.id.btn_video);
-        btn_qrcode = (Button) findViewById(R.id.btn_qrcode);
+//        btn_submit = (Button) findViewById(R.id.btn_submit);
+//        btn_asr = (Button) findViewById(R.id.btn_asr);
+//        btn_ar = (Button) findViewById(R.id.btn_ar);
+//        btn_video = (Button) findViewById(R.id.btn_video);
+//        btn_qrcode = (Button) findViewById(R.id.btn_qrcode);
+        btn_submit = (ButtonRectangle) findViewById(R.id.btn_submit);
+        btn_asr = (ButtonRectangle) findViewById(R.id.btn_asr);
+        btn_ar = (ButtonRectangle) findViewById(R.id.btn_ar);
+        btn_video = (ButtonRectangle) findViewById(R.id.btn_video);
+        btn_qrcode = (ButtonRectangle) findViewById(R.id.btn_qrcode);
         iv_video = (ImageView)findViewById(R.id.iv_video);
         btn_demo = (Button) findViewById(R.id.btn_demo);
 
@@ -110,7 +101,7 @@ public class ClientActivity extends ActionBarActivity {
             @Override
             public void onClick(View view) {
                 //networkHandler.sendEmptyMessage(2);//send
-                binder.send(edt_input.getText().toString());
+                binder.send(new TextMessage(edt_input.getText().toString()));
             }
         });
         btn_asr.setOnClickListener(new View.OnClickListener() {
@@ -128,7 +119,7 @@ public class ClientActivity extends ActionBarActivity {
         btn_video.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                binder.send("[req]");
+                binder.send(new TextMessage("[req]"));
                 startActivity(new Intent(ClientActivity.this, ViewCameraActivity.class));
             }
         });
