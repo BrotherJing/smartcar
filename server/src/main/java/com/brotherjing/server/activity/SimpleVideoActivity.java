@@ -75,7 +75,7 @@ public class SimpleVideoActivity extends ActionBarActivity {
                 //Tell the camera to use this surface as its preview area
                 try {
                     if (mCamera != null) {
-                        //¸Ã·½·¨ÓÃÀ´Á¬½ÓcameraºÍsurface
+                        //è¯¥æ–¹æ³•ç”¨æ¥è¿æ¥cameraå’Œsurface
                         mCamera.setPreviewDisplay(holder);
                         mCamera.setPreviewCallback(callback);
                     }
@@ -97,7 +97,7 @@ public class SimpleVideoActivity extends ActionBarActivity {
                 }
 
                 Camera.Parameters parameters = mCamera.getParameters();
-                //Ïà»úµÄpreview ´óĞ¡²»ÄÜËæÒâÉèÖÃ Èç¹ûÉèÖÃÁË²»¿É½ÓÊÜµÄÖµ Ó¦ÓÃ½«»áÅ×³öÒì³£
+                //ç›¸æœºçš„preview å¤§å°ä¸èƒ½éšæ„è®¾ç½® å¦‚æœè®¾ç½®äº†ä¸å¯æ¥å—çš„å€¼ åº”ç”¨å°†ä¼šæŠ›å‡ºå¼‚å¸¸
                 Camera.Size size = getBestSupportedSized(parameters.getSupportedPreviewSizes(), i1, i2); //to be reset in the next section
 
                 parameters.setPreviewSize(size.width, size.height);
@@ -109,7 +109,7 @@ public class SimpleVideoActivity extends ActionBarActivity {
                     // Call startPreview() to start updating the preview surface
                     // Preview must be started before you can take a picture.
 
-                    // surfaceÉÏ»æÖÆÖ¡
+                    // surfaceä¸Šç»˜åˆ¶å¸§
                     mCamera.startPreview();
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -124,7 +124,7 @@ public class SimpleVideoActivity extends ActionBarActivity {
                     mCamera.stopPreview();
                 }*/
                 if (null != mCamera) {
-                    mCamera.setPreviewCallback(null); // £¡£¡Õâ¸ö±ØĞëÔÚÇ°£¬²»È»ÍË³ö³ö´í
+                    mCamera.setPreviewCallback(null); // ï¼ï¼è¿™ä¸ªå¿…é¡»åœ¨å‰ï¼Œä¸ç„¶é€€å‡ºå‡ºé”™
                     mCamera.stopPreview();
                     mCamera = null;
                 }
@@ -170,7 +170,7 @@ public class SimpleVideoActivity extends ActionBarActivity {
     private void releaseCamera() {
         try{
             if (mCamera != null) {
-                mCamera.setPreviewCallback(null); // £¡£¡Õâ¸ö±ØĞëÔÚÇ°£¬²»È»ÍË³ö³ö´í
+                mCamera.setPreviewCallback(null); // ï¼ï¼è¿™ä¸ªå¿…é¡»åœ¨å‰ï¼Œä¸ç„¶é€€å‡ºå‡ºé”™
                 mCamera.stopPreview();
                 mCamera.release();
                 mCamera = null;
