@@ -30,6 +30,7 @@ import com.baidu.voicerecognition.android.ui.BaiduASRDigitalDialog;
 import com.brotherjing.client.ImageTargets.ImageTargets;
 import com.brotherjing.client.QRcode.MipcaActivityCapture;
 import com.brotherjing.client.QRcode.QRcodeActivity;
+import com.brotherjing.client.UI.DemoActivity;
 import com.brotherjing.client.activity.ViewCameraActivity;
 import com.brotherjing.client.service.TCPClient;
 import com.brotherjing.utils.ImageCache;
@@ -66,6 +67,7 @@ public class ClientActivity extends ActionBarActivity {
     private Button btn_connect;
     private EditText edt_input;
     private Button btn_submit,btn_asr,btn_ar,btn_video,btn_qrcode;
+    private Button btn_demo;
     private ImageView iv_video;
     private LinearLayout ll_chat;
 
@@ -91,6 +93,7 @@ public class ClientActivity extends ActionBarActivity {
         btn_video = (Button) findViewById(R.id.btn_video);
         btn_qrcode = (Button) findViewById(R.id.btn_qrcode);
         iv_video = (ImageView)findViewById(R.id.iv_video);
+        btn_demo = (Button) findViewById(R.id.btn_demo);
 
         ll_chat = (LinearLayout) findViewById(R.id.ll_chat);
 
@@ -136,6 +139,13 @@ public class ClientActivity extends ActionBarActivity {
                 startActivityForResult(intent, SCANNIN_GREQUEST_CODE);
             }
         });
+        btn_demo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(ClientActivity.this, DemoActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -179,6 +189,7 @@ public class ClientActivity extends ActionBarActivity {
                 if (resultCode == RESULT_OK){
                     Bundle bundle = data.getExtras();
                     edt_ip.setText(bundle.getString("result"));
+                    edt_port.setText("12345");
 //                    mImageView.setImageBitmap((Bitmap) data.getParcelableExtra("bitmap"));
                 }
                 break;

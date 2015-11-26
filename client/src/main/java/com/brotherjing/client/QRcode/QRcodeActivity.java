@@ -22,13 +22,13 @@ public class QRcodeActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_qrcode);
-		
-		mTextView = (TextView) findViewById(R.id.result); 
+
+		mTextView = (TextView) findViewById(R.id.result);
 		mImageView = (ImageView) findViewById(R.id.qrcode_bitmap);
-		
+
 		Button mButton = (Button) findViewById(R.id.button1);
 		mButton.setOnClickListener(new OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				Intent intent = new Intent();
@@ -38,7 +38,6 @@ public class QRcodeActivity extends Activity {
 			}
 		});
 	}
-	
 	
 	@Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

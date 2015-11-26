@@ -29,4 +29,5 @@
     <string name="scan_text">扫描</string>
     <string name="title_activity_qrcode">QRcodeActivity</string>
     <string name="title_activity_mipca">MipcaActivity</string>
+    <string name="title_activity_demo">DemoActivity</string>
 </resources>

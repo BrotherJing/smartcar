@@ -96,17 +96,23 @@
             android:screenOrientation="landscape"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
         </activity>
-
-        <activity android:name=".QRcode.QRcodeActivity"
-                  android:label="@string/title_activity_qrcode"/>
-        <activity android:name=".QRcode.MipcaActivityCapture"
-                  android:label="@string/title_activity_mipca"/>
+        <activity
+            android:name=".QRcode.QRcodeActivity"
+            android:label="@string/title_activity_qrcode" />
+        <activity
+            android:name=".QRcode.MipcaActivityCapture"
+            android:label="@string/title_activity_mipca" />
 
         <service
             android:name=".service.UDPClient"
             android:enabled="true"
             android:exported="true" >
         </service>
+
+        <activity
+            android:name=".UI.DemoActivity"
+            android:label="@string/title_activity_demo" >
+        </activity>
     </application>
 
 </manifest>
