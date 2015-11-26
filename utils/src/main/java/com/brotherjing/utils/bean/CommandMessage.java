@@ -12,12 +12,12 @@ public class CommandMessage extends Message{
     Command command;
 
     public CommandMessage(String from, String timestamp,int cmdType,int cmdArg) {
-        super(from, timestamp, Protocol.MSG_TYPE_CMD);
+        super(from,timestamp, Protocol.MSG_TYPE_CMD);
         command = new Command(cmdType,cmdArg);
     }
 
     public CommandMessage(int cmdType,int cmdArg) {
-        super("", "", Protocol.MSG_TYPE_CMD);
+        super("","", Protocol.MSG_TYPE_CMD);
         command = new Command(cmdType,cmdArg);
     }
 }

@@ -18,6 +18,7 @@ import android.widget.FrameLayout;
 import com.brotherjing.client.Class.CameraPreview;
 import com.brotherjing.client.Class.CameraUtil;
 import com.brotherjing.client.service.TCPClient;
+import com.brotherjing.utils.bean.TextMessage;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -57,7 +58,7 @@ public class CameraActivity extends AppCompatActivity {
                     public void onPictureTaken(byte[] bytes, Camera camera) {
 
                         try {
-                            binder.send(bytes.toString());
+                            binder.send(new TextMessage(bytes.toString()));
                         } catch (Exception e){
                             Log.d(TAG, e.getMessage());
                         }

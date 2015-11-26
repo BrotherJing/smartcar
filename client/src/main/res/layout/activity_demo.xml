@@ -8,7 +8,7 @@
               tools:context="com.brotherjing.client.UI.DemoActivity">
 
     <com.ogaclejapan.arclayout.ArcLayout
-        android:id="@id/arc_layout"
+        android:id="@+id/arc_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:arc_origin="bottom"

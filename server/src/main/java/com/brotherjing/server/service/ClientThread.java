@@ -5,6 +5,8 @@ import android.os.HandlerThread;
 
 import com.brotherjing.utils.Logger;
 import com.brotherjing.utils.Protocol;
+import com.brotherjing.utils.bean.Message;
+import com.google.gson.Gson;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -60,10 +62,10 @@ public class ClientThread extends HandlerThread {
         }
     }
 
-    public void send(String msg){
+    public void send(Message msg){
         try{
             dos.writeInt(Protocol.TYPE_JSON);
-            dos.writeUTF(msg);
+            dos.writeUTF(new Gson().toJson(msg));
             dos.flush();
         }catch (IOException ex){
             ex.printStackTrace();

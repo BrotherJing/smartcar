@@ -42,7 +42,7 @@ public class MainActivity extends ActionBarActivity {
 
     //ViewPager mViewPager;
     TextView tv_addr,tv_content;
-    Button mButton, qrCodeButton;
+    Button mButton, qrCodeButton,btnBluetooth;
 
     MainThreadHandler handler;
     MainThreadReceiver receiver;
@@ -68,6 +68,7 @@ public class MainActivity extends ActionBarActivity {
         tv_content = (TextView)findViewById(R.id.tv_content);
         mButton = (Button) findViewById(R.id.button_capture_image);
         qrCodeButton = (Button) findViewById(R.id.btn_generate_qrcode);
+        btnBluetooth = (Button) findViewById(R.id.btn_bluetooth);
 
         initData();
     }
@@ -134,6 +135,13 @@ public class MainActivity extends ActionBarActivity {
                 startActivity(intent);
             }
         });
+
+        btnBluetooth.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
     }
 
     public final static class MainThreadHandler extends Handler{
@@ -191,7 +199,7 @@ public class MainActivity extends ActionBarActivity {
         super.onDestroy();
         Logger.i("destroy");
         handler = null;
-        stopService(new Intent(this,TCPServer.class));
+        //stopService(new Intent(this,TCPServer.class));
         unregisterReceiver(receiver);
     }
 

@@ -64,6 +64,17 @@
             android:name=".activity.QrcodeActivity"
             android:label="@string/title_activity_qrcode" >
         </activity>
+        <activity
+            android:name=".activity.BluetoothActivity"
+            android:label="@string/title_activity_bluetooth"
+            android:theme="@style/AppTheme.NoActionBar" >
+        </activity>
+
+        <service
+            android:name=".service.BluetoothService"
+            android:enabled="true"
+            android:exported="true" >
+        </service>
     </application>
 
 </manifest>
