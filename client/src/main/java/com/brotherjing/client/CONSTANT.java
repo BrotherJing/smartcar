@@ -30,4 +30,10 @@ public interface CONSTANT {
     //Global environment
     String GLOBAL_IP_ADDRESS = "ip_addr";
 
+    //Direction
+    int FORWARDING = 1;
+    int LEFT = 2;
+    int RIGHT = 3;
+    int BACK = 4;
+
 }

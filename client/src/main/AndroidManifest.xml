@@ -74,11 +74,13 @@
         <activity
             android:name=".ClientActivity"
             android:label="@string/title_activity_client">
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN"/>-->
 
-                <!--<category android:name="android.intent.category.LAUNCHER"/>-->
-            <!--</intent-filter>-->
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN"/> -->
+
+
+            <!-- <category android:name="android.intent.category.LAUNCHER"/> -->
+            <!-- </intent-filter> -->
         </activity>
         <activity
             android:name=".SensorActivity"
@@ -126,8 +128,15 @@
         <activity
             android:name=".IpPortActivity"
             android:label="@string/title_activity_ip_port"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:parentActivityName=".HomePageActivity">
+            android:parentActivityName=".HomePageActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+        <activity
+            android:name=".Direction.DirectionActivity"
+            android:label="@string/title_activity_direction"
+            android:parentActivityName=".HomePageActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar">
         </activity>
     </application>
 

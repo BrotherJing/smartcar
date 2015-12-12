@@ -50,3 +50,28 @@ dependencies {
     compile 'com.rengwuxian.materialedittext:library:2.1.4'
     compile 'com.ogaclejapan.arclayout:library:1.0.1@aar'
 }
+
+/*Flat button*/
+dependencies {
+    compile 'com.github.eluleci:flatui:3.0.0'
+}
+
+/* SmartTalLayout */
+dependencies {
+    compile 'com.ogaclejapan.smarttablayout:library:1.6.0@aar'
+    compile 'com.ogaclejapan.smarttablayout:utils-v4:1.6.0@aar'
+}
+dependencies {
+    compile 'com.android.support:support-v4:23.+'
+}
+dependencies {
+    compile 'com.android.support:support-v4:23.+'
+}
+
+dependencies {
+    compile 'com.jmedeisis:bugstick:0.2.2'
+}
+dependencies {
+    compile 'com.android.support:support-v4:23.+'
+}
+

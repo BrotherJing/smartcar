@@ -3,8 +3,6 @@ package com.brotherjing.client;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.speech.SpeechRecognizer;
@@ -17,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.Toast;
 
+import com.brotherjing.client.Direction.DirectionActivity;
 import com.brotherjing.client.QRcode.MipcaActivityCapture;
 import com.brotherjing.client.activity.ViewCameraActivity;
 import com.brotherjing.client.service.TCPClient;
@@ -31,11 +30,6 @@ import com.mikepenz.materialdrawer.interfaces.OnCheckedChangeListener;
 import com.mikepenz.materialdrawer.model.DividerDrawerItem;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
-import com.mikepenz.materialdrawer.model.ProfileSettingDrawerItem;
-import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
-import com.mikepenz.materialdrawer.model.SectionDrawerItem;
-import com.mikepenz.materialdrawer.model.SwitchDrawerItem;
-import com.mikepenz.materialdrawer.model.ToggleDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 import com.mikepenz.materialdrawer.model.interfaces.Nameable;
@@ -68,7 +62,7 @@ public class HomePageActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         //set the back arrow in the toolbar
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("shit");
+        getSupportActionBar().setTitle("SJTU-SmartCar");
 
         // Create a few sample profile
         final IProfile profile = new ProfileDrawerItem().withName("杨靖").withEmail("yangjing").withIdentifier(100);
@@ -78,7 +72,7 @@ public class HomePageActivity extends AppCompatActivity {
         // Create the AccountHeader
         headerResult = new AccountHeaderBuilder()
                 .withActivity(this)
-                .withHeaderBackground(R.color.md_indigo_500)
+                .withHeaderBackground(R.drawable.header)
                 .withTranslucentStatusBar(false)
                 .addProfiles(
                         profile,
@@ -92,16 +86,16 @@ public class HomePageActivity extends AppCompatActivity {
         result = new DrawerBuilder()
                 .withActivity(this)
                 .withToolbar(toolbar)
-                .withTranslucentStatusBar(false)
+//                .withTranslucentStatusBar(false)
                 .withAccountHeader(headerResult) //set the AccountHeader we created earlier for the header
                 .addDrawerItems(
-                        new PrimaryDrawerItem().withName(R.string.voice_recognition).withIcon(R.drawable.ic_menu_camera).withIdentifier(1).withSelectable(true),
-                        new PrimaryDrawerItem().withName(R.string.augmented_reality).withIcon(R.drawable.ic_menu_gallery).withIdentifier(2).withSelectable(true),
-                        new PrimaryDrawerItem().withName(R.string.video_send_back).withIcon(R.drawable.ic_menu_slideshow).withIdentifier(3).withSelectable(true),
-                        new PrimaryDrawerItem().withName(R.string.qrcode).withIcon(R.drawable.ic_menu_send).withIdentifier(4).withSelectable(true),
-                        new PrimaryDrawerItem().withName(R.string.direction_controller).withIcon(R.drawable.ic_menu_share).withIdentifier(5).withSelectable(true),
+                        new PrimaryDrawerItem().withName(R.string.voice_recognition).withIcon(R.drawable.ic_action_call).withIdentifier(1).withSelectable(true),
+                        new PrimaryDrawerItem().withName(R.string.augmented_reality).withIcon(R.drawable.ic_action_new_picture).withIdentifier(2).withSelectable(true),
+                        new PrimaryDrawerItem().withName(R.string.video_send_back).withIcon(R.drawable.ic_action_camera).withIdentifier(3).withSelectable(true),
+                        new PrimaryDrawerItem().withName(R.string.qrcode).withIcon(R.drawable.ic_action_download).withIdentifier(4).withSelectable(true),
+                        new PrimaryDrawerItem().withName(R.string.direction_controller).withIcon(R.drawable.ic_action_gamepad).withIdentifier(5).withSelectable(true),
                         new DividerDrawerItem(),
-                        new PrimaryDrawerItem().withName(R.string.ip_port_setting).withIcon(R.drawable.ic_menu_manage).withIdentifier(20).withSelectable(true)
+                        new PrimaryDrawerItem().withName(R.string.ip_port_setting).withIcon(R.drawable.ic_action_settings).withIdentifier(20).withSelectable(true)
                 ) // add the items we want to use with our Drawer
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                     @Override
@@ -135,6 +129,9 @@ public class HomePageActivity extends AppCompatActivity {
                                         SCANNIN_GREQUEST_CODE);
 
                             } else if (drawerItem.getIdentifier() == 5){
+
+                                /* 小车方向控制 */
+                                startActivity(new Intent(HomePageActivity.this, DirectionActivity.class));
 
                             } else if (drawerItem.getIdentifier() == 20) {
                                 /* 端口设置 */

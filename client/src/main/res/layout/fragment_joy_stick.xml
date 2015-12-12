@@ -1,0 +1,44 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              tools:context=".MainActivity">
+
+    <com.jmedeisis.bugstick.Joystick
+        android:id="@+id/joystick"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="@dimen/default_margin"
+        android:background="@drawable/bg_base"
+        app:force_square="true"
+        app:motion_constraint="None"
+        app:start_on_first_touch="true">
+
+        <Button
+            android:layout_width="@dimen/stick_size"
+            android:layout_height="@dimen/stick_size"
+            android:background="@drawable/bg_stick"/>
+
+    </com.jmedeisis.bugstick.Joystick>
+
+
+
+    <TextView
+        android:id="@+id/tv_angle"
+        style="@style/TextAppearance.AppCompat.Caption"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/default_margin"/>
+
+    <TextView
+        android:id="@+id/tv_offset"
+        style="@style/TextAppearance.AppCompat.Caption"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_margin="@dimen/default_margin"/>
+
+</LinearLayout>
