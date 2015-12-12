@@ -9,6 +9,8 @@ import com.brotherjing.server.CONSTANT;
 import com.brotherjing.server.GlobalEnv;
 import com.brotherjing.utils.Logger;
 import com.brotherjing.utils.NetworkUtil;
+import com.brotherjing.utils.Protocol;
+import com.brotherjing.utils.bean.Message;
 import com.brotherjing.utils.bean.TextMessage;
 import com.google.gson.Gson;
 
@@ -60,13 +62,16 @@ public class TCPServer extends Service {
     }
 
     public void receiveJSON(ClientThread client,String msg){
-        TextMessage message = new Gson().fromJson(msg,TextMessage.class);
+        Message message = new Gson().fromJson(msg,Message.class);
         notifyUI(msg);
-        if(message.getText().equals("[req]")){
-            //client.sendImage();
-            GlobalEnv.put(CONSTANT.GLOBAL_AUDIENCE_ADDR,client.getIp());//only one audience for real time video
-        }else{
-            sendToAll(msg);
+        if(message.getMsgType()== Protocol.MSG_TYPE_TEXT) {
+            message = new Gson().fromJson(msg,TextMessage.class);
+            if (((TextMessage)message).getText().equals("[req]")) {
+                //client.sendImage();
+                GlobalEnv.put(CONSTANT.GLOBAL_AUDIENCE_ADDR, client.getIp());//only one audience for real time video
+            } else {
+                sendToAll(message);
+            }
         }
     }
 
@@ -78,7 +83,7 @@ public class TCPServer extends Service {
     }
 
     //send message to all clients
-    public void sendToAll(String msg){
+    public void sendToAll(Message msg){
         for(ClientThread thread : clients){
             thread.send(msg);
         }

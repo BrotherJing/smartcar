@@ -18,4 +18,9 @@
     <string name="title_activity_simple_video">SimpleVideoActivity</string>
     <string name="title_activity_qrcode">QrcodeActivity</string>
     <string name="btn_generate_qrcode">生成二维码</string>
+    <string name="title_activity_bluetooth">BluetoothActivity</string>
+
+
+    <string name="finish_discovery">搜索完成</string>
+    <string name="connected">已连接</string>
 </resources>

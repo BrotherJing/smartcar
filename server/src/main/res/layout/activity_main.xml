@@ -27,6 +27,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/btn_bluetooth"
+        android:text="bluetooth"/>
+
 <android.support.v4.view.ViewPager android:id="@+id/pager"
     android:visibility="gone"
     android:layout_width="fill_parent" android:layout_height="fill_parent" />

@@ -5,6 +5,7 @@ package com.brotherjing.server;
  */
 public interface CONSTANT {
 
+    //tcp----------------------------
     int PORT = 12345;
 
     String KEY_MSG_TYPE = "type";
@@ -26,4 +27,18 @@ public interface CONSTANT {
     String GLOBAL_IP_ADDRESS = "ip_addr";
     String GLOBAL_AUDIENCE_ADDR = "audience_addr";
 
+    //bluetooth-----------------------
+    String MY_UUID = "00001101-0000-1000-8000-00805F9B34FB";
+
+    int SEND_MSG = 1;
+    int RECEIVE_MSG = 2;
+    int CONNECTED = 3;
+
+    //broadcast action
+    String ACTION_CONNECTED = "connected";
+    String ACTION_NEW_MSG_BT = "new_msg_bt";
+
+    //key
+    String KEY_MSG_CONTENT = "content";
+    String KEY_DEVICE = "device";
 }
