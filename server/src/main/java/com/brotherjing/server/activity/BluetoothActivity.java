@@ -2,7 +2,6 @@ package com.brotherjing.server.activity;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -18,7 +17,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -32,12 +30,9 @@ import com.brotherjing.server.CONSTANT;
 import com.brotherjing.server.R;
 import com.brotherjing.server.adapter.DeviceListAdapter;
 import com.brotherjing.server.service.BluetoothService;
-import com.brotherjing.server.service.TCPServer;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.io.IOException;
-import java.util.UUID;
 
 public class BluetoothActivity extends AppCompatActivity {
     final int REQUEST_ENABLE_BT = 1;
@@ -85,7 +80,7 @@ public class BluetoothActivity extends AppCompatActivity {
         filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
 
         //customized action
-        filter.addAction(CONSTANT.ACTION_CONNECTED);
+        filter.addAction(CONSTANT.ACTION_DEVICE_CONNECTED);
         filter.addAction(CONSTANT.ACTION_NEW_MSG_BT);
         registerReceiver(mReceiver, filter);
 
@@ -124,6 +119,7 @@ public class BluetoothActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         unregisterReceiver(mReceiver);
+        unbindService(conn);
     }
 
     private void initView(){
@@ -143,10 +139,11 @@ public class BluetoothActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 //startThread(listAdapter.getItem(i));
                 chosenDevice = listAdapter.getItem(i);
-                lvDevices.setVisibility(View.GONE);
+                //lvDevices.setVisibility(View.GONE);
                 Intent intent = new Intent(BluetoothActivity.this, BluetoothService.class);
                 intent.putExtra(CONSTANT.KEY_DEVICE, listAdapter.getItem(i));
-                startService(intent);
+                bindService(intent, conn, BIND_AUTO_CREATE);
+                //startService(intent);
                 //llContent.setVisibility(View.VISIBLE);
             }
         });
@@ -175,13 +172,14 @@ public class BluetoothActivity extends AppCompatActivity {
                 if (device.getBondState() != BluetoothDevice.BOND_BONDED) {
                     listAdapter.addItem(device);
                 }
-            }else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED
+            }else if(BluetoothAdapter.ACTION_DISCOVERY_FINISHED
                     .equals(action)) {
                 setTitle(R.string.finish_discovery);
                 Toast.makeText(BluetoothActivity.this,R.string.finish_discovery,Toast.LENGTH_SHORT).show();
-            }else if(CONSTANT.ACTION_CONNECTED.equals(action)){
+            }else if(CONSTANT.ACTION_DEVICE_CONNECTED.equals(action)){
                 Toast.makeText(BluetoothActivity.this,R.string.connected,Toast.LENGTH_SHORT).show();
-                //BluetoothActivity.this.setResult();
+                BluetoothActivity.this.setResult(RESULT_OK, new Intent().putExtra(CONSTANT.KEY_DEVICE,chosenDevice));
+                BluetoothActivity.this.finish();
             }
         }
     }
@@ -196,60 +194,16 @@ public class BluetoothActivity extends AppCompatActivity {
         }
     }
 
-    /*private void startThread(BluetoothDevice device){
-        clientThread = new ClientThread(device);
-        clientThread.start();
-        handlerThread = new HandlerThread(device.getName());
-        handlerThread.start();
-        clientHandler = new Handler(handlerThread.getLooper()){
-            @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                if(msg.what==CONSTANT.SEND_MSG){
-                    try {
-                        //dos.writeUTF(msg.getData().getString(Constant.KEY_MSG_CONTENT));
-                        dos.writeBytes(new String(msg.getData().getString(CONSTANT.KEY_MSG_CONTENT).getBytes("utf-8"),"iso-8859-1"));
-                    }catch (IOException e){
-                        e.printStackTrace();
-                    }
-                }
-            }
-        };
-    }
+    private ServiceConnection conn = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
 
-    private class ClientThread extends Thread{
-
-        BluetoothDevice device;
-
-        public ClientThread(BluetoothDevice device) {
-            super();
-            this.device = device;
         }
 
         @Override
-        public void run() {
-            try {
-                Log.i("yj", device.getName() + " " + device.getAddress());
-                BluetoothSocket socket = device.createRfcommSocketToServiceRecord(UUID.fromString(CONSTANT.MY_UUID));
-                adapter.cancelDiscovery();
-                socket.connect();
-                uiHandler.sendEmptyMessage(CONSTANT.CONNECTED);
-                dis = new DataInputStream(socket.getInputStream());
-                dos = new DataOutputStream(socket.getOutputStream());
-                while (true){
-                    String str = dis.readUTF();
-                    String ascii = new String(str.getBytes("utf-8"),"iso-8859-1");
-                    Log.i("yj",ascii);
-                    Log.i("yj",str);
-                    Message message = uiHandler.obtainMessage(CONSTANT.RECEIVE_MSG);
-                    Bundle bundle = new Bundle();
-                    bundle.putString(CONSTANT.KEY_MSG_CONTENT,str);
-                    message.setData(bundle);
-                    message.sendToTarget();
-                }
-            }catch (IOException e){
-                e.printStackTrace();
-            }
+        public void onServiceDisconnected(ComponentName name) {
+
         }
-    }*/
+    };
+
 }

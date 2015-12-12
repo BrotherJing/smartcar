@@ -4,6 +4,7 @@ import java.lang.ref.WeakReference;
 import java.util.List;
 import java.util.Locale;
 
+import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -24,29 +25,38 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.brotherjing.server.CONSTANT;
 import com.brotherjing.server.GlobalEnv;
 import com.brotherjing.server.R;
+import com.brotherjing.server.controller.BluetoothCarController;
+import com.brotherjing.server.service.BluetoothService;
 import com.brotherjing.server.service.TCPServer;
 import com.brotherjing.utils.Logger;
+import com.brotherjing.utils.Protocol;
+import com.brotherjing.utils.bean.CommandMessage;
 import com.brotherjing.utils.bean.TextMessage;
 import com.google.gson.Gson;
 
 
 public class MainActivity extends ActionBarActivity {
 
+    final static int REQ_BLUETOOTH = 1;
     //SectionsPagerAdapter mSectionsPagerAdapter;
     //List<Fragment> fragments;
     int currentIndex;
+    boolean isBluetoothServiceBinded = false;
 
     //ViewPager mViewPager;
     TextView tv_addr,tv_content;
-    Button mButton, qrCodeButton,btnBluetooth;
+    Button mButton, qrCodeButton,btnBluetooth,btnCarCommand;
 
     MainThreadHandler handler;
     MainThreadReceiver receiver;
     TCPServer.MyBinder binder;
+    BluetoothService.MyBinder bluetoothBinder;
+    BluetoothCarController carController = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,46 +79,10 @@ public class MainActivity extends ActionBarActivity {
         mButton = (Button) findViewById(R.id.button_capture_image);
         qrCodeButton = (Button) findViewById(R.id.btn_generate_qrcode);
         btnBluetooth = (Button) findViewById(R.id.btn_bluetooth);
+        btnCarCommand = (Button) findViewById(R.id.btn_cmd);
 
         initData();
     }
-
-    /*private void initFragments(){
-
-        fragments = new ArrayList<>();
-        fragments.add(ServerFragment.newInstance());
-        fragments.add(PlaceholderFragment.newInstance(1));
-        fragments.add(PlaceholderFragment.newInstance(2));
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(),fragments);
-
-        //default page is first page
-        currentIndex = 0;
-
-        // Set up the ViewPager with the sections adapter.
-        mViewPager = (ViewPager) findViewById(R.id.pager);
-        mViewPager.setAdapter(mSectionsPagerAdapter);
-        mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                currentIndex = position;
-                if(position==0){
-                    String ip = GlobalEnv.get(CONSTANT.GLOBAL_IP_ADDRESS);
-                    if(ip!=null)
-                        ((ServerFragment) fragments.get(currentIndex)).refreshIpAddr(ip);
-                }
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
-    }*/
 
     private void initData(){
         handler = new MainThreadHandler(this);
@@ -139,7 +113,14 @@ public class MainActivity extends ActionBarActivity {
         btnBluetooth.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                startActivityForResult(new Intent(MainActivity.this, BluetoothActivity.class), REQ_BLUETOOTH);
+            }
+        });
 
+        btnCarCommand.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bluetoothBinder.send("1");
             }
         });
     }
@@ -166,14 +147,23 @@ public class MainActivity extends ActionBarActivity {
                     activity.tv_addr.setText(ip);
                     break;
                 case CONSTANT.MSG_NEW_MSG:
-                    TextMessage textMessage = new Gson().fromJson(msg.getData().getString(CONSTANT.KEY_MSG_DATA),TextMessage.class);
-                    Logger.i(msg.getData().getString(CONSTANT.KEY_MSG_DATA));
+                    com.brotherjing.utils.bean.Message message = new Gson().fromJson(msg.getData().getString(CONSTANT.KEY_MSG_DATA), com.brotherjing.utils.bean.Message.class);
+                    if(message.getMsgType()== Protocol.MSG_TYPE_TEXT){
+                        TextMessage textMessage = new Gson().fromJson(msg.getData().getString(CONSTANT.KEY_MSG_DATA),TextMessage.class);
+                        Logger.i(msg.getData().getString(CONSTANT.KEY_MSG_DATA));
                     /*Fragment cf = activity.fragments.get(activity.currentIndex);
                     if(cf instanceof ServerFragment){
                         Logger.i("is server fragment");
                         ((ServerFragment) cf).newMessage(textMessage);
                     }*/
-                    activity.tv_content.setText(textMessage.getText()+"\n"+activity.tv_content.getText().toString());
+                        activity.tv_content.setText(textMessage.getText()+"\n"+activity.tv_content.getText().toString());
+                    }else{
+                        CommandMessage cmd = new Gson().fromJson(msg.getData().getString(CONSTANT.KEY_MSG_DATA),CommandMessage.class);
+                        if(activity.carController!=null){
+                            activity.carController.processCommand(cmd.getCommand());
+                        }
+                    }
+
                     break;
                 default:break;
             }
@@ -191,6 +181,8 @@ public class MainActivity extends ActionBarActivity {
         super.onStop();
         Logger.i("stop");
         unbindService(conn);
+        if(isBluetoothServiceBinded)
+            unbindService(bluetoothConn);
         //handler = null;
     }
 
@@ -203,75 +195,6 @@ public class MainActivity extends ActionBarActivity {
         unregisterReceiver(receiver);
     }
 
-    public class SectionsPagerAdapter extends FragmentPagerAdapter {
-
-        private List<Fragment> fragmentList;
-
-        public SectionsPagerAdapter(FragmentManager fm,List<Fragment> list) {
-            super(fm);
-            this.fragmentList = list;
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            // getItem is called to instantiate the fragment for the given page.
-            // Return a PlaceholderFragment (defined as a static inner class below).
-            return fragmentList.get(position);
-        }
-
-        @Override
-        public int getCount() {
-            // Show 3 total pages.
-            return fragmentList.size();
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            Locale l = Locale.getDefault();
-            switch (position) {
-                case 0:
-                    return getString(R.string.title_section1).toUpperCase(l);
-                case 1:
-                    return getString(R.string.title_section2).toUpperCase(l);
-                case 2:
-                    return getString(R.string.title_section3).toUpperCase(l);
-            }
-            return null;
-        }
-    }
-
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class PlaceholderFragment extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        private static final String ARG_SECTION_NUMBER = "section_number";
-
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
-        public static PlaceholderFragment newInstance(int sectionNumber) {
-            PlaceholderFragment fragment = new PlaceholderFragment();
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            fragment.setArguments(args);
-            return fragment;
-        }
-
-        public PlaceholderFragment() {
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-            return rootView;
-        }
-    }
 
     //broadcast receiver listening to server events
     private class MainThreadReceiver extends BroadcastReceiver{
@@ -317,4 +240,31 @@ public class MainActivity extends ActionBarActivity {
 
         }
     };
+
+    private ServiceConnection bluetoothConn = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            bluetoothBinder = (BluetoothService.MyBinder)service;
+            carController = new BluetoothCarController(bluetoothBinder);
+            Toast.makeText(MainActivity.this,"get bluetooth binder",Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+
+        }
+    };
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==REQ_BLUETOOTH){
+            if(resultCode==RESULT_OK){
+                isBluetoothServiceBinded = true;
+                BluetoothDevice device = data.getParcelableExtra(CONSTANT.KEY_DEVICE);
+                Toast.makeText(this,device.getName(),Toast.LENGTH_SHORT).show();
+                bindService(new Intent(this,BluetoothService.class),bluetoothConn,BIND_AUTO_CREATE);
+            }
+        }
+    }
 }

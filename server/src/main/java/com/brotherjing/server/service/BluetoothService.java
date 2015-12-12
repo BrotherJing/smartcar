@@ -12,10 +12,9 @@ import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.Message;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.brotherjing.server.CONSTANT;
-import com.brotherjing.server.R;
+import com.brotherjing.utils.Logger;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -24,8 +23,8 @@ import java.util.UUID;
 
 public class BluetoothService extends Service {
 
-    Thread clientThread;
-    HandlerThread handlerThread;
+    Thread clientThread=null;
+    HandlerThread handlerThread=null;
     Handler clientHandler,uiHandler;
     DataInputStream dis;
     DataOutputStream dos;
@@ -51,15 +50,17 @@ public class BluetoothService extends Service {
                     intent.putExtra(CONSTANT.KEY_MSG_DATA, msg.getData().getString(CONSTANT.KEY_MSG_DATA));
                     sendBroadcast(intent);
                 }else if(msg.what==CONSTANT.CONNECTED){
-                    intent = new Intent(CONSTANT.ACTION_CONNECTED);
+                    intent = new Intent(CONSTANT.ACTION_DEVICE_CONNECTED);
                     sendBroadcast(intent);
                 }
             }
         };
+        Logger.i("bluetooth service create");
     }
 
     @Override
     public IBinder onBind(Intent intent) {
+        Logger.i("bluetooth service bind");
         device = intent.getParcelableExtra(CONSTANT.KEY_DEVICE);
         startThread(device);
         return new MyBinder();
@@ -74,7 +75,7 @@ public class BluetoothService extends Service {
     }
 
     private void startThread(BluetoothDevice device){
-        if(clientThread!=null)return;
+        if(clientThread!=null)return;//already started
         clientThread = new ClientThread(device);
         clientThread.start();
         handlerThread = new HandlerThread(device.getName());
@@ -111,14 +112,17 @@ public class BluetoothService extends Service {
                 BluetoothSocket socket = device.createRfcommSocketToServiceRecord(UUID.fromString(CONSTANT.MY_UUID));
                 adapter.cancelDiscovery();
                 socket.connect();
+                Logger.i("bluetooth socket connected!!");
                 uiHandler.sendEmptyMessage(CONSTANT.CONNECTED);
                 dis = new DataInputStream(socket.getInputStream());
                 dos = new DataOutputStream(socket.getOutputStream());
                 while (true){
-                    String str = dis.readUTF();
-                    String ascii = new String(str.getBytes("utf-8"),"iso-8859-1");
-                    Log.i("yj",ascii);
-                    Log.i("yj",str);
+                    byte[] bytes = new byte[128];
+                    int len = dis.read(bytes);
+                    //dis.read(bytes);
+                    //String ascii = new String(str.getBytes("utf-8"),"iso-8859-1");
+                    String ascii = new String(bytes,0,len,"iso-8859-1");
+                    String str = new String(ascii.getBytes("iso-8859-1"),"utf-8");
                     Message message = uiHandler.obtainMessage(CONSTANT.RECEIVE_MSG);
                     Bundle bundle = new Bundle();
                     bundle.putString(CONSTANT.KEY_MSG_CONTENT,str);
