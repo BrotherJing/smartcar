@@ -27,7 +27,18 @@
     <string name="btn_qrcode">二维码扫描</string>
     <string name="menu_settings">Setting</string>
     <string name="scan_text">扫描</string>
+
+    <string name="voice_recognition">语音识别</string>
+    <string name="augmented_reality">增强现实</string>
+    <string name="video_send_back">视频回传</string>
+    <string name="qrcode">二维码扫描</string>
+    <string name="ip_port_setting">端口设置</string>
+    <string name="direction_controller">方向控制</string>
+
+
     <string name="title_activity_qrcode">QRcodeActivity</string>
     <string name="title_activity_mipca">MipcaActivity</string>
     <string name="title_activity_demo">DemoActivity</string>
+    <string name="title_activity_home_page">HomePageActivity</string>
+    <string name="title_activity_ip_port">IpPortActivity</string>
 </resources>

@@ -39,3 +39,14 @@ dependencies {
     compile 'com.ogaclejapan.arclayout:library:1.0.1@aar'
     compile files('libs/zxing.jar')
 }
+dependencies {
+    compile 'com.android.support:design:23.+'
+}
+
+dependencies {
+    compile('com.mikepenz:materialdrawer:4.5.6@aar') {
+        transitive = true
+    }
+    compile 'com.rengwuxian.materialedittext:library:2.1.4'
+    compile 'com.ogaclejapan.arclayout:library:1.0.1@aar'
+}
