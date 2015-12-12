@@ -23,5 +23,6 @@ public interface Protocol {
     int CMD_TYPE_SETSPEED = 5;
     int CMD_TYPE_FORWARD = 6;
     int CMD_TYPE_BACKWARD = 7;
+    int CMD_TYPE_STOP = 8;
 
 }

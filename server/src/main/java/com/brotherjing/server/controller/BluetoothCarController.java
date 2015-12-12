@@ -46,6 +46,7 @@ public class BluetoothCarController {
             case Protocol.CMD_TYPE_TURNRIGHT:{turnRight();break;}
             case Protocol.CMD_TYPE_FORWARD:{forward();break;}
             case Protocol.CMD_TYPE_BACKWARD:{backward();break;}
+            case Protocol.CMD_TYPE_STOP:{stop();break;}
             case Protocol.CMD_TYPE_SETSPEED:
                 setSpeed(command.getCmtArg());
         }
