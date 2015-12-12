@@ -79,26 +79,33 @@ public class GravitySensorFragment extends Fragment {
                     case CONSTANT.FORWARDING: {
 //                        mTextView.setText("FORWARDING");
                         mImageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_arrow_up_bold_black_48dp));
+                        ((DirectionActivity)getActivity()).getTCPSmartcarController().forward();
+
                         break;
                     }
                     case CONSTANT.BACK: {
 //                        mTextView.setText("BACK");
                         mImageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_arrow_down_bold_black_48dp));
+                        ((DirectionActivity)getActivity()).getTCPSmartcarController().backward();
+
                         break;
                     }
                     case CONSTANT.LEFT: {
 //                        mTextView.setText("LEFT");
                         mImageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_arrow_left_bold_black_48dp));
+                        ((DirectionActivity)getActivity()).getTCPSmartcarController().turnLeft(0);
+
                         break;
                     }
                     case CONSTANT.RIGHT: {
 //                        mTextView.setText("RIGHT");
                         mImageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_arrow_right_bold_black_48dp));
+                        ((DirectionActivity)getActivity()).getTCPSmartcarController().turnRight(0);
+
                         break;
                     }
                     default:
 //                        mTextView.setText("Invalid Direction");
-                        mImageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_android_studio_black_48dp));
                         break;
 
                 }

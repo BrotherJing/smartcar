@@ -34,4 +34,16 @@ public class TCPSmartcarControllerImpl implements SmartcarController {
     public void speedDown(int amount) {
         binder.send(new CommandMessage(Protocol.CMD_TYPE_SPEEDDOWN,amount));
     }
+
+    public void setSpeed(int amount){
+        binder.send(new CommandMessage(Protocol.CMD_TYPE_SETSPEED,amount));
+    }
+
+    public void forward(){
+        binder.send(new CommandMessage(Protocol.CMD_TYPE_FORWARD,0));
+    }
+
+    public void backward(){
+        binder.send(new CommandMessage(Protocol.CMD_TYPE_BACKWARD,0));
+    }
 }
