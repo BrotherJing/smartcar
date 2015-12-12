@@ -10,6 +10,7 @@ import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.TextViewCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,12 +26,12 @@ import java.lang.reflect.GenericArrayType;
 public class GravitySensorFragment extends Fragment {
 
     private static final String TAG = GravitySensorFragment.class.getCanonicalName();
-    private TCPSmartcarControllerImpl mTCPSmartcarController;
+    private boolean isViewShown = false;
 
+    private TCPSmartcarControllerImpl mTCPSmartcarController;
     private SensorManager mSensorManager;
     private MySensorEventLisener mMySensorEventLisener;
 
-    private TextView mTextView;
     private ImageView mImageView;
 
     public GravitySensorFragment() {
@@ -53,6 +54,18 @@ public class GravitySensorFragment extends Fragment {
 //        mTextView = (TextView) view.findViewById(R.id.textView);
         mImageView = (ImageView) view.findViewById(R.id.imgArrow);
         return view;
+    }
+
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (this.isVisible()) {
+            if (!isVisibleToUser) {
+                Log.d(TAG, "Not visible anymore");
+                onPause();
+            }
+        }
     }
 
     @Override
@@ -78,27 +91,47 @@ public class GravitySensorFragment extends Fragment {
                 switch (getDirecation(x, y)) {
                     case CONSTANT.FORWARDING: {
 //                        mTextView.setText("FORWARDING");
+                        Log.d(TAG, "forward");
                         mImageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_arrow_up_bold_black_48dp));
+                        if (getActivity() != null) {
+                            ((DirectionActivity)getActivity()).getTCPSmartcarController().forward();
+                        }
                         break;
                     }
                     case CONSTANT.BACK: {
+                        Log.d(TAG, "back");
 //                        mTextView.setText("BACK");
                         mImageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_arrow_down_bold_black_48dp));
+                        if (getActivity() != null) {
+                            ((DirectionActivity)getActivity()).getTCPSmartcarController().backward();
+                        }
+
                         break;
                     }
                     case CONSTANT.LEFT: {
+                        Log.d(TAG, "left");
 //                        mTextView.setText("LEFT");
                         mImageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_arrow_left_bold_black_48dp));
+                        if (getActivity() != null) {
+                            ((DirectionActivity)getActivity()).getTCPSmartcarController().turnLeft(0);
+                        }
+
                         break;
                     }
                     case CONSTANT.RIGHT: {
+                        Log.d(TAG, "right");
 //                        mTextView.setText("RIGHT");
                         mImageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_arrow_right_bold_black_48dp));
+                        if (getActivity() != null) {
+                            ((DirectionActivity)getActivity()).getTCPSmartcarController().turnRight(0);
+                        }
+
                         break;
                     }
                     default:
-//                        mTextView.setText("Invalid Direction");
-                        mImageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_android_studio_black_48dp));
+                        if (getActivity() != null) {
+//                            ((DirectionActivity)getActivity()).getTCPSmartcarController().stop();
+                        }
                         break;
 
                 }

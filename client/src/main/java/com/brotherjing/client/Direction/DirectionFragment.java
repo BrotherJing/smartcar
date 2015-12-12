@@ -2,6 +2,7 @@ package com.brotherjing.client.Direction;
 
 
 import android.os.Bundle;
+import android.support.annotation.MainThread;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -24,22 +25,22 @@ import java.util.List;
 public class DirectionFragment extends Fragment {
 
     private static final String TAG = DirectionFragment.class.getCanonicalName();
-    private TCPSmartcarControllerImpl mTCPSmartcarController;
+//    private TCPSmartcarControllerImpl mTCPSmartcarController;
 
     public DirectionFragment() {
         // Required empty public constructor
     }
 
-    private ImageView btn_forward, btn_left, btn_right, btn_back;
+    private ImageView btn_forward, btn_left, btn_right, btn_back, btn_stop;
 
     private ArrayList<Button> buttonList = null;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mTCPSmartcarController = new TCPSmartcarControllerImpl(((DirectionActivity)getActivity()).getBinder());
-
+//        mTCPSmartcarController = new TCPSmartcarControllerImpl(((DirectionActivity)getActivity()).getBinder());
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -58,6 +59,9 @@ public class DirectionFragment extends Fragment {
             @Override
             public boolean onLongClick(View view) {
                 Log.d(TAG, "forward");
+                if (getActivity() != null) {
+                    ((DirectionActivity)getActivity()).getTCPSmartcarController().forward();
+                }
                 return false;
             }
         });
@@ -65,7 +69,9 @@ public class DirectionFragment extends Fragment {
         btn_left.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                Log.d(TAG, "left");
+                if (getActivity() != null) {
+                    ((DirectionActivity)getActivity()).getTCPSmartcarController().turnLeft(0);
+                }
                 return false;
             }
         });
@@ -73,7 +79,9 @@ public class DirectionFragment extends Fragment {
         btn_right.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                Log.d(TAG, "right");
+                if (getActivity() != null) {
+                    ((DirectionActivity)getActivity()).getTCPSmartcarController().turnRight(0);
+                }
                 return false;
             }
         });
@@ -81,7 +89,20 @@ public class DirectionFragment extends Fragment {
         btn_back.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                Log.d(TAG, "back");
+                if (getActivity() != null) {
+                    ((DirectionActivity)getActivity()).getTCPSmartcarController().backward();
+                }
+                return false;
+            }
+        });
+        btn_stop = (ImageView) view.findViewById(R.id.stop);
+        btn_stop.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                if (getActivity() != null) {
+                    Log.d(TAG, "stop");
+                    ((DirectionActivity)getActivity()).getTCPSmartcarController().stop();
+                }
                 return false;
             }
         });
@@ -96,6 +117,12 @@ public class DirectionFragment extends Fragment {
 
         return view;
     }
+
+
+//    public void setBinder(TCPClient.MyBinder binderFromActivity) {
+//        binder = binderFromActivity;
+//        mTCPSmartcarController = new TCPSmartcarControllerImpl(binder);
+//    }
 
 
 }
