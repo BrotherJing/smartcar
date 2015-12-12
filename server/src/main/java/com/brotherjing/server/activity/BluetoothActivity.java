@@ -181,7 +181,8 @@ public class BluetoothActivity extends AppCompatActivity {
                 Toast.makeText(BluetoothActivity.this,R.string.finish_discovery,Toast.LENGTH_SHORT).show();
             }else if(CONSTANT.ACTION_CONNECTED.equals(action)){
                 Toast.makeText(BluetoothActivity.this,R.string.connected,Toast.LENGTH_SHORT).show();
-                //BluetoothActivity.this.setResult();
+                BluetoothActivity.this.setResult(RESULT_OK, new Intent().putExtra(CONSTANT.KEY_DEVICE,chosenDevice));
+                finish();
             }
         }
     }
