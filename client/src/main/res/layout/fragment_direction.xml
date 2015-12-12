@@ -62,7 +62,8 @@
 
             <ImageView
                 android:id="@+id/stop"
-                android:layout_width="0dp"
+                android:src="@drawable/ic_android_studio_black_48dp">
+            android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:gravity="center">
             </ImageView>

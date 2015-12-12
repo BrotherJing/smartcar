@@ -46,4 +46,8 @@ public class TCPSmartcarControllerImpl implements SmartcarController {
     public void backward(){
         binder.send(new CommandMessage(Protocol.CMD_TYPE_BACKWARD,0));
     }
+
+    public void stop(){
+        binder.send(new CommandMessage(Protocol.CMD_TYPE_STOP, 0));
+    }
 }

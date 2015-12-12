@@ -57,22 +57,33 @@ public class JoyStickFragment extends Fragment {
                 int direction = getTheDirection(degrees);
                 switch (direction) {
                     case CONSTANT.FORWARDING : {
-                        ((DirectionActivity)getActivity()).getTCPSmartcarController().forward();
+                        if (getActivity() != null) {
+                            ((DirectionActivity)getActivity()).getTCPSmartcarController().forward();
+                        }
                         break;
                     }
                     case CONSTANT.LEFT: {
-                        ((DirectionActivity)getActivity()).getTCPSmartcarController().turnLeft(0);
+                        if (getActivity() != null) {
+                            ((DirectionActivity)getActivity()).getTCPSmartcarController().turnLeft(0);
+                        }
                         break;
                     }
                     case CONSTANT.RIGHT : {
-                        ((DirectionActivity)getActivity()).getTCPSmartcarController().turnRight(0);
+                        if (getActivity() != null) {
+                            ((DirectionActivity)getActivity()).getTCPSmartcarController().turnRight(0);
+                        }
                         break;
                     }
                     case CONSTANT.BACK : {
-                        ((DirectionActivity)getActivity()).getTCPSmartcarController().backward();
+                        if (getActivity() != null) {
+                            ((DirectionActivity)getActivity()).getTCPSmartcarController().backward();
+                        }
                         break;
                     }
                     case -1:
+                        if (getActivity() != null) {
+                            ((DirectionActivity)getActivity()).getTCPSmartcarController().stop();
+                        }
                         break;
                 }
 

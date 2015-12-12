@@ -8,6 +8,7 @@ import android.os.IBinder;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -24,11 +25,12 @@ import com.ogaclejapan.smarttablayout.SmartTabLayout;
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItem;
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItemAdapter;
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItems;
+import com.ogaclejapan.smarttablayout.utils.v4.FragmentStatePagerItemAdapter;
 
 public class DirectionActivity extends AppCompatActivity {
 
     private static final String TAG = DirectionActivity.class.getCanonicalName();
-    private final CharSequence[] mCharSequences = {"方向键控制", "重力感应", "手柄操作"};
+    private final CharSequence[] mCharSequences = {"重力感应", "方向键控制", "手柄操作"};
 
     /*Service*/
     private TCPClient.MyBinder binder;
@@ -49,16 +51,16 @@ public class DirectionActivity extends AppCompatActivity {
 //        ViewGroup tab = (ViewGroup) findViewById(R.id.tab);
 //        tab.addView(LayoutInflater.from(this).inflate(demo.layoutResId, tab, false));
 
-        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
+        final ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
         final SmartTabLayout viewPagerTab = (SmartTabLayout) findViewById(R.id.viewpagertab);
 //        demo.setup(viewPagerTab);
 
         FragmentPagerItems pages = new FragmentPagerItems(this);
-        pages.add(FragmentPagerItem.of(mCharSequences[0], DirectionFragment.class));
-        pages.add(FragmentPagerItem.of(mCharSequences[1], GravitySensorFragment.class));
+        pages.add(FragmentPagerItem.of(mCharSequences[0], GravitySensorFragment.class));
+        pages.add(FragmentPagerItem.of(mCharSequences[1], DirectionFragment.class));
         pages.add(FragmentPagerItem.of(mCharSequences[2], JoyStickFragment.class));
 
-        FragmentPagerItemAdapter adapter = new FragmentPagerItemAdapter(
+        FragmentStatePagerItemAdapter adapter = new FragmentStatePagerItemAdapter(
                 getSupportFragmentManager(), pages);
 
         viewPager.setAdapter(adapter);
