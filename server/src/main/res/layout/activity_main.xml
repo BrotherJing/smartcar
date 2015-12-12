@@ -33,6 +33,12 @@
         android:id="@+id/btn_bluetooth"
         android:text="bluetooth"/>
 
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="car command"
+        android:id="@+id/btn_cmd"/>
+
 <android.support.v4.view.ViewPager android:id="@+id/pager"
     android:visibility="gone"
     android:layout_width="fill_parent" android:layout_height="fill_parent" />

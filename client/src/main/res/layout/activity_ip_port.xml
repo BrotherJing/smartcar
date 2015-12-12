@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        android:elevation="4dp" />
+
+    <FrameLayout
+        android:layout_below="@id/toolbar"
+        android:id="@+id/frame_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp"
+            android:paddingTop="50dp"
+            android:paddingLeft="40dp"
+            android:paddingRight="40dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="10dp">
+
+                <com.rengwuxian.materialedittext.MaterialAutoCompleteTextView
+                    android:id="@+id/edt_ip"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:padding="10dp"
+                    android:hint="输入 IP 地址"
+                    android:completionThreshold="1"
+                    app:met_textColor="#000000"
+                    app:met_baseColor="#0056d3"
+                    app:met_clearButton="true"/>
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="10dp">
+
+                <com.rengwuxian.materialedittext.MaterialAutoCompleteTextView
+                    android:id="@+id/edt_port"
+                    android:layout_width="0dp"
+                    android:layout_weight="3"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:hint="输入 PORT 值"
+                    android:completionThreshold="1"
+                    app:met_textColor="#000000"
+                    app:met_baseColor="#0056d3"
+                    app:met_clearButton="true"/>
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btn_connect"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#3F51B5"
+                android:fontFamily="sans-serif-ligh"
+                android:gravity="center"
+                android:text="@string/bit_connect"
+                android:textSize="20sp"
+                android:textColor="#F5F5F5"/>
+
+        </LinearLayout>
+    </FrameLayout>
+
+</RelativeLayout>

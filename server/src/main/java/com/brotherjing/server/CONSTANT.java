@@ -35,7 +35,7 @@ public interface CONSTANT {
     int CONNECTED = 3;
 
     //broadcast action
-    String ACTION_CONNECTED = "connected";
+    String ACTION_DEVICE_CONNECTED = "connected";
     String ACTION_NEW_MSG_BT = "new_msg_bt";
 
     //key

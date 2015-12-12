@@ -20,5 +20,8 @@ public interface Protocol {
     int CMD_TYPE_TURNRIGHT = 2;
     int CMD_TYPE_SPEEDUP = 3;
     int CMD_TYPE_SPEEDDOWN = 4;
+    int CMD_TYPE_SETSPEED = 5;
+    int CMD_TYPE_FORWARD = 6;
+    int CMD_TYPE_BACKWARD = 7;
 
 }

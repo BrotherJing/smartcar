@@ -20,4 +20,12 @@ public class CommandMessage extends Message{
         super("","", Protocol.MSG_TYPE_CMD);
         command = new Command(cmdType,cmdArg);
     }
+
+    public Command getCommand() {
+        return command;
+    }
+
+    public void setCommand(Command command) {
+        this.command = command;
+    }
 }
