@@ -11,5 +11,16 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true" />
+
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/fl_joystick"></FrameLayout>
+
+    <!--<fragment
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:name="com.brotherjing.client.Direction.NewJoyStickFragment"
+        android:id="@+id/fragment_joystick"/>-->
         
 </RelativeLayout>

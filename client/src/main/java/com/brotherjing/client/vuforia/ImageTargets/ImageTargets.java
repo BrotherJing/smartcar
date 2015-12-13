@@ -9,13 +9,19 @@ package com.brotherjing.client.vuforia.ImageTargets;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
+import android.content.ComponentName;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -26,13 +32,19 @@ import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.Toast;
 
+import com.brotherjing.client.CONSTANT;
+import com.brotherjing.client.Direction.NewJoyStickFragment;
 import com.brotherjing.client.R;
+import com.brotherjing.client.controller.TCPSmartcarControllerImpl;
+import com.brotherjing.client.service.TCPClient;
 import com.brotherjing.client.vuforia.SampleApplication.SampleApplicationControl;
 import com.brotherjing.client.vuforia.SampleApplication.SampleApplicationException;
 import com.brotherjing.client.vuforia.SampleApplication.SampleApplicationSession;
 import com.brotherjing.client.vuforia.SampleApplication.utils.LoadingDialogHandler;
 import com.brotherjing.client.vuforia.SampleApplication.utils.SampleApplicationGLView;
 import com.brotherjing.client.vuforia.SampleApplication.utils.Texture;
+import com.brotherjing.utils.Logger;
+import com.jmedeisis.bugstick.JoystickListener;
 import com.qualcomm.vuforia.CameraDevice;
 import com.qualcomm.vuforia.DataSet;
 import com.qualcomm.vuforia.ObjectTracker;
@@ -47,10 +59,12 @@ import java.util.ArrayList;
 import java.util.Vector;
 
 
-public class ImageTargets extends Activity implements SampleApplicationControl
+public class ImageTargets extends Activity implements SampleApplicationControl,NewJoyStickFragment.OnDirectionListener
 {
     private static final String LOGTAG = "ImageTargets";
-    
+
+    NewJoyStickFragment joyStickFragment;
+
     SampleApplicationSession vuforiaAppSession;
     
     private DataSet mCurrentDataset;
@@ -298,7 +312,7 @@ public class ImageTargets extends Activity implements SampleApplicationControl
     {
         mUILayout = (RelativeLayout) View.inflate(this, R.layout.camera_overlay,
                 null);
-        
+
         mUILayout.setVisibility(View.VISIBLE);
         mUILayout.setBackgroundColor(Color.BLACK);
         
@@ -313,10 +327,71 @@ public class ImageTargets extends Activity implements SampleApplicationControl
         // Adds the inflated layout to the view
         addContentView(mUILayout, new LayoutParams(LayoutParams.MATCH_PARENT,
             LayoutParams.MATCH_PARENT));
-        
+
+        FragmentManager manager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = manager.beginTransaction();
+        joyStickFragment = new NewJoyStickFragment();
+        fragmentTransaction.replace(R.id.fl_joystick,joyStickFragment).commit();
+        joyStickFragment.setOnDirectionListener(this);
     }
-    
-    
+
+    private TCPClientConnection conn;
+    private TCPClient.MyBinder binder;
+    private TCPSmartcarControllerImpl mTCPSmartcarController;
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        bindService(new Intent(this, TCPClient.class), conn = new TCPClientConnection(), BIND_AUTO_CREATE);
+    }
+
+    private class TCPClientConnection implements ServiceConnection {
+        @Override
+        public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+            binder = (TCPClient.MyBinder)iBinder;
+            mTCPSmartcarController = new TCPSmartcarControllerImpl(binder);
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName componentName) {
+
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        unbindService(conn);
+    }
+
+    @Override
+    public void onDirection(int direction, float offset) {
+        if(mTCPSmartcarController==null)return;
+        Logger.i(direction+" "+offset);
+        switch (direction) {
+            case CONSTANT.FORWARDING : {
+                mTCPSmartcarController.forward();
+                break;
+            }
+            case CONSTANT.LEFT: {
+                mTCPSmartcarController.turnLeft(0);
+                break;
+            }
+            case CONSTANT.RIGHT : {
+                mTCPSmartcarController.turnRight(0);
+                break;
+            }
+            case CONSTANT.BACK : {
+                mTCPSmartcarController.backward();
+                break;
+            }
+            case -1:
+                mTCPSmartcarController.stop();
+                break;
+        }
+        if(offset<0.1f)mTCPSmartcarController.stop();
+    }
+
     // Methods to load and destroy tracking data.
     @Override
     public boolean doLoadTrackersData()
