@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.speech.SpeechRecognizer;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
@@ -18,6 +19,7 @@ import android.widget.Toast;
 import com.brotherjing.client.Direction.DirectionActivity;
 import com.brotherjing.client.QRcode.MipcaActivityCapture;
 import com.brotherjing.client.activity.ViewCameraActivity;
+import com.brotherjing.client.activity.ViewDirectionActivity;
 import com.brotherjing.client.service.TCPClient;
 import com.brotherjing.client.vuforia.ImageTargets.ImageTargets;
 import com.brotherjing.utils.bean.TextMessage;
@@ -119,7 +121,7 @@ public class HomePageActivity extends AppCompatActivity {
 
                                 /* 视频回传 */
                                 binder.send(new TextMessage("[req]"));
-                                startActivity(new Intent(HomePageActivity.this, ViewCameraActivity.class));
+                                startActivity(new Intent(HomePageActivity.this, ViewDirectionActivity.class));
 
                             } else if (drawerItem.getIdentifier() == 4){
 
