@@ -20,6 +20,7 @@ import android.widget.TextView;
 import com.brotherjing.client.CONSTANT;
 import com.brotherjing.client.R;
 import com.brotherjing.client.controller.TCPSmartcarControllerImpl;
+import com.brotherjing.client.vuforia.SampleApplication.utils.LoadingDialogHandler;
 
 import java.lang.reflect.GenericArrayType;
 
@@ -56,29 +57,20 @@ public class GravitySensorFragment extends Fragment {
         return view;
     }
 
-
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        if (this.isVisible()) {
-            if (!isVisibleToUser) {
-                Log.d(TAG, "Not visible anymore");
-                onPause();
-            }
-        }
-    }
-
     @Override
     public void onResume() {
         Sensor mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        mSensorManager.registerListener(mMySensorEventLisener, mSensor, SensorManager.SENSOR_DELAY_UI);
+        mSensorManager.registerListener(mMySensorEventLisener, mSensor, SensorManager.SENSOR_DELAY_NORMAL);
         super.onResume();
+        Log.d(TAG, "onResume");
     }
 
     @Override
     public void onPause() {
-        mSensorManager.unregisterListener(mMySensorEventLisener);
         super.onPause();
+        mSensorManager.unregisterListener(mMySensorEventLisener);
+        Log.d(TAG, "onPause");
+
     }
 
     private class MySensorEventLisener implements SensorEventListener {

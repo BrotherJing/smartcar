@@ -25,20 +25,16 @@ import java.util.List;
 public class DirectionFragment extends Fragment {
 
     private static final String TAG = DirectionFragment.class.getCanonicalName();
-//    private TCPSmartcarControllerImpl mTCPSmartcarController;
+    private ImageView btn_forward, btn_left, btn_right, btn_back, btn_stop;
+
 
     public DirectionFragment() {
         // Required empty public constructor
     }
 
-    private ImageView btn_forward, btn_left, btn_right, btn_back, btn_stop;
-
-    private ArrayList<Button> buttonList = null;
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        mTCPSmartcarController = new TCPSmartcarControllerImpl(((DirectionActivity)getActivity()).getBinder());
     }
 
 
@@ -47,12 +43,6 @@ public class DirectionFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_direction, container, false);
-
-//        forwarding = (Button) view.findViewById(R.id.forwarding);
-//        left = (Button) view.findViewById(R.id.left);
-//        stop = (Button) view.findViewById(R.id.stop);
-//        right = (Button) view.findViewById(R.id.right);
-//        back = (Button) view.findViewById(R.id.back);
 
         btn_forward = (ImageView) view.findViewById(R.id.forwarding);
         btn_forward.setOnLongClickListener(new View.OnLongClickListener() {

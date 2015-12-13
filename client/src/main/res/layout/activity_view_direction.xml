@@ -1,0 +1,124 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:orientation="vertical"
+              android:background="@color/primary_dark_material_dark"
+              tools:context="com.brotherjing.client.activity.ViewCameraActivity">
+
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        tools:context=".Direction.DirectionActivity"
+        tools:showIn="@layout/activity_direction">
+
+
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/primary_dark_material_dark"
+            android:stretchColumns="*">
+
+            <TableRow>
+
+                <ImageView
+                    android:id="@+id/left_forwarding"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center">
+                </ImageView>
+
+                <ImageView
+                    android:id="@+id/forwarding"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:src="@drawable/ic_arrow_up_white_48dp">
+
+                </ImageView>
+
+                <ImageView
+                    android:id="@+id/right_forwarding"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center">
+                </ImageView>
+
+            </TableRow>
+
+            <TableRow
+                android:paddingBottom="12dp"
+                android:paddingTop="12dp">
+
+                <ImageView
+                    android:id="@+id/left"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:src="@drawable/ic_arrow_left_white_48dp">
+                </ImageView>
+
+                <ImageView
+                    android:id="@+id/stop"
+                    android:src="@drawable/ic_cube_outline_white_48dp">
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center">
+                </ImageView>
+
+                <ImageView
+                    android:id="@+id/right"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:src="@drawable/ic_arrow_right_white_48dp">
+                </ImageView>
+            </TableRow>
+
+            <TableRow>
+
+                <ImageView
+                    android:id="@+id/left_back"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center">
+                </ImageView>
+
+                <ImageView
+                    android:id="@+id/back"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:src="@drawable/ic_arrow_down_white_48dp">
+                </ImageView>
+
+                <ImageView
+
+                    android:id="@+id/back_right"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center">
+                </ImageView>
+
+            </TableRow>
+        </TableLayout>
+
+    </LinearLayout>
+
+    <com.brotherjing.client.view.ImageSurfaceView
+        android:id="@+id/surfaceview_camera"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+</LinearLayout>

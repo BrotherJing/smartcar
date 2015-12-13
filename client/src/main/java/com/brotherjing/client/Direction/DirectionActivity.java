@@ -37,8 +37,6 @@ public class DirectionActivity extends AppCompatActivity {
     private TCPClientConnection conn;
     private TCPSmartcarControllerImpl mTCPSmartcarController;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

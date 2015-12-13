@@ -4,6 +4,7 @@ package com.brotherjing.client.Direction;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,8 @@ import com.jmedeisis.bugstick.JoystickListener;
  * A simple {@link Fragment} subclass.
  */
 public class JoyStickFragment extends Fragment {
+
+    private static final String TAG = JoyStickFragment.class.getCanonicalName();
 
     private TCPSmartcarControllerImpl mTCPSmartcarController;
     public JoyStickFragment() {
@@ -98,6 +101,18 @@ public class JoyStickFragment extends Fragment {
             }
         });
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume");
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.d(TAG, "onPause");
     }
 
     private int getTheDirection(float degrees) {
