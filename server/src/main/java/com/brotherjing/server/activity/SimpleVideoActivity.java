@@ -1,29 +1,44 @@
 package com.brotherjing.server.activity;
 
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.graphics.Rect;
 import android.graphics.YuvImage;
 import android.hardware.Camera;
 import android.media.MediaRecorder;
 import android.os.Build;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
+import com.brotherjing.server.CONSTANT;
+import com.brotherjing.server.GlobalEnv;
 import com.brotherjing.server.R;
+import com.brotherjing.server.controller.BluetoothCarController;
+import com.brotherjing.server.service.BluetoothService;
 import com.brotherjing.server.service.ClientThread;
 import com.brotherjing.server.service.TCPServer;
 import com.brotherjing.server.service.UDPServer;
 import com.brotherjing.utils.Logger;
+import com.brotherjing.utils.Protocol;
+import com.brotherjing.utils.bean.CommandMessage;
+import com.brotherjing.utils.bean.TextMessage;
+import com.google.gson.Gson;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.util.List;
 
 public class SimpleVideoActivity extends ActionBarActivity {
@@ -39,8 +54,10 @@ public class SimpleVideoActivity extends ActionBarActivity {
     private Button takeVideoButton;
 
     private boolean isRecording = false;
-    private List<ClientThread> clientList;
-    private TCPServer.MyBinder binder;
+    BluetoothService.MyBinder bluetoothBinder;
+    BluetoothCarController carController = null;
+
+    MainThreadReceiver receiver;
 
     private UDPServer.MyBinder udpBinder;
 
@@ -130,19 +147,27 @@ public class SimpleVideoActivity extends ActionBarActivity {
                 }
             }
         });
+
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(CONSTANT.ACTION_NEW_MSG);
+        receiver = new MainThreadReceiver();
+        registerReceiver(receiver, intentFilter);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
         //bindService(new Intent(this, TCPServer.class), mServiceConnection, BIND_AUTO_CREATE);
-        bindService(new Intent(this,UDPServer.class),mServiceConnection,BIND_AUTO_CREATE);
+        bindService(new Intent(this, UDPServer.class), mServiceConnection, BIND_AUTO_CREATE);
+        bindService(new Intent(this, BluetoothService.class), bluetoothConn, BIND_AUTO_CREATE);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         unbindService(mServiceConnection);
+        unbindService(bluetoothConn);
+        unregisterReceiver(receiver);
     }
 
     @Override
@@ -159,12 +184,6 @@ public class SimpleVideoActivity extends ActionBarActivity {
     public void onPause() {
         super.onPause();
         releaseCamera();
-    }
-
-    @Override
-    protected void onDestroy() {
-        stopService(new Intent(this, TCPServer.class));
-        super.onDestroy();
     }
 
     private void releaseCamera() {
@@ -244,4 +263,37 @@ public class SimpleVideoActivity extends ActionBarActivity {
 
         }
     };
+
+    private ServiceConnection bluetoothConn = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            bluetoothBinder = (BluetoothService.MyBinder)service;
+            carController = new BluetoothCarController(bluetoothBinder);
+            Toast.makeText(SimpleVideoActivity.this, "get bluetooth binder", Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+
+        }
+    };
+
+    //broadcast receiver listening to server events
+    private class MainThreadReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if(intent.getAction().equals(CONSTANT.ACTION_NEW_MSG)){
+                com.brotherjing.utils.bean.Message message = new Gson().fromJson(intent.getStringExtra(CONSTANT.KEY_MSG_DATA), com.brotherjing.utils.bean.Message.class);
+                if(message.getMsgType()== Protocol.MSG_TYPE_TEXT){
+                    //TextMessage textMessage = new Gson().fromJson(intent.getStringExtra(CONSTANT.KEY_MSG_DATA),TextMessage.class);
+                    Logger.i(intent.getStringExtra(CONSTANT.KEY_MSG_DATA));
+                }else{
+                    CommandMessage cmd = new Gson().fromJson(intent.getStringExtra(CONSTANT.KEY_MSG_DATA),CommandMessage.class);
+                    if(carController!=null){
+                        carController.processCommand(cmd.getCommand());
+                    }
+                }
+            }
+        }
+    }
 }

@@ -1,6 +1,7 @@
 package com.brotherjing.server.activity;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -14,6 +15,7 @@ import android.content.ServiceConnection;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.speech.SpeechRecognizer;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -37,12 +39,14 @@ import com.brotherjing.utils.Logger;
 import com.brotherjing.utils.Protocol;
 import com.brotherjing.utils.bean.CommandMessage;
 import com.brotherjing.utils.bean.TextMessage;
+import com.dxjia.library.BaiduVoiceHelper;
 import com.google.gson.Gson;
 
 
 public class MainActivity extends ActionBarActivity {
 
     final static int REQ_BLUETOOTH = 1;
+    final static int REQ_ASR = 2;
     //SectionsPagerAdapter mSectionsPagerAdapter;
     //List<Fragment> fragments;
     int currentIndex;
@@ -50,10 +54,13 @@ public class MainActivity extends ActionBarActivity {
 
     //ViewPager mViewPager;
     TextView tv_addr,tv_content;
-    Button mButton, qrCodeButton,btnBluetooth,btnCarCommand;
+    Button mButton, qrCodeButton,btnBluetooth;
 
     MainThreadHandler handler;
+
+    IntentFilter intentFilter;
     MainThreadReceiver receiver;
+
     TCPServer.MyBinder binder;
     BluetoothService.MyBinder bluetoothBinder;
     BluetoothCarController carController = null;
@@ -65,11 +72,10 @@ public class MainActivity extends ActionBarActivity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         //register broadcast listening to server event
-        IntentFilter intentFilter = new IntentFilter();
+        intentFilter = new IntentFilter();
         intentFilter.addAction(CONSTANT.ACTION_SERVER_UP);
         intentFilter.addAction(CONSTANT.ACTION_NEW_MSG);
         receiver = new MainThreadReceiver();
-        registerReceiver(receiver,intentFilter);
 
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
@@ -79,7 +85,6 @@ public class MainActivity extends ActionBarActivity {
         mButton = (Button) findViewById(R.id.button_capture_image);
         qrCodeButton = (Button) findViewById(R.id.btn_generate_qrcode);
         btnBluetooth = (Button) findViewById(R.id.btn_bluetooth);
-        btnCarCommand = (Button) findViewById(R.id.btn_cmd);
 
         initData();
     }
@@ -117,10 +122,10 @@ public class MainActivity extends ActionBarActivity {
             }
         });
 
-        btnCarCommand.setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.btn_asr).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                bluetoothBinder.send("1");
+                BaiduVoiceHelper.startBaiduVoiceDialogForResult(MainActivity.this, CONSTANT.API_KEY, CONSTANT.SECRET_KEY, REQ_ASR);
             }
         });
     }
@@ -140,10 +145,6 @@ public class MainActivity extends ActionBarActivity {
                 case CONSTANT.MSG_IP_ADDR:
                     String ip = msg.getData().getString(CONSTANT.KEY_IP_ADDR);
                     GlobalEnv.put(CONSTANT.GLOBAL_IP_ADDRESS,ip);
-                    /*Fragment currentFragment = activity.fragments.get(activity.currentIndex);
-                    if(currentFragment instanceof ServerFragment){
-                        ((ServerFragment) currentFragment).refreshIpAddr(ip);
-                    }*/
                     activity.tv_addr.setText(ip);
                     break;
                 case CONSTANT.MSG_NEW_MSG:
@@ -151,11 +152,6 @@ public class MainActivity extends ActionBarActivity {
                     if(message.getMsgType()== Protocol.MSG_TYPE_TEXT){
                         TextMessage textMessage = new Gson().fromJson(msg.getData().getString(CONSTANT.KEY_MSG_DATA),TextMessage.class);
                         Logger.i(msg.getData().getString(CONSTANT.KEY_MSG_DATA));
-                    /*Fragment cf = activity.fragments.get(activity.currentIndex);
-                    if(cf instanceof ServerFragment){
-                        Logger.i("is server fragment");
-                        ((ServerFragment) cf).newMessage(textMessage);
-                    }*/
                         activity.tv_content.setText(textMessage.getText()+"\n"+activity.tv_content.getText().toString());
                     }else{
                         CommandMessage cmd = new Gson().fromJson(msg.getData().getString(CONSTANT.KEY_MSG_DATA),CommandMessage.class);
@@ -173,13 +169,17 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        registerReceiver(receiver, intentFilter);
         bindService(new Intent(this, TCPServer.class), conn, BIND_AUTO_CREATE);
+        if(isBluetoothServiceBinded){
+            bindService(new Intent(this,BluetoothService.class),bluetoothConn,BIND_AUTO_CREATE);
+        }
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        Logger.i("stop");
+        unregisterReceiver(receiver);
         unbindService(conn);
         if(isBluetoothServiceBinded)
             unbindService(bluetoothConn);
@@ -189,10 +189,8 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Logger.i("destroy");
         handler = null;
         //stopService(new Intent(this,TCPServer.class));
-        unregisterReceiver(receiver);
     }
 
 
@@ -264,6 +262,15 @@ public class MainActivity extends ActionBarActivity {
                 BluetoothDevice device = data.getParcelableExtra(CONSTANT.KEY_DEVICE);
                 Toast.makeText(this,device.getName(),Toast.LENGTH_SHORT).show();
                 bindService(new Intent(this,BluetoothService.class),bluetoothConn,BIND_AUTO_CREATE);
+            }
+        }else if(requestCode==REQ_ASR){
+            if (resultCode == RESULT_OK) {
+                ArrayList<String> results = data.getStringArrayListExtra(SpeechRecognizer.RESULTS_RECOGNITION);
+                String res = "";
+                for(String i : results){
+                    res+=i+"\n";
+                }
+                Toast.makeText(this,res,Toast.LENGTH_SHORT).show();
             }
         }
     }

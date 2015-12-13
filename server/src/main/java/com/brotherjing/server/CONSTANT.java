@@ -41,4 +41,10 @@ public interface CONSTANT {
     //key
     String KEY_MSG_CONTENT = "content";
     String KEY_DEVICE = "device";
+
+
+    //baidu asr
+    int APP_ID = 7031386;
+    String API_KEY = "gxF67xov7DA1QE2Hb9CC5UFu";
+    String SECRET_KEY = "9f3577b4430c60e1bbaa98bdeb504f90";
 }

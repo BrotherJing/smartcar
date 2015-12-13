@@ -24,5 +24,6 @@ dependencies {
     compile project(':utils')
     compile files('libs/zxing.jar')
     compile 'com.android.support:appcompat-v7:23.1.1'
+    compile 'com.dxjia.baiduvoicehelper:library:0.2.0'
     compile 'com.android.support:design:23.1.1'
 }

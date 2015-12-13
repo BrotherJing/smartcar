@@ -58,7 +58,7 @@ public class ImageTargetRenderer implements GLSurfaceView.Renderer
     
     private int texSampler2DHandle;
     
-    private Teapot mTeapot;
+    private Teapot mTeapot;//girl
 
     private MyObject myObject;
     

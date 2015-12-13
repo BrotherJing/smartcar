@@ -100,8 +100,10 @@ public class ImageTargets extends Activity implements SampleApplicationControl
         vuforiaAppSession = new SampleApplicationSession(this);
         
         startLoadingAnimation();
-        mDatasetStrings.add("StonesAndChips.xml");
-        mDatasetStrings.add("Tarmac.xml");
+        //mDatasetStrings.add("StonesAndChips.xml");
+        //mDatasetStrings.add("Tarmac.xml");
+        //TODO: add your own target
+        mDatasetStrings.add("SmartCar.xml");
         
         vuforiaAppSession
             .initAR(this, ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -167,7 +169,8 @@ public class ImageTargets extends Activity implements SampleApplicationControl
             getAssets()));
         /*mTextures.add(Texture.loadTextureFromApk("ImageTargets/Buildings.jpeg",
             getAssets()));*/
-        mTextures.add(Texture.loadTextureFromApk("ImageTargets/Buildings.jpeg",getAssets()));
+        //TODO: add your own texture
+        mTextures.add(Texture.loadTextureFromApk("ImageTargets/girl.jpg",getAssets()));
     }
     
     
