@@ -1,6 +1,7 @@
 package com.brotherjing.server.controller;
 
 import com.brotherjing.server.service.BluetoothService;
+import com.brotherjing.utils.Logger;
 import com.brotherjing.utils.Protocol;
 import com.brotherjing.utils.bean.Command;
 
@@ -50,6 +51,7 @@ public class BluetoothCarController {
             case Protocol.CMD_TYPE_SETSPEED:
                 setSpeed(command.getCmtArg());
         }
+        Logger.i(command.getCmdType()+"");
     }
 
 }
