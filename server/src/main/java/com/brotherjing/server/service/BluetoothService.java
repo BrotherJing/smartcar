@@ -72,6 +72,7 @@ public class BluetoothService extends Service {
         if(clientHandler!=null)clientHandler.removeMessages(CONSTANT.SEND_MSG);
         if(handlerThread!=null)handlerThread.interrupt();
         if(clientThread!=null)clientThread.interrupt();
+        clientThread = null;
     }
 
     private void startThread(BluetoothDevice device){
@@ -131,6 +132,7 @@ public class BluetoothService extends Service {
                 }
             }catch (IOException e){
                 e.printStackTrace();
+                BluetoothService.this.stopSelf();
             }
         }
     }

@@ -47,12 +47,9 @@ public class MainActivity extends ActionBarActivity {
 
     final static int REQ_BLUETOOTH = 1;
     final static int REQ_ASR = 2;
-    //SectionsPagerAdapter mSectionsPagerAdapter;
-    //List<Fragment> fragments;
-    int currentIndex;
+
     boolean isBluetoothServiceBinded = false;
 
-    //ViewPager mViewPager;
     TextView tv_addr,tv_content;
     Button mButton, qrCodeButton,btnBluetooth;
 
@@ -215,9 +212,12 @@ public class MainActivity extends ActionBarActivity {
                 bundle.putString(CONSTANT.KEY_CLIENT_NAME, intent.getStringExtra(CONSTANT.KEY_CLIENT_NAME));
             }else if(intent.getAction().equals(CONSTANT.ACTION_NEW_REQ)){
                 //GO TO VIDEO ACTIVITY
-                if(intent.getIntExtra(CONSTANT.KEY_REQ_TYPE,0)==CONSTANT.REQ_TYPE_VIDEO) {
+                int type = intent.getIntExtra(CONSTANT.KEY_REQ_TYPE,0);
+                if(type==CONSTANT.REQ_TYPE_VIDEO) {
                     Intent intent1 = new Intent(MainActivity.this, SimpleVideoActivity.class);
                     startActivity(intent1);
+                }else if(type==CONSTANT.REQ_TYPE_AUDIO){
+                    BaiduVoiceHelper.startBaiduVoiceDialogForResult(MainActivity.this, CONSTANT.API_KEY, CONSTANT.SECRET_KEY, REQ_ASR);
                 }
             }else{
                 return;

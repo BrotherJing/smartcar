@@ -23,6 +23,7 @@ import com.brotherjing.client.activity.ViewCameraActivity;
 import com.brotherjing.client.activity.ViewDirectionActivity;
 import com.brotherjing.client.service.TCPClient;
 import com.brotherjing.client.vuforia.ImageTargets.ImageTargets;
+import com.brotherjing.utils.Protocol;
 import com.brotherjing.utils.bean.TextMessage;
 import com.dxjia.library.BaiduVoiceHelper;
 import com.mikepenz.materialdrawer.AccountHeader;
@@ -109,11 +110,13 @@ public class HomePageActivity extends AppCompatActivity {
                             if (drawerItem.getIdentifier() == 1){
 
                                 /* 语音识别 */
-                                BaiduVoiceHelper.startBaiduVoiceDialogForResult(
+                                /*BaiduVoiceHelper.startBaiduVoiceDialogForResult(
                                         HomePageActivity.this,
                                         CONSTANT.API_KEY,
-                                        CONSTANT.SECRET_KEY, REQUEST_UI);
-
+                                        CONSTANT.SECRET_KEY, REQUEST_UI);*/
+                                if(binder!=null){
+                                    binder.send(new TextMessage(Protocol.REQ_AUDIO));
+                                }
 
                             } else if (drawerItem.getIdentifier() == 2){
                                 /* 增强现实 */
