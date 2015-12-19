@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.brotherjing.client.Direction.DirectionActivity;
 import com.brotherjing.client.QRcode.MipcaActivityCapture;
+import com.brotherjing.client.activity.QCARJavaActivity;
 import com.brotherjing.client.activity.ViewCameraActivity;
 import com.brotherjing.client.activity.ViewDirectionActivity;
 import com.brotherjing.client.service.TCPClient;
@@ -116,7 +117,8 @@ public class HomePageActivity extends AppCompatActivity {
 
                             } else if (drawerItem.getIdentifier() == 2){
                                 /* 增强现实 */
-                                startActivity(new Intent(HomePageActivity.this, ImageTargets.class));
+                                //startActivity(new Intent(HomePageActivity.this, ImageTargets.class));
+                                startActivity(new Intent(HomePageActivity.this, QCARJavaActivity.class));
 
                             } else if (drawerItem.getIdentifier() == 3){
 
