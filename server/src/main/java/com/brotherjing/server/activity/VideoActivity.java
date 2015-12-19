@@ -210,13 +210,13 @@ public class VideoActivity extends ActionBarActivity {
         //mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.CAMCORDER);
         mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
 
-        //mMediaRecorder.setProfile(CamcorderProfile.get(CamcorderProfile.QUALITY_LOW));
+        //mMediaRecorder.setProfile(CamcorderProfile.getString(CamcorderProfile.QUALITY_LOW));
         mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
         mMediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H263);
         //Logger.i("size is " + bestSize.width + " " + bestSize.height);
         mMediaRecorder.setVideoSize(320, 240);
 
-        //final ParcelFileDescriptor pfd = ParcelFileDescriptor.fromSocket(clientSockets.get(0));
+        //final ParcelFileDescriptor pfd = ParcelFileDescriptor.fromSocket(clientSockets.getString(0));
 
         mMediaRecorder.setPreviewDisplay(mSurfaceView.getHolder().getSurface());
 

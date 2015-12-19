@@ -26,6 +26,7 @@ public interface CONSTANT {
     //Global environment
     String GLOBAL_IP_ADDRESS = "ip_addr";
     String GLOBAL_AUDIENCE_ADDR = "audience_addr";
+    String GLOBAL_IS_BLUETOOTH_CONNECTED = "is_blt_connected";
 
     //bluetooth-----------------------
     String MY_UUID = "00001101-0000-1000-8000-00805F9B34FB";

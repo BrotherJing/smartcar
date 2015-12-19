@@ -62,6 +62,7 @@ public class SimpleVideoActivity extends ActionBarActivity {
     private UDPServer.MyBinder udpBinder;
 
     private int frame_skipped = 0;
+    private boolean isBluetoothConnected = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +82,8 @@ public class SimpleVideoActivity extends ActionBarActivity {
                 }
             }
         });
+
+        isBluetoothConnected = GlobalEnv.getBoolean(CONSTANT.GLOBAL_IS_BLUETOOTH_CONNECTED,false);
 
         mSurfaceView = (SurfaceView) findViewById(R.id.surfaceView);
         final SurfaceHolder holder = mSurfaceView.getHolder();
@@ -159,14 +162,17 @@ public class SimpleVideoActivity extends ActionBarActivity {
         super.onStart();
         //bindService(new Intent(this, TCPServer.class), mServiceConnection, BIND_AUTO_CREATE);
         bindService(new Intent(this, UDPServer.class), mServiceConnection, BIND_AUTO_CREATE);
-        bindService(new Intent(this, BluetoothService.class), bluetoothConn, BIND_AUTO_CREATE);
+        if(isBluetoothConnected)
+            bindService(new Intent(this, BluetoothService.class), bluetoothConn, BIND_AUTO_CREATE);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         unbindService(mServiceConnection);
-        unbindService(bluetoothConn);
+        if(isBluetoothConnected) {
+            unbindService(bluetoothConn);
+        }
         unregisterReceiver(receiver);
     }
 
@@ -244,8 +250,8 @@ public class SimpleVideoActivity extends ActionBarActivity {
     };
 
     private void sendImage(byte[] data){
-        /*clientList.get(0).prepareForVideo();
-        clientList.get(0).send(data);*/
+        /*clientList.getString(0).prepareForVideo();
+        clientList.getString(0).send(data);*/
         udpBinder.send(data);
     }
 
@@ -269,7 +275,7 @@ public class SimpleVideoActivity extends ActionBarActivity {
         public void onServiceConnected(ComponentName name, IBinder service) {
             bluetoothBinder = (BluetoothService.MyBinder)service;
             carController = new BluetoothCarController(bluetoothBinder);
-            Toast.makeText(SimpleVideoActivity.this, "get bluetooth binder", Toast.LENGTH_SHORT).show();
+            Toast.makeText(SimpleVideoActivity.this, "getString bluetooth binder", Toast.LENGTH_SHORT).show();
         }
 
         @Override
@@ -287,6 +293,7 @@ public class SimpleVideoActivity extends ActionBarActivity {
                 if(message.getMsgType()== Protocol.MSG_TYPE_TEXT){
                     //TextMessage textMessage = new Gson().fromJson(intent.getStringExtra(CONSTANT.KEY_MSG_DATA),TextMessage.class);
                     Logger.i(intent.getStringExtra(CONSTANT.KEY_MSG_DATA));
+                    //TODO: if send 'quit' request, quit.
                 }else{
                     CommandMessage cmd = new Gson().fromJson(intent.getStringExtra(CONSTANT.KEY_MSG_DATA),CommandMessage.class);
                     if(carController!=null){

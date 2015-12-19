@@ -73,11 +73,6 @@ public class ClientActivity extends ActionBarActivity {
         edt_port = (EditText) findViewById(R.id.edt_port);
         btn_connect = (ButtonRectangle) findViewById(R.id.btn_connect);
         edt_input = (EditText) findViewById(R.id.edt_input);
-//        btn_submit = (Button) findViewById(R.id.btn_submit);
-//        btn_asr = (Button) findViewById(R.id.btn_asr);
-//        btn_ar = (Button) findViewById(R.id.btn_ar);
-//        btn_video = (Button) findViewById(R.id.btn_video);
-//        btn_qrcode = (Button) findViewById(R.id.btn_qrcode);
         btn_submit = (ButtonRectangle) findViewById(R.id.btn_submit);
         btn_asr = (ButtonRectangle) findViewById(R.id.btn_asr);
         btn_ar = (ButtonRectangle) findViewById(R.id.btn_ar);

@@ -5,13 +5,11 @@ import android.app.FragmentTransaction;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.RelativeLayout;
 
 import com.brotherjing.client.CONSTANT;
@@ -19,7 +17,6 @@ import com.brotherjing.client.Direction.NewJoyStickFragment;
 import com.brotherjing.client.R;
 import com.brotherjing.client.controller.TCPSmartcarControllerImpl;
 import com.brotherjing.client.service.TCPClient;
-import com.brotherjing.client.vuforia.SampleApplication.utils.LoadingDialogHandler;
 import com.brotherjing.utils.Logger;
 import com.qualcomm.QCARUnityPlayer.DebugLog;
 import com.unity3d.player.UnityPlayerNativeActivity;
@@ -56,6 +53,13 @@ public class QCARJavaActivity extends UnityPlayerNativeActivity implements NewJo
                 //mUILayout.setBackgroundColor(Color.BLACK);
 
                 mUILayout.findViewById(R.id.loading_indicator).setVisibility(View.GONE);
+
+                mUILayout.findViewById(R.id.btn_close).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        QCARJavaActivity.this.finish();
+                    }
+                });
                 /*// Gets a reference to the loading dialog
 
 
@@ -154,9 +158,4 @@ public class QCARJavaActivity extends UnityPlayerNativeActivity implements NewJo
         if(offset<0.1f)mTCPSmartcarController.stop();
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        finish();
-    }
 }

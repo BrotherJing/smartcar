@@ -244,7 +244,7 @@ public class MainActivity extends ActionBarActivity {
         public void onServiceConnected(ComponentName name, IBinder service) {
             bluetoothBinder = (BluetoothService.MyBinder)service;
             carController = new BluetoothCarController(bluetoothBinder);
-            Toast.makeText(MainActivity.this,"get bluetooth binder",Toast.LENGTH_SHORT).show();
+            Toast.makeText(MainActivity.this,"getString bluetooth binder",Toast.LENGTH_SHORT).show();
         }
 
         @Override
@@ -258,10 +258,11 @@ public class MainActivity extends ActionBarActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode==REQ_BLUETOOTH){
             if(resultCode==RESULT_OK){
-                isBluetoothServiceBinded = true;
+                GlobalEnv.put(CONSTANT.GLOBAL_IS_BLUETOOTH_CONNECTED,true);
                 BluetoothDevice device = data.getParcelableExtra(CONSTANT.KEY_DEVICE);
                 Toast.makeText(this,device.getName(),Toast.LENGTH_SHORT).show();
-                bindService(new Intent(this,BluetoothService.class),bluetoothConn,BIND_AUTO_CREATE);
+                bindService(new Intent(this, BluetoothService.class), bluetoothConn, BIND_AUTO_CREATE);
+                isBluetoothServiceBinded = true;
             }
         }else if(requestCode==REQ_ASR){
             if (resultCode == RESULT_OK) {
