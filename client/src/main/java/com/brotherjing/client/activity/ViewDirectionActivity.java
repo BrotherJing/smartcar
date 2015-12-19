@@ -29,6 +29,8 @@ import com.brotherjing.client.service.TCPClient;
 import com.brotherjing.client.service.UDPClient;
 import com.brotherjing.client.view.ImageSurfaceView;
 import com.brotherjing.utils.ImageCache;
+import com.brotherjing.utils.Protocol;
+import com.brotherjing.utils.bean.TextMessage;
 
 public class ViewDirectionActivity extends Activity {
 
@@ -39,6 +41,8 @@ public class ViewDirectionActivity extends Activity {
     private ImageView btn_forward, btn_left, btn_right, btn_back, btn_stop;
     private TCPSmartcarControllerImpl mTCPSmartcarController;
     private TCPClient.MyBinder binder;
+
+    private TCPClientConnection conn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,12 +112,14 @@ public class ViewDirectionActivity extends Activity {
     protected void onStart() {
         super.onStart();
         startService(new Intent(ViewDirectionActivity.this, UDPClient.class));
-        bindService(new Intent(ViewDirectionActivity.this, TCPClient.class), new TCPClientConnection(), BIND_AUTO_CREATE);
+        bindService(new Intent(ViewDirectionActivity.this, TCPClient.class), conn = new TCPClientConnection(), BIND_AUTO_CREATE);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
+        binder.send(new TextMessage(Protocol.REQ_END_VIDEO));
+        unbindService(conn);
         stopService(new Intent(ViewDirectionActivity.this, UDPClient.class));
     }
 

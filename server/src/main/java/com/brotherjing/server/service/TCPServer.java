@@ -66,9 +66,27 @@ public class TCPServer extends Service {
         notifyUI(msg);
         if(message.getMsgType()== Protocol.MSG_TYPE_TEXT) {
             message = new Gson().fromJson(msg,TextMessage.class);
-            if (((TextMessage)message).getText().equals("[req]")) {
+            if (((TextMessage)message).getText().equals(Protocol.REQ_VIDEO)) {
                 //client.sendImage();
                 GlobalEnv.put(CONSTANT.GLOBAL_AUDIENCE_ADDR, client.getIp());//only one audience for real time video
+
+                Intent intent = new Intent(CONSTANT.ACTION_NEW_REQ);
+                intent.putExtra(CONSTANT.KEY_REQ_TYPE, CONSTANT.REQ_TYPE_VIDEO);
+                sendBroadcast(intent);
+
+            }else if(((TextMessage)message).getText().equals(Protocol.REQ_AUDIO)){
+                //TODO: start audio recognition
+
+                Intent intent = new Intent(CONSTANT.ACTION_NEW_REQ);
+                intent.putExtra(CONSTANT.KEY_REQ_TYPE, CONSTANT.REQ_TYPE_AUDIO);
+                sendBroadcast(intent);
+
+            }else if(((TextMessage)message).getText().equals(Protocol.REQ_END_VIDEO)){
+
+                Intent intent = new Intent(CONSTANT.ACTION_NEW_REQ);
+                intent.putExtra(CONSTANT.KEY_REQ_TYPE, CONSTANT.REQ_TYPE_END_VIDEO);
+                sendBroadcast(intent);
+
             } else {
                 sendToAll(message);
             }
@@ -105,6 +123,12 @@ public class TCPServer extends Service {
         }
     }
 
+    public void broadcastNewClient(String id){
+        Intent intent = new Intent(CONSTANT.ACTION_NEW_CLIENT);
+        intent.putExtra(CONSTANT.KEY_CLIENT_NAME, id);
+        sendBroadcast(intent);
+    }
+
     @Override
     public IBinder onBind(Intent intent) {
         return new MyBinder();
@@ -126,7 +150,10 @@ public class TCPServer extends Service {
                     Socket socket = serverSocket.accept();
                     clientSockets.add(socket);
                     String id = System.currentTimeMillis()+"";
-                    Logger.i("new client! "+id);
+
+                    //notify new client
+                    Logger.i("new client! " + id);
+
                     ClientThread clientThread = new ClientThread(id,socket,TCPServer.this);
                     clientThread.start();
                     clients.add(clientThread);

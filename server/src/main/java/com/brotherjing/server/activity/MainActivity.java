@@ -75,6 +75,8 @@ public class MainActivity extends ActionBarActivity {
         intentFilter = new IntentFilter();
         intentFilter.addAction(CONSTANT.ACTION_SERVER_UP);
         intentFilter.addAction(CONSTANT.ACTION_NEW_MSG);
+        intentFilter.addAction(CONSTANT.ACTION_NEW_CLIENT);
+        intentFilter.addAction(CONSTANT.ACTION_NEW_REQ);
         receiver = new MainThreadReceiver();
 
         // Create the adapter that will return a fragment for each of the three
@@ -208,6 +210,15 @@ public class MainActivity extends ActionBarActivity {
             else if(intent.getAction().equals(CONSTANT.ACTION_NEW_MSG)){
                 msg.what=CONSTANT.MSG_NEW_MSG;
                 bundle.putString(CONSTANT.KEY_MSG_DATA, intent.getStringExtra(CONSTANT.KEY_MSG_DATA));
+            }else if(intent.getAction().equals(CONSTANT.ACTION_NEW_CLIENT)){
+                msg.what=CONSTANT.MSG_NEW_CLIENT;
+                bundle.putString(CONSTANT.KEY_CLIENT_NAME, intent.getStringExtra(CONSTANT.KEY_CLIENT_NAME));
+            }else if(intent.getAction().equals(CONSTANT.ACTION_NEW_REQ)){
+                //GO TO VIDEO ACTIVITY
+                if(intent.getIntExtra(CONSTANT.KEY_REQ_TYPE,0)==CONSTANT.REQ_TYPE_VIDEO) {
+                    Intent intent1 = new Intent(MainActivity.this, SimpleVideoActivity.class);
+                    startActivity(intent1);
+                }
             }else{
                 return;
             }

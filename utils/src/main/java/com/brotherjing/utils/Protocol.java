@@ -25,4 +25,10 @@ public interface Protocol {
     int CMD_TYPE_BACKWARD = 7;
     int CMD_TYPE_STOP = 8;
 
+    //some command
+    String REQ_VIDEO = "[req]";
+    String REQ_AUDIO = "[req_audio]";
+    String REQ_END_VIDEO = "[req_end_video]";
+    String REQ_CONNECT = "connect";
+
 }

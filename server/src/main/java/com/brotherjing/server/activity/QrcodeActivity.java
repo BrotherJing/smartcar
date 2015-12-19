@@ -1,7 +1,10 @@
 package com.brotherjing.server.activity;
 
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.graphics.Bitmap;
 import android.os.IBinder;
@@ -33,6 +36,8 @@ public class QrcodeActivity extends AppCompatActivity {
     private String ipAddr;
     private ImageView mImageView;
 
+    private Receiver receiver;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,6 +45,11 @@ public class QrcodeActivity extends AppCompatActivity {
 
         mImageView = (ImageView) findViewById(R.id.img_qrcode);
 
+
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(CONSTANT.ACTION_NEW_CLIENT);
+        receiver = new Receiver();
+        registerReceiver(receiver,intentFilter);
     }
 
     protected void onStart() {
@@ -52,13 +62,14 @@ public class QrcodeActivity extends AppCompatActivity {
         super.onStop();
         Logger.i("stop");
         unbindService(conn);
+        unregisterReceiver(receiver);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         Logger.i("destroy");
-        stopService(new Intent(this, TCPServer.class));
+        //stopService(new Intent(this, TCPServer.class));
     }
 
     private ServiceConnection conn = new ServiceConnection() {
@@ -78,6 +89,16 @@ public class QrcodeActivity extends AppCompatActivity {
 
         }
     };
+
+    //broadcast receiver listening to server events
+    private class Receiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if(intent.getAction().equals(CONSTANT.ACTION_NEW_CLIENT)){
+                QrcodeActivity.this.finish();
+            }
+        }
+    }
 
     private void createQRImage (String url, ImageView imageView){
         try {

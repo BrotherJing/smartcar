@@ -89,5 +89,12 @@ public class UDPServer extends Service {
 
             }
         }
+        public void setClientIpAddr(String ipAddr){
+            try {
+                clientAddr = InetAddress.getByName(ipAddr);
+            }catch (IOException ex){
+                ex.printStackTrace();
+            }
+        }
     }
 }

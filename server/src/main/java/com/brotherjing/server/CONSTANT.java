@@ -14,11 +14,14 @@ public interface CONSTANT {
     String KEY_IP_ADDR = "ip_addr";
     int MSG_IP_ADDR = 1;
     int MSG_NEW_MSG = 2;
+    int MSG_NEW_CLIENT = 3;
     String KEY_MSG_DATA = "msg_data";
 
     //broadcast action
     String ACTION_SERVER_UP = "server_up";
+    String ACTION_NEW_CLIENT = "new_client";
     String ACTION_NEW_MSG = "new_msg";
+    String ACTION_NEW_REQ = "new_req";
 
     //server thread handler
     int MSG_TEST = 1;
@@ -42,7 +45,13 @@ public interface CONSTANT {
     //key
     String KEY_MSG_CONTENT = "content";
     String KEY_DEVICE = "device";
+    String KEY_CLIENT_NAME = "client_name";
+    String KEY_REQ_TYPE = "req_type";
 
+    //key value
+    int REQ_TYPE_VIDEO = 1;
+    int REQ_TYPE_AUDIO = 2;
+    int REQ_TYPE_END_VIDEO = 3;
 
     //baidu asr
     int APP_ID = 7031386;
