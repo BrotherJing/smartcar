@@ -1,0 +1,55 @@
+ECLIPSE ANDROID PROJECT IMPORT SUMMARY
+======================================
+
+Ignored Files:
+--------------
+The following files were *not* copied into the new Gradle project; you
+should evaluate whether these are still needed in your project and if
+so manually move them:
+
+* AndroidManifest-main.xml
+* Package_unaligned.apk
+* assets.ap_
+* plugins\
+* plugins\QCARUnityPlayer.jar
+* plugins\Vuforia.jar
+* raw.ap_
+* raw\
+* raw\QCAR\
+* raw\QCAR\SmartCar.dat
+* raw\QCAR\SmartCar.xml
+* raw\QCAR\StonesAndChips.dat
+* raw\QCAR\StonesAndChips.xml
+* raw\QCAR\Tarmac.dat
+* raw\QCAR\Tarmac.xml
+
+Moved Files:
+------------
+Android Gradle projects use a different directory structure than ADT
+Eclipse projects. Here's how the projects were restructured:
+
+* AndroidManifest.xml => unityPlayerNativeActivity\src\main\AndroidManifest.xml
+* assets\ => unityPlayerNativeActivity\src\main\assets\
+* libs\armeabi-v7a\libmain.so => unityPlayerNativeActivity\src\main\jniLibs\armeabi-v7a\libmain.so
+* libs\armeabi-v7a\libmono.so => unityPlayerNativeActivity\src\main\jniLibs\armeabi-v7a\libmono.so
+* libs\armeabi-v7a\libQCARUnityPlayer.so => unityPlayerNativeActivity\src\main\jniLibs\armeabi-v7a\libQCARUnityPlayer.so
+* libs\armeabi-v7a\libQCARWrapper.so => unityPlayerNativeActivity\src\main\jniLibs\armeabi-v7a\libQCARWrapper.so
+* libs\armeabi-v7a\libunity.so => unityPlayerNativeActivity\src\main\jniLibs\armeabi-v7a\libunity.so
+* libs\armeabi-v7a\libVuforia.so => unityPlayerNativeActivity\src\main\jniLibs\armeabi-v7a\libVuforia.so
+* res\ => unityPlayerNativeActivity\src\main\res\
+* src\ => unityPlayerNativeActivity\src\main\java
+
+Next Steps:
+-----------
+You can now build the project. The Gradle project needs network
+connectivity to download dependencies.
+
+Bugs:
+-----
+If for some reason your project does not build, and you determine that
+it is due to a bug or limitation of the Eclipse to Gradle importer,
+please file a bug at http://b.android.com with category
+Component-Tools.
+
+(This import summary is for your information only, and can be deleted
+after import once you are satisfied with the results.)
