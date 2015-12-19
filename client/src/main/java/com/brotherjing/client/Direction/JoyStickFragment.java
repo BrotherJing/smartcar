@@ -40,8 +40,8 @@ public class JoyStickFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_joy_stick, container, false);
 
-        final TextView angleView = (TextView) view.findViewById(R.id.tv_angle);
-        final TextView offsetView = (TextView) view.findViewById(R.id.tv_offset);
+//        final TextView angleView = (TextView) view.findViewById(R.id.tv_angle);
+//        final TextView offsetView = (TextView) view.findViewById(R.id.tv_offset);
 
 
         final String angleNoneString = getString(R.string.angle_value_none);
@@ -95,8 +95,8 @@ public class JoyStickFragment extends Fragment {
             @Override
             public void onUp() {
                 //stop
-                angleView.setText(angleNoneString);
-                offsetView.setText(offsetNoneString);
+//                angleView.setText(angleNoneString);
+//                offsetView.setText(offsetNoneString);
 
             }
         });
@@ -106,13 +106,13 @@ public class JoyStickFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        Log.d(TAG, "onResume");
+//        Log.d(TAG, "onResume");
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        Log.d(TAG, "onPause");
+//        Log.d(TAG, "onPause");
     }
 
     private int getTheDirection(float degrees) {

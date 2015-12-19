@@ -21,7 +21,9 @@
         android:layout_height="wrap_content"
         android:stretchColumns="*">
 
-        <TableRow>
+        <TableRow
+            android:paddingBottom="12dp"
+            android:paddingTop="12dp">
 
             <ImageView
                 android:id="@+id/left_forwarding"
@@ -62,8 +64,8 @@
 
             <ImageView
                 android:id="@+id/stop"
-                android:src="@drawable/ic_android_studio_black_48dp">
-            android:layout_width="0dp"
+                android:src="@drawable/ic_android_studio_black_48dp"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:gravity="center">
             </ImageView>
@@ -77,7 +79,9 @@
             </ImageView>
         </TableRow>
 
-        <TableRow>
+        <TableRow
+            android:paddingBottom="12dp"
+            android:paddingTop="12dp">
 
             <ImageView
                 android:id="@+id/left_back"

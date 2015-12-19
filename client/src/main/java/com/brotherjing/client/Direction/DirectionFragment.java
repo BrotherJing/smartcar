@@ -18,6 +18,8 @@ import com.brotherjing.client.service.TCPClient;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -43,6 +45,7 @@ public class DirectionFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_direction, container, false);
+
 
         btn_forward = (ImageView) view.findViewById(R.id.forwarding);
         btn_forward.setOnLongClickListener(new View.OnLongClickListener() {

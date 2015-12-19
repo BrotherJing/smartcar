@@ -50,4 +50,5 @@
     <string name="offset_value">%1$.2f :Offset</string>
     <string name="angle_value_none">Angle: none</string>
     <string name="offset_value_none">none :Offset</string>
+    <string name="sensor_controller">方向传感</string>
 </resources>
