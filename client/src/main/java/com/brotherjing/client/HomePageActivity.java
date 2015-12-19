@@ -97,6 +97,7 @@ public class HomePageActivity extends AppCompatActivity {
                         new PrimaryDrawerItem().withName(R.string.video_send_back).withIcon(R.drawable.ic_action_camera).withIdentifier(3).withSelectable(true),
                         new PrimaryDrawerItem().withName(R.string.qrcode).withIcon(R.drawable.ic_action_download).withIdentifier(4).withSelectable(true),
                         new PrimaryDrawerItem().withName(R.string.direction_controller).withIcon(R.drawable.ic_action_gamepad).withIdentifier(5).withSelectable(true),
+
                         new DividerDrawerItem(),
                         new PrimaryDrawerItem().withName(R.string.ip_port_setting).withIcon(R.drawable.ic_action_settings).withIdentifier(20).withSelectable(true)
                 ) // add the items we want to use with our Drawer
