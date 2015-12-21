@@ -26,4 +26,11 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.1.1'
     compile 'com.dxjia.baiduvoicehelper:library:0.2.0'
     compile 'com.android.support:design:23.1.1'
+
+    compile 'com.facebook.android:facebook-android-sdk:4.0.0'
+    compile 'com.google.android.gms:play-services:7.5.0'
+}
+
+dependencies {
+    compile 'info.hoang8f:fbutton:1.0.5'
 }

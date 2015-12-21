@@ -21,6 +21,7 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/client" />
             <option value="$PROJECT_DIR$/server" />
+            <option value="$PROJECT_DIR$/unityPlayerNativeActivity" />
             <option value="$PROJECT_DIR$/utils" />
           </set>
         </option>

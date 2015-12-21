@@ -1,47 +1,63 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".activity.MainActivity">
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              tools:context=".activity.MainActivity">
+
+    <!--<TextView-->
+    <!--android:layout_width="fill_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:id="@+id/tv_ipaddr"/>-->
 
     <TextView
+        android:id="@+id/tv_ipaddr"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/tv_ipaddr"/>
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:clickable="true"
+        android:gravity="center"
+        android:padding="20dp"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/material_deep_teal_500"
+        android:textSize="45dp"
+        android:textStyle="bold"/>
 
     <TextView
+        android:id="@+id/tv_content"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/tv_content"/>
+        android:layout_height="wrap_content"/>
 
     <Button
         android:id="@+id/button_capture_image"
-        android:text="Test"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:text="Test"/>
 
     <Button
         android:id="@+id/btn_generate_qrcode"
-        android:text="@string/btn_generate_qrcode"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:text="@string/btn_generate_qrcode"/>
 
     <Button
+        android:id="@+id/btn_bluetooth"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/btn_bluetooth"
         android:text="bluetooth"/>
 
     <Button
+        android:id="@+id/btn_asr"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="voice recognize"
-        android:id="@+id/btn_asr"/>
+        android:text="voice recognize"/>
 
-<android.support.v4.view.ViewPager android:id="@+id/pager"
-    android:visibility="gone"
-    android:layout_width="fill_parent" android:layout_height="fill_parent" />
+    <android.support.v4.view.ViewPager
+        android:id="@+id/pager"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:visibility="gone"/>
 
 
 </LinearLayout>

@@ -40,7 +40,10 @@ import com.brotherjing.utils.Protocol;
 import com.brotherjing.utils.bean.CommandMessage;
 import com.brotherjing.utils.bean.TextMessage;
 import com.dxjia.library.BaiduVoiceHelper;
+import com.facebook.login.widget.LoginButton;
 import com.google.gson.Gson;
+
+import info.hoang8f.widget.FButton;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -54,7 +57,8 @@ public class MainActivity extends ActionBarActivity {
 
     //ViewPager mViewPager;
     TextView tv_addr,tv_content;
-    Button mButton, qrCodeButton,btnBluetooth;
+//    Button mButton, qrCodeButton,btnBluetooth;
+    FButton mButton, qrCodeButton,btnBluetooth;
 
     MainThreadHandler handler;
 
@@ -68,7 +72,8 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main2);
+//        setContentView(R.layout.activity_main);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         //register broadcast listening to server event
@@ -82,9 +87,12 @@ public class MainActivity extends ActionBarActivity {
         //initFragments();
         tv_addr = (TextView)findViewById(R.id.tv_ipaddr);
         tv_content = (TextView)findViewById(R.id.tv_content);
-        mButton = (Button) findViewById(R.id.button_capture_image);
-        qrCodeButton = (Button) findViewById(R.id.btn_generate_qrcode);
-        btnBluetooth = (Button) findViewById(R.id.btn_bluetooth);
+//        mButton = (Button) findViewById(R.id.button_capture_image);
+//        qrCodeButton = (Button) findViewById(R.id.btn_generate_qrcode);
+//        btnBluetooth = (Button) findViewById(R.id.btn_bluetooth);
+        mButton = (FButton) findViewById(R.id.button_capture_image);
+        qrCodeButton = (FButton) findViewById(R.id.btn_generate_qrcode);
+        btnBluetooth = (FButton) findViewById(R.id.btn_bluetooth);
 
         initData();
     }
