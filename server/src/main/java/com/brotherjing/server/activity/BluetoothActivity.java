@@ -49,11 +49,7 @@ public class BluetoothActivity extends AppCompatActivity {
 
     BluetoothReceiver mReceiver;
 
-    Thread clientThread;
-    HandlerThread handlerThread;
-    Handler clientHandler,uiHandler;
-    DataInputStream dis;
-    DataOutputStream dos;
+    Handler clientHandler;
 
     BluetoothService.MyBinder binder;
 
@@ -190,6 +186,9 @@ public class BluetoothActivity extends AppCompatActivity {
         if(requestCode==REQUEST_ENABLE_BT){
             if(resultCode==RESULT_OK){
                 adapter.startDiscovery();
+                for(BluetoothDevice device:adapter.getBondedDevices()){
+                    listAdapter.addItem(device);
+                }
             }
         }
     }

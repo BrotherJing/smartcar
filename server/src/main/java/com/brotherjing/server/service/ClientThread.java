@@ -98,6 +98,9 @@ public class ClientThread extends HandlerThread {
             dos = new DataOutputStream(mSocket.getOutputStream());
             isConnected = true;
             Logger.i("client connected");
+            if(server!=null){
+                server.broadcastNewClient(name);
+            }
             while(!isInterrupted()){
                 int msg_type = dis.readInt();
                 switch (msg_type){

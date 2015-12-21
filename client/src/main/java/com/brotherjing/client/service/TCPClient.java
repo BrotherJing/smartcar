@@ -191,7 +191,7 @@ public class TCPClient extends Service {
             if(socket.isConnected()){
                 dos = new DataOutputStream(socket.getOutputStream());
                 dis = new DataInputStream(socket.getInputStream());
-                send(new TextMessage(name,System.currentTimeMillis()+"","connect"));
+                send(new TextMessage(name,System.currentTimeMillis()+"",Protocol.REQ_CONNECT));
                 System.out.println("connect");
                 isConnect=true;
             }

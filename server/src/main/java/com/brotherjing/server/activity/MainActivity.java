@@ -50,12 +50,9 @@ public class MainActivity extends ActionBarActivity {
 
     final static int REQ_BLUETOOTH = 1;
     final static int REQ_ASR = 2;
-    //SectionsPagerAdapter mSectionsPagerAdapter;
-    //List<Fragment> fragments;
-    int currentIndex;
+
     boolean isBluetoothServiceBinded = false;
 
-    //ViewPager mViewPager;
     TextView tv_addr,tv_content;
 //    Button mButton, qrCodeButton,btnBluetooth;
     FButton mButton, qrCodeButton,btnBluetooth;
@@ -80,6 +77,8 @@ public class MainActivity extends ActionBarActivity {
         intentFilter = new IntentFilter();
         intentFilter.addAction(CONSTANT.ACTION_SERVER_UP);
         intentFilter.addAction(CONSTANT.ACTION_NEW_MSG);
+        intentFilter.addAction(CONSTANT.ACTION_NEW_CLIENT);
+        intentFilter.addAction(CONSTANT.ACTION_NEW_REQ);
         receiver = new MainThreadReceiver();
 
         // Create the adapter that will return a fragment for each of the three
@@ -216,6 +215,18 @@ public class MainActivity extends ActionBarActivity {
             else if(intent.getAction().equals(CONSTANT.ACTION_NEW_MSG)){
                 msg.what=CONSTANT.MSG_NEW_MSG;
                 bundle.putString(CONSTANT.KEY_MSG_DATA, intent.getStringExtra(CONSTANT.KEY_MSG_DATA));
+            }else if(intent.getAction().equals(CONSTANT.ACTION_NEW_CLIENT)){
+                msg.what=CONSTANT.MSG_NEW_CLIENT;
+                bundle.putString(CONSTANT.KEY_CLIENT_NAME, intent.getStringExtra(CONSTANT.KEY_CLIENT_NAME));
+            }else if(intent.getAction().equals(CONSTANT.ACTION_NEW_REQ)){
+                //GO TO VIDEO ACTIVITY
+                int type = intent.getIntExtra(CONSTANT.KEY_REQ_TYPE,0);
+                if(type==CONSTANT.REQ_TYPE_VIDEO) {
+                    Intent intent1 = new Intent(MainActivity.this, SimpleVideoActivity.class);
+                    startActivity(intent1);
+                }else if(type==CONSTANT.REQ_TYPE_AUDIO){
+                    BaiduVoiceHelper.startBaiduVoiceDialogForResult(MainActivity.this, CONSTANT.API_KEY, CONSTANT.SECRET_KEY, REQ_ASR);
+                }
             }else{
                 return;
             }
@@ -252,7 +263,7 @@ public class MainActivity extends ActionBarActivity {
         public void onServiceConnected(ComponentName name, IBinder service) {
             bluetoothBinder = (BluetoothService.MyBinder)service;
             carController = new BluetoothCarController(bluetoothBinder);
-            Toast.makeText(MainActivity.this,"get bluetooth binder",Toast.LENGTH_SHORT).show();
+            Toast.makeText(MainActivity.this,"getString bluetooth binder",Toast.LENGTH_SHORT).show();
         }
 
         @Override
@@ -266,10 +277,11 @@ public class MainActivity extends ActionBarActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode==REQ_BLUETOOTH){
             if(resultCode==RESULT_OK){
-                isBluetoothServiceBinded = true;
+                GlobalEnv.put(CONSTANT.GLOBAL_IS_BLUETOOTH_CONNECTED,true);
                 BluetoothDevice device = data.getParcelableExtra(CONSTANT.KEY_DEVICE);
                 Toast.makeText(this,device.getName(),Toast.LENGTH_SHORT).show();
-                bindService(new Intent(this,BluetoothService.class),bluetoothConn,BIND_AUTO_CREATE);
+                bindService(new Intent(this, BluetoothService.class), bluetoothConn, BIND_AUTO_CREATE);
+                isBluetoothServiceBinded = true;
             }
         }else if(requestCode==REQ_ASR){
             if (resultCode == RESULT_OK) {

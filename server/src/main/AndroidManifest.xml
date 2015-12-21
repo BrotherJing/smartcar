@@ -62,11 +62,6 @@
             android:label="@string/title_activity_camera" >
         </activity>
         <activity
-            android:name=".activity.VideoActivity"
-            android:label="@string/title_activity_video"
-            android:screenOrientation="landscape" >
-        </activity>
-        <activity
             android:name=".activity.SimpleVideoActivity"
             android:label="@string/title_activity_simple_video"
             android:screenOrientation="landscape" >

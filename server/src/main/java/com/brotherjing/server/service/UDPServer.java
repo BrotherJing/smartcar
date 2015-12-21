@@ -6,7 +6,6 @@ import android.os.Binder;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
-import android.os.Message;
 
 import com.brotherjing.server.CONSTANT;
 import com.brotherjing.server.GlobalEnv;
@@ -17,8 +16,6 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.net.Socket;
-import java.util.List;
 
 public class UDPServer extends Service {
 
@@ -56,7 +53,7 @@ public class UDPServer extends Service {
         public void run() {
             try {
                 socket = new  DatagramSocket (Protocol.UDP_SERVER_PORT);
-                clientAddr = InetAddress.getByName(GlobalEnv.get(CONSTANT.GLOBAL_AUDIENCE_ADDR));
+                clientAddr = InetAddress.getByName(GlobalEnv.getString(CONSTANT.GLOBAL_AUDIENCE_ADDR));
                 if(clientAddr==null){
                     Logger.i("no client found");
                     return;
@@ -90,6 +87,13 @@ public class UDPServer extends Service {
                     }
                 });
 
+            }
+        }
+        public void setClientIpAddr(String ipAddr){
+            try {
+                clientAddr = InetAddress.getByName(ipAddr);
+            }catch (IOException ex){
+                ex.printStackTrace();
             }
         }
     }

@@ -51,8 +51,6 @@ public class SimpleVideoActivity extends ActionBarActivity {
     private Camera.Size bestSize;
     private int videoFormatIndex;
 
-    private Button takeVideoButton;
-
     private boolean isRecording = false;
     BluetoothService.MyBinder bluetoothBinder;
     BluetoothCarController carController = null;
@@ -62,25 +60,18 @@ public class SimpleVideoActivity extends ActionBarActivity {
     private UDPServer.MyBinder udpBinder;
 
     private int frame_skipped = 0;
+    private boolean isBluetoothConnected = false;
+    private String clientIpAddr;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_video);
-        takeVideoButton = (Button) findViewById(R.id.btn_video);
-        takeVideoButton.setText("Video");
-        takeVideoButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (isRecording) {
-                    takeVideoButton.setText("Video");
-                    isRecording = false;
-                } else {
-                    takeVideoButton.setText("Stop");
-                    isRecording = true;
-                }
-            }
-        });
+
+        isRecording = true;
+
+        isBluetoothConnected = GlobalEnv.getBoolean(CONSTANT.GLOBAL_IS_BLUETOOTH_CONNECTED,false);
+        clientIpAddr = GlobalEnv.getString(CONSTANT.GLOBAL_AUDIENCE_ADDR);
 
         mSurfaceView = (SurfaceView) findViewById(R.id.surfaceView);
         final SurfaceHolder holder = mSurfaceView.getHolder();
@@ -150,6 +141,7 @@ public class SimpleVideoActivity extends ActionBarActivity {
 
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(CONSTANT.ACTION_NEW_MSG);
+        intentFilter.addAction(CONSTANT.ACTION_NEW_REQ);
         receiver = new MainThreadReceiver();
         registerReceiver(receiver, intentFilter);
     }
@@ -159,14 +151,17 @@ public class SimpleVideoActivity extends ActionBarActivity {
         super.onStart();
         //bindService(new Intent(this, TCPServer.class), mServiceConnection, BIND_AUTO_CREATE);
         bindService(new Intent(this, UDPServer.class), mServiceConnection, BIND_AUTO_CREATE);
-        bindService(new Intent(this, BluetoothService.class), bluetoothConn, BIND_AUTO_CREATE);
+        if(isBluetoothConnected)
+            bindService(new Intent(this, BluetoothService.class), bluetoothConn, BIND_AUTO_CREATE);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         unbindService(mServiceConnection);
-        unbindService(bluetoothConn);
+        if(isBluetoothConnected) {
+            unbindService(bluetoothConn);
+        }
         unregisterReceiver(receiver);
     }
 
@@ -244,8 +239,8 @@ public class SimpleVideoActivity extends ActionBarActivity {
     };
 
     private void sendImage(byte[] data){
-        /*clientList.get(0).prepareForVideo();
-        clientList.get(0).send(data);*/
+        /*clientList.getString(0).prepareForVideo();
+        clientList.getString(0).send(data);*/
         udpBinder.send(data);
     }
 
@@ -269,7 +264,7 @@ public class SimpleVideoActivity extends ActionBarActivity {
         public void onServiceConnected(ComponentName name, IBinder service) {
             bluetoothBinder = (BluetoothService.MyBinder)service;
             carController = new BluetoothCarController(bluetoothBinder);
-            Toast.makeText(SimpleVideoActivity.this, "get bluetooth binder", Toast.LENGTH_SHORT).show();
+            Toast.makeText(SimpleVideoActivity.this, "getString bluetooth binder", Toast.LENGTH_SHORT).show();
         }
 
         @Override
@@ -292,6 +287,18 @@ public class SimpleVideoActivity extends ActionBarActivity {
                     if(carController!=null){
                         carController.processCommand(cmd.getCommand());
                     }
+                }
+            }else if(intent.getAction().equals(CONSTANT.ACTION_NEW_REQ)){
+                int type = intent.getIntExtra(CONSTANT.KEY_REQ_TYPE,0);
+                if(type==CONSTANT.REQ_TYPE_VIDEO){
+                    if(clientIpAddr.equals(GlobalEnv.getString(CONSTANT.GLOBAL_AUDIENCE_ADDR))){
+                        return;
+                    }else{
+                        clientIpAddr = GlobalEnv.getString(CONSTANT.GLOBAL_AUDIENCE_ADDR);
+                        udpBinder.setClientIpAddr(clientIpAddr);
+                    }
+                }else if(type==CONSTANT.REQ_TYPE_END_VIDEO){
+                    SimpleVideoActivity.this.finish();
                 }
             }
         }
