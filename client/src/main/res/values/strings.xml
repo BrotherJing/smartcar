@@ -51,4 +51,6 @@
     <string name="angle_value_none">Angle: none</string>
     <string name="offset_value_none">none :Offset</string>
     <string name="sensor_controller">方向传感</string>
+    <string name="drawer_item_open_source">Github</string>
+    <string name="title_activity_github">GithubActivity</string>
 </resources>

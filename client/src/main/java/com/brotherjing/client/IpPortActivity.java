@@ -30,7 +30,7 @@ public class IpPortActivity extends AppCompatActivity {
     private MaterialAutoCompleteTextView mEditTextIp, mEditTextPort;
     private Button mButtonConnect;
     private static final String [] array_ip = new String[]{
-            "192.168.1.101", "192.168.1.105"};
+            "192.168.1.101", "192.168.1.104", "192.168.1.105"};
     private static final String [] array_port = new String[]{
             "12345"};
 
@@ -100,7 +100,6 @@ public class IpPortActivity extends AppCompatActivity {
 
 
         mButtonConnect = (Button) findViewById(R.id.btn_connect);
-        mButtonConnect.setClickable(true);
         mButtonConnect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

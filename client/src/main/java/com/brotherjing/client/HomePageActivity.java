@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.brotherjing.client.Direction.DirectionActivity;
 import com.brotherjing.client.QRcode.MipcaActivityCapture;
+import com.brotherjing.client.activity.GithubActivity;
 import com.brotherjing.client.activity.QCARJavaActivity;
 import com.brotherjing.client.activity.ViewCameraActivity;
 import com.brotherjing.client.activity.ViewDirectionActivity;
@@ -34,6 +35,7 @@ import com.mikepenz.materialdrawer.interfaces.OnCheckedChangeListener;
 import com.mikepenz.materialdrawer.model.DividerDrawerItem;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
+import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 import com.mikepenz.materialdrawer.model.interfaces.Nameable;
@@ -69,9 +71,9 @@ public class HomePageActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("SJTU-SmartCar");
 
         // Create a few sample profile
-        final IProfile profile = new ProfileDrawerItem().withName("杨靖").withEmail("yangjing").withIdentifier(100);
-        final IProfile profile2 = new ProfileDrawerItem().withName("戚文韬").withEmail("qiwentao").withIdentifier(101);
-        final IProfile profile3 = new ProfileDrawerItem().withName("吴思禹").withEmail("wushiyu").withIdentifier(102);
+        final IProfile profile = new ProfileDrawerItem().withName("杨靖").withEmail("brotherJing@sjtu.edu.cn").withIcon(getResources().getDrawable(R.drawable.profile3)).withIdentifier(100);
+        final IProfile profile2 = new ProfileDrawerItem().withName("戚文韬").withEmail("roy7wt@sjtu.edu.cn").withIcon(getResources().getDrawable(R.drawable.profile2)).withIdentifier(101);
+        final IProfile profile3 = new ProfileDrawerItem().withName("吴思禹").withEmail("wusiyu5159@sjtu.edu.cn").withIcon(getResources().getDrawable(R.drawable.profile4)).withIdentifier(102);
 
         // Create the AccountHeader
         headerResult = new AccountHeaderBuilder()
@@ -100,8 +102,11 @@ public class HomePageActivity extends AppCompatActivity {
                         new PrimaryDrawerItem().withName(R.string.direction_controller).withIcon(R.drawable.ic_action_gamepad).withIdentifier(5).withSelectable(true),
 
                         new DividerDrawerItem(),
-                        new PrimaryDrawerItem().withName(R.string.ip_port_setting).withIcon(R.drawable.ic_action_settings).withIdentifier(20).withSelectable(true)
-                ) // add the items we want to use with our Drawer
+                        new PrimaryDrawerItem().withName(R.string.ip_port_setting).withIcon(R.drawable.ic_action_settings).withIdentifier(20).withSelectable(true),
+                        new PrimaryDrawerItem().withName(R.string.drawer_item_open_source).withIcon(R.drawable.android_debug_bridge).withIdentifier(21)
+
+
+                        ) // add the items we want to use with our Drawer
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                     @Override
                     public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
@@ -144,6 +149,10 @@ public class HomePageActivity extends AppCompatActivity {
                             } else if (drawerItem.getIdentifier() == 20) {
                                 /* 端口设置 */
                                 intent = new Intent(HomePageActivity.this, IpPortActivity.class);
+                                startActivity(intent);
+                            } else if (drawerItem.getIdentifier() == 21) {
+                                /* 端口设置 */
+                                intent = new Intent(HomePageActivity.this, GithubActivity.class);
                                 startActivity(intent);
                             }
                         }

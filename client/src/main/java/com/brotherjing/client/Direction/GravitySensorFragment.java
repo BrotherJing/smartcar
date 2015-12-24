@@ -95,7 +95,7 @@ public class GravitySensorFragment extends Fragment {
                 switch (getDirecation(x, y)) {
                     case CONSTANT.FORWARDING: {
 //                        mTextView.setText("FORWARDING");
-//                        Log.d(TAG, "forward");
+                        Log.d(TAG, "forward");
                         mImageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_arrow_up_bold_black_48dp));
                         if (getActivity() != null) {
                             ((DirectionActivity)getActivity()).getTCPSmartcarController().forward();
@@ -103,7 +103,7 @@ public class GravitySensorFragment extends Fragment {
                         break;
                     }
                     case CONSTANT.BACK: {
-//                        Log.d(TAG, "back");
+                        Log.d(TAG, "back");
 //                        mTextView.setText("BACK");
                         mImageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_arrow_down_bold_black_48dp));
                         if (getActivity() != null) {
@@ -113,7 +113,7 @@ public class GravitySensorFragment extends Fragment {
                         break;
                     }
                     case CONSTANT.LEFT: {
-//                        Log.d(TAG, "left");
+                        Log.d(TAG, "left");
 //                        mTextView.setText("LEFT");
                         mImageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_arrow_left_bold_black_48dp));
                         if (getActivity() != null) {
@@ -123,7 +123,7 @@ public class GravitySensorFragment extends Fragment {
                         break;
                     }
                     case CONSTANT.RIGHT: {
-//                        Log.d(TAG, "right");
+                        Log.d(TAG, "right");
 //                        mTextView.setText("RIGHT");
                         mImageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_arrow_right_bold_black_48dp));
                         if (getActivity() != null) {
@@ -135,7 +135,7 @@ public class GravitySensorFragment extends Fragment {
                     default:
                         if (getActivity() != null) {
                             ((DirectionActivity)getActivity()).getTCPSmartcarController().stop();
-                            mImageView.setImageDrawable(null);
+                            mImageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_remove_circle_black_48dp));
                         }
                         break;
 

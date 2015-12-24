@@ -1,60 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.brotherjing.client">
+<manifest package="com.brotherjing.client"
+          xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.BLUETOOTH" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.READ_CONTACTS" />
-    <uses-permission android:name="android.permission.WRITE_CONTACTS" />
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.READ_CONTACTS"/>
+    <uses-permission android:name="android.permission.WRITE_CONTACTS"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
 
     <!-- baidu ASR -->
-    <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
     <!-- vuforia -->
-    <uses-feature android:glEsVersion="0x00020000" />
-    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:glEsVersion="0x00020000"/>
+    <uses-feature android:name="android.hardware.camera"/>
 
-    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.CAMERA"/>
 
     <!-- vibration -->
-    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.VIBRATE"/>
 
-    <!-- vuforia unity-->
-    <supports-screens android:smallScreens="true" android:normalScreens="true" android:largeScreens="true" android:xlargeScreens="true" android:anyDensity="true" />
+    <!-- vuforia unity -->
+    <supports-screens
+        android:anyDensity="true"
+        android:largeScreens="true"
+        android:normalScreens="true"
+        android:smallScreens="true"
+        android:xlargeScreens="true"/>
 
-    <uses-feature android:name="android.hardware.camera.autofocus" android:required="false" />
-    <uses-feature android:name="android.hardware.camera.front" android:required="false" />
-    <uses-feature android:name="android.hardware.touchscreen" android:required="false" />
-    <uses-feature android:name="android.hardware.touchscreen.multitouch" android:required="false" />
-    <uses-feature android:name="android.hardware.touchscreen.multitouch.distinct" android:required="false" />
-    <!-- vuforia unity-->
+    <uses-feature
+        android:name="android.hardware.camera.autofocus"
+        android:required="false"/>
+    <uses-feature
+        android:name="android.hardware.camera.front"
+        android:required="false"/>
+    <uses-feature
+        android:name="android.hardware.touchscreen"
+        android:required="false"/>
+    <uses-feature
+        android:name="android.hardware.touchscreen.multitouch"
+        android:required="false"/>
+    <uses-feature
+        android:name="android.hardware.touchscreen.multitouch.distinct"
+        android:required="false"/>
 
+    <!-- vuforia unity -->
     <application
         android:name=".App"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme">
 
         <!-- begin: baidu speech sdk -->
         <!-- 请填写应用实际的APP_ID -->
         <meta-data
             android:name="com.baidu.speech.APP_ID"
-            android:value="7031386" />
+            android:value="7031386"/>
         <!-- 请填写应用实际的API_KEY -->
         <meta-data
             android:name="com.baidu.speech.API_KEY"
-            android:value="gxF67xov7DA1QE2Hb9CC5UFu" />
+            android:value="gxF67xov7DA1QE2Hb9CC5UFu"/>
         <!-- 请填写应用实际的SECRET_KEY -->
         <meta-data
             android:name="com.baidu.speech.SECRET_KEY"
-            android:value="9f3577b4430c60e1bbaa98bdeb504f90" />
+            android:value="9f3577b4430c60e1bbaa98bdeb504f90"/>
 
         <!--
         <service android:name="com.baidu.speech.VoiceRecognitionService" android:exported="false" />
@@ -74,12 +89,12 @@
 
         <activity
             android:name=".SocketmsgActivity"
-            android:label="@string/title_activity_socketmsg" >
+            android:label="@string/title_activity_socketmsg">
         </activity>
-        <activity android:name=".vuforia.ImageTargets.ImageTargets" />
+        <activity android:name=".vuforia.ImageTargets.ImageTargets"/>
         <activity
             android:name=".ClientActivity"
-            android:label="@string/title_activity_client" >
+            android:label="@string/title_activity_client">
 
             <!-- <intent-filter> -->
             <!-- <action android:name="android.intent.action.MAIN"/> -->
@@ -90,86 +105,106 @@
         </activity>
         <activity
             android:name=".SensorActivity"
-            android:label="@string/title_activity_sensor" >
+            android:label="@string/title_activity_sensor">
         </activity>
 
         <service
             android:name=".service.TCPClient"
-            android:exported="false" >
+            android:exported="false">
         </service>
 
         <activity
             android:name=".activity.ViewCameraActivity"
             android:label="@string/title_activity_view_camera"
             android:screenOrientation="landscape"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
         </activity>
         <activity
             android:name=".QRcode.QRcodeActivity"
-            android:label="@string/title_activity_qrcode" />
+            android:label="@string/title_activity_qrcode"/>
         <activity
             android:name=".QRcode.MipcaActivityCapture"
-            android:label="@string/title_activity_mipca" />
+            android:label="@string/title_activity_mipca"/>
 
         <service
             android:name=".service.UDPClient"
             android:enabled="true"
-            android:exported="true" >
+            android:exported="true">
         </service>
 
         <activity
             android:name=".UI.DemoActivity"
-            android:label="@string/title_activity_demo" >
+            android:label="@string/title_activity_demo">
         </activity>
-
         <activity
             android:name=".HomePageActivity"
             android:label="@string/title_activity_home_page"
-            android:theme="@style/MaterialDrawerTheme" >
+            android:theme="@style/MaterialDrawerTheme">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN"/>
 
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
         <activity
             android:name=".IpPortActivity"
             android:label="@string/title_activity_ip_port"
             android:parentActivityName=".HomePageActivity"
-            android:theme="@style/AppTheme.NoActionBar" >
+            android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
             android:name=".Direction.DirectionActivity"
             android:label="@string/title_activity_direction"
             android:parentActivityName=".HomePageActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" >
+            android:theme="@style/AppTheme.NoActionBar">
         </activity>
-        <activity android:name=".activity.ViewDirectionActivity" >
+        <activity android:name=".activity.ViewDirectionActivity">
         </activity>
+        <activity
+            android:name=".activity.QCARJavaActivity"
+            android:configChanges="mcc|mnc|locale|touchscreen|keyboard|keyboardHidden|navigation|orientation|screenLayout|uiMode|screenSize|smallestScreenSize|fontScale"
+            android:label="@string/app_name"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait">
 
-        <activity android:name=".activity.QCARJavaActivity" android:label="@string/app_name" android:screenOrientation="portrait" android:launchMode="singleTask" android:configChanges="mcc|mnc|locale|touchscreen|keyboard|keyboardHidden|navigation|orientation|screenLayout|uiMode|screenSize|smallestScreenSize|fontScale">
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN" />-->
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
-                <!--<category android:name="android.intent.category.LEANBACK_LAUNCHER" />-->
-            <!--</intent-filter>-->
-            <meta-data android:name="unityplayer.UnityActivity" android:value="true" />
-            <meta-data android:name="unityplayer.ForwardNativeEventsToDalvik" android:value="true" />
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- <category android:name="android.intent.category.LEANBACK_LAUNCHER" /> -->
+            <!-- </intent-filter> -->
+            <meta-data
+                android:name="unityplayer.UnityActivity"
+                android:value="true"/>
+            <meta-data
+                android:name="unityplayer.ForwardNativeEventsToDalvik"
+                android:value="true"/>
         </activity>
-        <activity android:name="com.unity3d.player.VideoPlayer" android:label="@string/app_name" android:screenOrientation="portrait" android:configChanges="fontScale|keyboard|keyboardHidden|locale|mnc|mcc|navigation|orientation|screenLayout|screenSize|smallestScreenSize|uiMode|touchscreen">
+        <activity
+            android:name="com.unity3d.player.VideoPlayer"
+            android:configChanges="fontScale|keyboard|keyboardHidden|locale|mnc|mcc|navigation|orientation|screenLayout|screenSize|smallestScreenSize|uiMode|touchscreen"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait">
         </activity>
         <!--
                 To support devices using the TI S3D library for stereo mode we must
                 add the following library.
                 Devices that require this are: ODG X6
-            -->
-        <uses-library android:name="com.ti.s3d" android:required="false" />
-        <!--
-                To support the ODG R7 in stereo mode we must add the following library.
-            -->
-        <uses-library android:name="com.osterhoutgroup.api.ext" android:required="false" />
+        -->
+        <uses-library
+            android:name="com.ti.s3d"
+            android:required="false"/>
+<!--                 To support the ODG R7 in stereo mode we must add the following library. -->
+        <uses-library
+            android:name="com.osterhoutgroup.api.ext"
+            android:required="false"/>
 
+        <activity
+            android:name=".activity.GithubActivity"
+            android:label="@string/title_activity_github"
+            android:parentActivityName=".HomePageActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
     </application>
 
 </manifest>

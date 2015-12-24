@@ -29,8 +29,9 @@ repositories {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 //    compile files('E:/Program Files/Unity/Editor/Data/PlaybackEngines/AndroidPlayer/Variations/mono/Development/Classes/classes.jar')
-//    compile project(':utils')
-//    compile project(':unityPlayerNativeActivity')
+    compile files('/Users/apple/Desktop/classes.jar')
+    compile project(':utils')
+    compile project(':unityPlayerNativeActivity')
     compile 'com.dxjia.baiduvoicehelper:library:0.2.0'
     compile 'com.android.support:appcompat-v7:23.0.1'
     compile 'com.android.support:design:23.+'
