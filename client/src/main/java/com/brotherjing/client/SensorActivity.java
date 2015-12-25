@@ -1,15 +1,33 @@
 package com.brotherjing.client;
 
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.os.IBinder;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.brotherjing.client.controller.TCPSmartcarControllerImpl;
+import com.brotherjing.client.service.TCPClient;
+import com.brotherjing.client.service.UDPClient;
+import com.brotherjing.utils.ImageCache;
+import com.brotherjing.utils.Protocol;
+import com.brotherjing.utils.bean.TextMessage;
+import com.dxjia.library.BaiduVoiceHelper;
+
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -33,17 +51,43 @@ public class SensorActivity extends ActionBarActivity implements SensorEventList
     private float rotation_matrix[] = new float[9];
     private float fused_orien[] = new float[3];
 
-    private Timer task;
+    private Timer task,oriTask;
 
     private SensorManager sensorManager;
 
     private TextView tv;
+
+    private TCPClient.MyBinder binder;
+    private TCPClientConnection conn;
+//    private MainThreadReceiver receiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sensor);
         tv = (TextView)findViewById(R.id.tv);
+
+        findViewById(R.id.iv_audio).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(binder!=null){
+                    binder.send(new TextMessage(Protocol.REQ_AUDIO));
+                }
+                /*BaiduVoiceHelper.startBaiduVoiceDialogForResult(
+                        SensorActivity.this,
+                        CONSTANT.API_KEY,
+                        CONSTANT.SECRET_KEY, 1);*/
+            }
+        });
+
+        findViewById(R.id.iv_follow).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(binder!=null){
+                    binder.send(new TextMessage(Protocol.REQ_FOLLOW));
+                }
+            }
+        });
 
         isFirst = true;
 
@@ -62,6 +106,12 @@ public class SensorActivity extends ActionBarActivity implements SensorEventList
         task = new Timer();
         task.scheduleAtFixedRate(new FusionTask(),1000,30);
 
+        //register broadcast listening to server event
+        /*IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(CONSTANT.ACTION_NEW_MSG);
+        //intentFilter.addAction(CONSTANT.ACTION_NEW_IMG);
+        receiver = new MainThreadReceiver();
+        registerReceiver(receiver, intentFilter);*/
     }
 
     private void initListener(){
@@ -200,9 +250,67 @@ public class SensorActivity extends ActionBarActivity implements SensorEventList
                 @Override
                 public void run() {
                     //tv.setText(acc_meg_orien[0]*360.0/Math.PI+"\n"+acc_meg_orien[1]+"\n"+acc_meg_orien[2]);
-                    tv.setText(fused_orien[0]*360.0/Math.PI+"\n"+fused_orien[1]+"\n"+fused_orien[2]);
+                    tv.setText((fused_orien[0]*180.0/Math.PI+180)+"\n"+(fused_orien[1]*180.0/Math.PI+180)+"\n"+(fused_orien[2]*180.0/Math.PI+180));
                 }
             });
         }
     }
+
+    private class GetClientOrientationTask extends TimerTask{
+        @Override
+        public void run() {
+            if(binder!=null){
+                //send the orientation data
+                binder.send(new TextMessage((fused_orien[0]*180.0/Math.PI+180)+""));
+            }
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        bindService(new Intent(this, TCPClient.class), conn = new TCPClientConnection(), BIND_AUTO_CREATE);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        task.cancel();
+        oriTask.cancel();
+        binder.send(new TextMessage(Protocol.REQ_STOP_FOLLOW));
+        unbindService(conn);
+        //unregisterReceiver(receiver);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
+
+    private class TCPClientConnection implements ServiceConnection {
+        @Override
+        public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+            binder = (TCPClient.MyBinder)iBinder;
+            //mTCPSmartcarController = new TCPSmartcarControllerImpl(binder);
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName componentName) {
+
+        }
+    }
+
+    //broadcast receiver listening to server events
+    /*private class MainThreadReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if(intent.getAction().equals(CONSTANT.ACTION_NEW_MSG)){
+                //Toast.makeText(SensorActivity.this,intent.getStringExtra(CONSTANT.KEY_MSG_DATA),Toast.LENGTH_SHORT).show();
+                if(binder!=null){
+                    //send the orientation data
+                    binder.send(new TextMessage((fused_orien[0]*180.0/Math.PI+180)+""));
+                }
+            }
+        }
+    }*/
 }

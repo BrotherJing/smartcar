@@ -134,7 +134,10 @@ public class GravitySensorFragment extends Fragment {
                     }
                     default:
                         if (getActivity() != null) {
-                            ((DirectionActivity)getActivity()).getTCPSmartcarController().stop();
+                            TCPSmartcarControllerImpl controller = ((DirectionActivity) getActivity()).getTCPSmartcarController();
+                            if(controller!=null){
+                                controller.stop();
+                            }
                             mImageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_remove_circle_black_48dp));
                         }
                         break;

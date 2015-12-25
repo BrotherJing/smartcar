@@ -106,7 +106,7 @@ public class ClientThread extends HandlerThread {
                 switch (msg_type){
                     case Protocol.TYPE_JSON:
                         String input = dis.readUTF();
-                        Logger.i(input);
+                        //Logger.i(input);
                         if(server!=null) {
                             server.receiveJSON(this, input);
                         }
@@ -123,6 +123,7 @@ public class ClientThread extends HandlerThread {
     }
 
     public void quitSelf(){
+        server.removeClient(this);
         isConnected = false;
         try {
             dis.close();

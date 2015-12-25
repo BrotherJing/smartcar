@@ -49,7 +49,7 @@ public class DirectionActivity extends AppCompatActivity {
 //        ViewGroup tab = (ViewGroup) findViewById(R.id.tab);
 //        tab.addView(LayoutInflater.from(this).inflate(demo.layoutResId, tab, false));
 
-        final ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
+        final ViewPager viewPager = (NoScrollViewPager) findViewById(R.id.viewpager);
         final SmartTabLayout viewPagerTab = (SmartTabLayout) findViewById(R.id.viewpagertab);
 //        demo.setup(viewPagerTab);
 
@@ -63,6 +63,7 @@ public class DirectionActivity extends AppCompatActivity {
 
         viewPager.setAdapter(adapter);
         viewPagerTab.setViewPager(viewPager);
+
     }
 
     @Override

@@ -89,7 +89,7 @@ public class BluetoothService extends Service {
                     try {
                         //dos.writeUTF(msg.getData().getString(Constant.KEY_MSG_CONTENT));
                         dos.writeBytes(new String(msg.getData().getString(CONSTANT.KEY_MSG_CONTENT).getBytes("utf-8"),"iso-8859-1"));
-                    }catch (IOException e){
+                    }catch (Exception e){
                         e.printStackTrace();
                     }
                 }

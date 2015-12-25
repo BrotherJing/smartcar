@@ -12,6 +12,7 @@ import android.hardware.Camera;
 import android.media.MediaRecorder;
 import android.os.Build;
 import android.os.Handler;
+import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.Message;
 import android.support.v7.app.ActionBarActivity;
@@ -39,6 +40,9 @@ import com.google.gson.Gson;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.util.List;
 
 public class SimpleVideoActivity extends ActionBarActivity {
@@ -150,7 +154,14 @@ public class SimpleVideoActivity extends ActionBarActivity {
     protected void onStart() {
         super.onStart();
         //bindService(new Intent(this, TCPServer.class), mServiceConnection, BIND_AUTO_CREATE);
-        bindService(new Intent(this, UDPServer.class), mServiceConnection, BIND_AUTO_CREATE);
+        //bindService(new Intent(this, UDPServer.class), mServiceConnection, BIND_AUTO_CREATE);
+
+        thread = new Thread(runnable);
+        thread.start();
+        networkThread = new HandlerThread("network");
+        networkThread.start();
+        networkHandler = new Handler(networkThread.getLooper());
+
         if(isBluetoothConnected)
             bindService(new Intent(this, BluetoothService.class), bluetoothConn, BIND_AUTO_CREATE);
     }
@@ -158,11 +169,14 @@ public class SimpleVideoActivity extends ActionBarActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        unbindService(mServiceConnection);
+        //unbindService(mServiceConnection);
         if(isBluetoothConnected) {
             unbindService(bluetoothConn);
         }
         unregisterReceiver(receiver);
+
+        isOpen = false;
+        thread.interrupt();
     }
 
     @Override
@@ -230,7 +244,8 @@ public class SimpleVideoActivity extends ActionBarActivity {
                     ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
                     img.compressToJpeg(new Rect(0,0,bestSize.width,bestSize.height),
                             VIDEO_QUALITY,outputStream);
-                    sendImage(outputStream.toByteArray());
+                    //sendImage(outputStream.toByteArray());
+                    send(outputStream.toByteArray());
                 }
             }catch (Exception e){
                 e.printStackTrace();
@@ -295,12 +310,63 @@ public class SimpleVideoActivity extends ActionBarActivity {
                         return;
                     }else{
                         clientIpAddr = GlobalEnv.getString(CONSTANT.GLOBAL_AUDIENCE_ADDR);
-                        udpBinder.setClientIpAddr(clientIpAddr);
+                        //udpBinder.setClientIpAddr(clientIpAddr);
+                        setClientIpAddr(clientIpAddr);
                     }
                 }else if(type==CONSTANT.REQ_TYPE_END_VIDEO){
                     SimpleVideoActivity.this.finish();
                 }
             }
+        }
+    }
+
+    Thread thread;
+    DatagramSocket socket;
+    InetAddress clientAddr;
+
+    HandlerThread networkThread;
+    Handler networkHandler;
+
+    boolean isOpen;
+    Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            try {
+                socket = new DatagramSocket(Protocol.UDP_SERVER_PORT);
+                clientAddr = InetAddress.getByName(GlobalEnv.getString(CONSTANT.GLOBAL_AUDIENCE_ADDR));
+                if(clientAddr==null){
+                    Logger.i("no client found");
+                    return;
+                }
+                isOpen = true;
+            }catch (IOException e){
+                e.printStackTrace();
+            }
+
+        }
+    };
+
+    public void send(final byte[] data){
+        if(isOpen){
+            networkHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        DatagramPacket packet = new DatagramPacket(data, data.length, clientAddr, Protocol.UDP_CLIENT_PORT);
+                        socket.send(packet);
+                    }catch (IOException e){
+                        e.printStackTrace();
+                    }
+                }
+            });
+
+        }
+    }
+    public void setClientIpAddr(String ipAddr){
+        try {
+            clientAddr = InetAddress.getByName(ipAddr);
+        }catch (IOException ex){
+            ex.printStackTrace();
         }
     }
 }

@@ -66,7 +66,8 @@ public class TCPServer extends Service {
         notifyUI(msg);
         if(message.getMsgType()== Protocol.MSG_TYPE_TEXT) {
             message = new Gson().fromJson(msg,TextMessage.class);
-            if (((TextMessage)message).getText().equals(Protocol.REQ_VIDEO)) {
+            String data = ((TextMessage)message).getText();
+            if (data.equals(Protocol.REQ_VIDEO)) {
                 //client.sendImage();
                 GlobalEnv.put(CONSTANT.GLOBAL_AUDIENCE_ADDR, client.getIp());//only one audience for real time video
 
@@ -74,22 +75,34 @@ public class TCPServer extends Service {
                 intent.putExtra(CONSTANT.KEY_REQ_TYPE, CONSTANT.REQ_TYPE_VIDEO);
                 sendBroadcast(intent);
 
-            }else if(((TextMessage)message).getText().equals(Protocol.REQ_AUDIO)){
+            }else if(data.equals(Protocol.REQ_AUDIO)){
                 //TODO: start audio recognition
 
                 Intent intent = new Intent(CONSTANT.ACTION_NEW_REQ);
                 intent.putExtra(CONSTANT.KEY_REQ_TYPE, CONSTANT.REQ_TYPE_AUDIO);
                 sendBroadcast(intent);
 
-            }else if(((TextMessage)message).getText().equals(Protocol.REQ_END_VIDEO)){
+            }else if(data.equals(Protocol.REQ_END_VIDEO)){
 
                 Intent intent = new Intent(CONSTANT.ACTION_NEW_REQ);
                 intent.putExtra(CONSTANT.KEY_REQ_TYPE, CONSTANT.REQ_TYPE_END_VIDEO);
                 sendBroadcast(intent);
 
-            } else {
+            }else if(data.equals(Protocol.REQ_FOLLOW)){
+
+                Intent intent = new Intent(CONSTANT.ACTION_NEW_REQ);
+                intent.putExtra(CONSTANT.KEY_REQ_TYPE, CONSTANT.REQ_TYPE_FOLLOW);
+                sendBroadcast(intent);
+
+            }else if(data.equals(Protocol.REQ_STOP_FOLLOW)){
+
+                Intent intent = new Intent(CONSTANT.ACTION_NEW_REQ);
+                intent.putExtra(CONSTANT.KEY_REQ_TYPE, CONSTANT.REQ_TYPE_STOP_FOLLOW);
+                sendBroadcast(intent);
+
+            }/* else {
                 sendToAll(message);
-            }
+            }*/
         }
     }
 
@@ -121,6 +134,11 @@ public class TCPServer extends Service {
         }catch (IOException ex){
             ex.printStackTrace();
         }
+    }
+
+    public void removeClient(ClientThread client){
+        clientSockets.remove(client.getMySocket());
+        clients.remove(client);
     }
 
     public void broadcastNewClient(String id){

@@ -226,6 +226,8 @@ public class MainActivity extends ActionBarActivity {
                     startActivity(intent1);
                 }else if(type==CONSTANT.REQ_TYPE_AUDIO){
                     BaiduVoiceHelper.startBaiduVoiceDialogForResult(MainActivity.this, CONSTANT.API_KEY, CONSTANT.SECRET_KEY, REQ_ASR);
+                }else if(type==CONSTANT.REQ_TYPE_FOLLOW){
+                    startActivity(new Intent(MainActivity.this,SensorActivity.class));
                 }
             }else{
                 return;
@@ -285,13 +287,33 @@ public class MainActivity extends ActionBarActivity {
             }
         }else if(requestCode==REQ_ASR){
             if (resultCode == RESULT_OK) {
-                ArrayList<String> results = data.getStringArrayListExtra(SpeechRecognizer.RESULTS_RECOGNITION);
-                String res = "";
-                for(String i : results){
-                    res+=i+"\n";
-                }
-                Toast.makeText(this,res,Toast.LENGTH_SHORT).show();
+                processASR(data.getStringArrayListExtra(SpeechRecognizer.RESULTS_RECOGNITION));
             }
         }
+    }
+
+    private void processASR(List<String> results){
+        if(carController==null)return;
+        String res = "";
+        for(String i : results){
+            res+=i+"\n";
+            if(i.contains("前")){
+                carController.forward();
+            }else if(i.contains("后")){
+                carController.backward();
+            }else if(i.contains("停")){
+                carController.stop();
+            }else if(i.contains("左")){
+                carController.turnLeft();
+            }else if(i.contains("右")){
+                carController.turnRight();
+            }else if(i.contains("来")){
+                startActivity(new Intent(this,SensorActivity.class));
+            }else{
+                continue;
+            }
+            break;
+        }
+        //Toast.makeText(this,res,Toast.LENGTH_SHORT).show();
     }
 }

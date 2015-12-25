@@ -28,7 +28,9 @@ public interface Protocol {
     //some command
     String REQ_VIDEO = "[req]";
     String REQ_AUDIO = "[req_audio]";
+    String REQ_FOLLOW = "[req_follow]";
     String REQ_END_VIDEO = "[req_end_video]";
+    String REQ_STOP_FOLLOW = "[req_stop_follow]";
     String REQ_CONNECT = "connect";
 
 }

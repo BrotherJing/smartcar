@@ -52,6 +52,8 @@ public interface CONSTANT {
     int REQ_TYPE_VIDEO = 1;
     int REQ_TYPE_AUDIO = 2;
     int REQ_TYPE_END_VIDEO = 3;
+    int REQ_TYPE_FOLLOW = 4;
+    int REQ_TYPE_STOP_FOLLOW = 5;
 
     //baidu asr
     int APP_ID = 7031386;

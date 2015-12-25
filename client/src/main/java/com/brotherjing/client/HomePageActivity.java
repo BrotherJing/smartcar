@@ -119,9 +119,10 @@ public class HomePageActivity extends AppCompatActivity {
                                         HomePageActivity.this,
                                         CONSTANT.API_KEY,
                                         CONSTANT.SECRET_KEY, REQUEST_UI);*/
-                                if(binder!=null){
+                                /*if(binder!=null){
                                     binder.send(new TextMessage(Protocol.REQ_AUDIO));
-                                }
+                                }*/
+                                startActivity(new Intent(HomePageActivity.this,SensorActivity.class));
 
                             } else if (drawerItem.getIdentifier() == 2){
                                 /* 增强现实 */

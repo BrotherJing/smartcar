@@ -83,6 +83,12 @@
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
 
+
+        <activity
+            android:name=".activity.SensorActivity"
+            android:label="@string/title_activity_sensor">
+        </activity>
+
         <service
             android:name=".service.BluetoothService"
             android:enabled="true"
